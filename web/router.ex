@@ -17,6 +17,7 @@ defmodule Exagg.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    post "/opml_upload", PageController, :opml_upload
 
     resources "/users", UserController
   end

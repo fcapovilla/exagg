@@ -19,6 +19,7 @@ defmodule Exagg.Repo.Migrations.CreateItem do
     end
     create index(:items, [:user_id])
     create index(:items, [:feed_id])
+    create unique_index(:items, [:guid])
 
   end
 end

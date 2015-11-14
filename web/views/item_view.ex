@@ -19,7 +19,6 @@ defmodule Exagg.ItemView do
       read: item.read,
       favorite: item.favorite,
       date: item.date,
-      last_update: item.last_update,
       orig_feed_title: item.orig_feed_title,
       user_id: item.user_id,
       feed_id: item.feed_id}

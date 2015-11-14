@@ -33,4 +33,10 @@
       </li>
     </ul>
   </div>
+
+  <%= form_for @conn, page_path(@conn, :opml_upload), [as: :opml, multipart: true], fn f -> %>
+    <%= file_input f, :file, class: "form-control" %>
+    <%= submit "Upload", class: "btn btn-primary" %>
+  <% end %>
+
 </div>

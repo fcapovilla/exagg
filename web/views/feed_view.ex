@@ -13,7 +13,6 @@ defmodule Exagg.FeedView do
     %{id: feed.id,
       title: feed.title,
       url: feed.url,
-      last_update: feed.last_update,
       last_sync: feed.last_sync,
       unread_count: feed.unread_count,
       sync_status: feed.sync_status,
