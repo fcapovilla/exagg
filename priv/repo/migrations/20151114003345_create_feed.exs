@@ -4,7 +4,7 @@ defmodule Exagg.Repo.Migrations.CreateFeed do
   def change do
     create table(:feeds) do
       add :title, :string
-      add :url, :string
+      add :url, :string, size: 2000
       add :last_sync, :datetime
       add :unread_count, :integer
       add :sync_status, :string

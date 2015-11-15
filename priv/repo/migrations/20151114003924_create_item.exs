@@ -4,9 +4,9 @@ defmodule Exagg.Repo.Migrations.CreateItem do
   def change do
     create table(:items) do
       add :title, :string
-      add :url, :string
-      add :guid, :string
-      add :content, :string
+      add :url, :string, size: 2000
+      add :guid, :string, size: 2000
+      add :content, :text
       add :medias, {:array, :map}, default: []
       add :read, :boolean, default: false
       add :favorite, :boolean, default: false

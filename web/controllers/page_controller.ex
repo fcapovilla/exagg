@@ -45,4 +45,8 @@ defmodule Exagg.PageController do
       end
     end)
   end
+
+  def sync(conn, _params) do
+    json(conn, Exagg.Syncer.sync)
+  end
 end

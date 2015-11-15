@@ -18,6 +18,7 @@ defmodule Exagg.Router do
 
     get "/", PageController, :index
     post "/opml_upload", PageController, :opml_upload
+    get "/sync", PageController, :sync
 
     resources "/users", UserController
   end

@@ -19,7 +19,7 @@ defmodule Exagg.Mixfile do
   def application do
     [mod: {Exagg, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :tzdata, :pipe]]
   end
 
   # Specifies which paths to compile per environment.
@@ -33,6 +33,10 @@ defmodule Exagg.Mixfile do
     [{:phoenix, "~> 1.0.3"},
      {:phoenix_ecto, "~> 1.1"},
      {:postgrex, ">= 0.0.0"},
+     {:feeder_ex, ">= 0.0.0"},
+     {:httpoison, ">= 0.0.0"},
+     {:timex, ">= 0.0.0"},
+     {:pipe, ">= 0.0.0"},
      {:phoenix_html, "~> 2.1"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"}]
