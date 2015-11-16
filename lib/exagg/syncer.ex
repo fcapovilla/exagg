@@ -11,10 +11,21 @@ defmodule Exagg.Syncer do
     Enum.each(Repo.all(Feed), fn feed ->
       # Fetch data
       HTTPoison.start
-      {:ok, %HTTPoison.Response{body: body}} = HTTPoison.get(feed.url)
+      body = case HTTPoison.get(feed.url) do
+        {:ok, %HTTPoison.Response{body: body}} -> body
+        {:error, _} -> ""
+      end
 
       # Parse it
-      {:ok, parsed_feed, _} = FeederEx.parse(body)
+      parsed_feed = try do
+         elem(FeederEx.parse(body), 1)
+      rescue
+        _ -> %{entries: []}
+      catch
+        _ -> %{entries: []}
+      end
+
+      IO.inspect parsed_feed
 
       # Update feed items
       Enum.each(parsed_feed.entries, fn entry ->
@@ -24,7 +35,7 @@ defmodule Exagg.Syncer do
           url: entry.link || entry.id,
           content: entry.summary,
           date: elem(parse_date(entry.updated), 1),
-          guid: entry.id
+          guid: entry.id || entry.link
         }
 
         case Repo.get_by(Item, guid: item.guid) do
@@ -39,8 +50,10 @@ defmodule Exagg.Syncer do
   defp parse_date(date) do
     use Timex
 
-    format = find_dateformat(date)
-    IO.inspect format
+    format = case date do
+      nil -> :unknown
+      _ -> find_dateformat(date)
+    end
 
     pipe_matching(x, {:ok, x},
       case format do
