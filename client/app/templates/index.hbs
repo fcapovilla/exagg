@@ -1,0 +1,22 @@
+<ul>
+  {{#each model as |folder|}}
+    <li>
+      {{folder.title}}
+      <ul>
+          {{#each folder.feeds as |feed|}}
+            <li>
+              {{feed.title}}
+              <ul>
+                {{#each feed.items as |item|}}
+                  <li>
+                    {{item.title}}
+                  </li>
+                {{/each}}
+              </ul>
+            </li>
+          {{/each}}
+      </ul>
+    </li>
+  {{/each}}
+</ul>
+{{outlet}}
