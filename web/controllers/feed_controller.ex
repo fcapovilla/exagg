@@ -5,6 +5,11 @@ defmodule Exagg.FeedController do
 
   plug :scrub_params, "feed" when action in [:create, :update]
 
+  def index(conn, %{"folder_id" => folder_id}) do
+    feeds = Repo.all(from f in Feed, where: f.folder_id == ^folder_id)
+    render(conn, "index.json", feeds: feeds)
+  end
+
   def index(conn, _params) do
     feeds = Repo.all(Feed)
     render(conn, "index.json", feeds: feeds)

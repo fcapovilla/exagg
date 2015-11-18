@@ -11,6 +11,7 @@ defmodule Exagg.Feed do
     field :position, :integer
     belongs_to :user, Exagg.User
     belongs_to :folder, Exagg.Folder
+    has_many :items, Exagg.Item
 
     timestamps
   end

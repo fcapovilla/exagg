@@ -18,7 +18,7 @@ defmodule Exagg.Syncer do
 
     # Update feed items
     Enum.each(parsed_feed.entries, fn entry ->
-      item = %{
+      item = %Item{
         feed_id: feed.id,
         title: entry.title || entry.link || entry.id,
         url: entry.link || entry.id,
@@ -27,9 +27,11 @@ defmodule Exagg.Syncer do
         guid: entry.id || entry.link
       }
 
-      case Repo.get_by(Item, guid: item.guid) do
-        nil -> Repo.insert!(Item.changeset(%Item{}, item))
-        existing -> Repo.update!(Item.changeset(existing, item))
+      Repo.transaction fn ->
+        case Repo.get_by(Item, guid: item.guid) do
+          nil -> Repo.insert!(item)
+          existing -> Repo.update!(Item.changeset(existing, Map.from_struct item))
+        end
       end
     end)
   end

@@ -26,8 +26,13 @@ defmodule Exagg.Router do
   scope "/api", Exagg do
     pipe_through :api
 
-    resources "/folders", FolderController
-    resources "/feeds", FeedController
-    resources "/items", ItemController
+    resources "/folders", FolderController do
+      get "/feeds", FeedController, :index
+    end
+    resources "/feeds", FeedController do
+      get "/items", ItemController, :index
+    end
+    resources "/items", ItemController do
+    end
   end
 end

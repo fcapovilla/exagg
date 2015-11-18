@@ -6,6 +6,7 @@ defmodule Exagg.Folder do
     field :open, :boolean, default: false
     field :position, :integer
     belongs_to :user, Exagg.User
+    has_many :feeds, Exagg.Feed
 
     timestamps
   end

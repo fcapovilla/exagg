@@ -19,6 +19,10 @@ defmodule Exagg.FeedView do
       favicon: feed.favicon,
       user_id: feed.user_id,
       folder_id: feed.folder_id,
-      position: feed.position}
+      position: feed.position,
+      links: %{
+        items: "./items"
+      }
+    }
   end
 end

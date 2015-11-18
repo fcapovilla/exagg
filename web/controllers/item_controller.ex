@@ -5,6 +5,11 @@ defmodule Exagg.ItemController do
 
   plug :scrub_params, "item" when action in [:create, :update]
 
+  def index(conn, %{"feed_id" => feed_id}) do
+    items = Repo.all(from i in Item, where: i.feed_id == ^feed_id)
+    render(conn, "index.json", items: items)
+  end
+
   def index(conn, _params) do
     items = Repo.all(Item)
     render(conn, "index.json", items: items)
