@@ -11,6 +11,8 @@
   "httpoison": {:hex, :httpoison, "0.8.0"},
   "idna": {:hex, :idna, "1.0.2"},
   "mimerl": {:hex, :mimerl, "1.0.0"},
+  "parallel": {:hex, :parallel, "0.0.2"},
+  "paratize": {:hex, :paratize, "2.1.1"},
   "phoenix": {:hex, :phoenix, "1.0.3"},
   "phoenix_ecto": {:hex, :phoenix_ecto, "1.2.0"},
   "phoenix_html": {:hex, :phoenix_html, "2.2.0"},

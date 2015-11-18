@@ -37,6 +37,7 @@ defmodule Exagg.Mixfile do
      {:httpoison, ">= 0.0.0"},
      {:timex, ">= 0.0.0"},
      {:pipe, ">= 0.0.0"},
+     {:paratize, ">= 0.0.0"},
      {:phoenix_html, "~> 2.1"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"}]

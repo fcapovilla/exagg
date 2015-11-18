@@ -5,9 +5,10 @@ defmodule Exagg.Syncer do
 
   use Timex
   import Pipe
+  import Paratize.Pool
 
   def sync do
-    Enum.each(Repo.all(Feed), &sync_feed(&1))
+    parallel_each(Repo.all(Feed), &sync_feed(&1), timeout: 30000)
     %{sync: "ok"}
   end
 
