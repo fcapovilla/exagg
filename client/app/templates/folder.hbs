@@ -1,1 +1,26 @@
-{{outlet}}
+      <li draggable="true">
+        <div onclick="" class="folder-title">
+
+          <div class="folder-text">
+            <div onclick="" class="folder-toggle">
+              <i class="fa fa-plus-square-o"></i>
+            </div>
+            <div onclick="" class="folder-icon">
+              <i class="fa fa-folder"></i>
+            </div>
+              {{model.title}}
+          </div>
+        </div>
+        <div class="btn-group folderMenu hide">
+          <a class="btn btn-default markFolderReadAction" title="Marquer comme lu"><i class="fa fa-eye"></i></a>
+          <a class="btn btn-default markFolderUnreadAction" title="Marquer comme non lu"><i class="fa fa-eye-slash"></i></a>
+          <a class="btn btn-default syncFolderAction" title="Synchroniser"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-default editFolderAction" title="Modifier"><i class="fa fa-edit"></i></a>
+          <a class="btn btn-default deleteFolderAction" title="Supprimer"><i class="fa fa-trash-o"></i></a>
+        </div>
+        <ul class="list-unstyled">
+          {{#each model.feeds as |feed|}}
+            {{render "feed" feed}}
+          {{/each}}
+        </ul>
+      </li>

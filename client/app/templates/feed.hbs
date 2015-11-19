@@ -1,1 +1,20 @@
-{{outlet}}
+<li class="feed" draggable="true">
+  <div onclick="" class="feed-title">
+    <div class="feed-badge">
+      <span class="badge badge-primary">{{model.unreadCount}}</span>
+    </div>
+    <div class="feed-text">
+      <div onclick="" class="feed-icon">
+          <img class="favicon" src="/favicon/38.ico">
+      </div>
+      <b>{{model.title}}</b>
+    </div>
+  </div>
+  <div class="btn-group feedMenu hide">
+    <a class="btn btn-default markFeedReadAction" title="Marquer comme lu"><i class="fa fa-eye"></i></a>
+    <a class="btn btn-default markFeedUnreadAction" title="Marquer comme non lu"><i class="fa fa-eye-slash"></i></a>
+    <a class="btn btn-default syncFeedAction" title="Synchroniser"><i class="fa fa-refresh"></i></a>
+    <a class="btn btn-default editFeedAction" title="Modifier"><i class="fa fa-edit"></i></a>
+    <a class="btn btn-default deleteFeedAction" title="Supprimer"><i class="fa fa-trash-o"></i></a>
+  </div>
+</li>

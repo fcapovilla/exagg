@@ -1,22 +1,68 @@
-<ul>
-  {{#each model as |folder|}}
-    <li>
-      {{folder.title}}
-      <ul>
-          {{#each folder.feeds as |feed|}}
-            <li>
-              {{feed.title}}
-              <ul>
-                {{#each feed.items as |item|}}
-                  <li>
-                    {{item.title}}
-                  </li>
-                {{/each}}
-              </ul>
-            </li>
-          {{/each}}
-      </ul>
-    </li>
-  {{/each}}
-</ul>
-{{outlet}}
+<div class="side-bar">
+  <div class="navbar navbar-default">
+    <div class="navbar-form" id="mainmenu">
+      <div class="btn-group">
+        <button class="btn btn-primary hidden-tiny-phone">
+          <img id="spinner" class="invisible" src="img/ajax-loader.gif">
+        </button>
+        <button class="btn btn-default" id="syncButton" title="Synchroniser">
+          <i class="fa fa-refresh"></i>
+        </button>
+        <button class="btn btn-default hidden-tiny-phone" id="toggleReadVisibility" title="Afficher/Cacher les items lus">
+          <i class="fa fa-eye"></i>
+        </button>
+        <button class="btn btn-default hidden-xs" id="toggleSearchFilters" title="Afficher/Cacher la barre de recherche">
+          <i class="fa fa-search"></i>
+        </button>
+        <button class="btn btn-default" id="subscriptionModalButton" title="Abonnement">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button class="btn btn-default hidden-xs" id="settingsModalButton" title="Préférences">
+          <i class="fa fa-cog"></i>
+        </button>
+        <a class="btn btn-default" href="/logout" title="Déconnexion">
+          <i class="fa fa-sign-out"></i>
+        </a>
+      </div>
+      <div class="btn-group mobile-item-buttons">
+        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobilePrevItem" title="Suivant">
+          <i class="fa fa-arrow-circle-o-up"></i>
+        </button>
+        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobileNextItem" title="Précédent">
+          <i class="fa fa-arrow-circle-o-down"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="dragbar hidden-xs"></div>
+  <div class="feed-list">
+    <ul class="list-unstyled" id="feed-list">
+      <li>
+        <div onclick="" class="folder-title">
+          <div class="folder-badge">
+            <span class="badge badge-primary">1518</span>
+          </div>
+
+          <div class="folder-text">
+            <i class="folder-icon fa fa-asterisk"></i>
+            Tous les items
+          </div>
+        </div>
+      </li>
+      <li>
+        <div onclick="" class="folder-title">
+          <div class="folder-text">
+            <i class="folder-icon fa fa-star"></i>
+            Favoris
+          </div>
+        </div>
+      </li>
+      {{#each model as |folder|}}
+        {{render "folder" folder}}
+      {{/each}}
+    </ul>
+  </div>
+</div>
+<div class="content">
+  {{outlet}}
+</div>
