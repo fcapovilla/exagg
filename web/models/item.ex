@@ -12,13 +12,13 @@ defmodule Exagg.Item do
     field :orig_feed_title, :string
     belongs_to :user, Exagg.User
     belongs_to :feed, Exagg.Feed
-    embeds_many :medias, Exagg.Media
+    has_many :medias, Exagg.Media, on_delete: :fetch_and_delete
 
     timestamps
   end
 
   @required_fields ~w(title url guid read favorite date)
-  @optional_fields ~w(content medias orig_feed_title)
+  @optional_fields ~w(content orig_feed_title)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

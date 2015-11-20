@@ -1,0 +1,28 @@
+<li draggable="true">
+  <div {{action "selectFolder"}} class="folder-title">
+    <div class="folder-text">
+      <div {{action "toggleOpen"}} class="folder-toggle">
+        <i class="fa fa-plus-square-o"></i>
+      </div>
+      <div {{action "toggleMenu"}} class="folder-icon">
+        <i class="fa fa-folder"></i>
+      </div>
+        {{model.title}}
+    </div>
+  </div>
+  {{#if menuOpen}}
+    <div class="btn-group folderMenu">
+      <a {{action "markFolderRead"}} class="btn btn-default" title="Marquer comme lu"><i class="fa fa-eye"></i></a>
+      <a {{action "markFolderUnread"}} class="btn btn-default" title="Marquer comme non lu"><i class="fa fa-eye-slash"></i></a>
+      <a {{action "editFolder"}} class="btn btn-default" title="Modifier"><i class="fa fa-edit"></i></a>
+      <a {{action "deleteFolder"}} class="btn btn-default" title="Supprimer"><i class="fa fa-trash-o"></i></a>
+    </div>
+  {{/if}}
+  {{#if model.open}}
+    <ul class="list-unstyled">
+      {{#each model.feeds as |feed|}}
+        {{feed-element model=feed boundController=boundController}}
+      {{/each}}
+    </ul>
+  {{/if}}
+</li>

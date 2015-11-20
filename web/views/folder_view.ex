@@ -16,7 +16,8 @@ defmodule Exagg.FolderView do
       user_id: folder.user_id,
       position: folder.position,
       links: %{
-        feeds: "./feeds"
+        feeds: "./feeds",
+        items: "./items"
       }
     }
   end

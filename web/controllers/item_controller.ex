@@ -2,11 +2,25 @@ defmodule Exagg.ItemController do
   use Exagg.Web, :controller
 
   alias Exagg.Item
+  alias Exagg.Feed
 
   plug :scrub_params, "item" when action in [:create, :update]
 
+  def index(conn, %{"folder_id" => folder_id}) do
+    items = Repo.all(
+      from i in Item,
+      join: f in Feed, on: i.feed_id == f.id,
+      where: f.folder_id == ^folder_id,
+      select: i
+    )
+    render(conn, "index.json", items: items)
+  end
+
   def index(conn, %{"feed_id" => feed_id}) do
-    items = Repo.all(from i in Item, where: i.feed_id == ^feed_id)
+    items = Repo.all(
+      from i in Item,
+      where: i.feed_id == ^feed_id
+    )
     render(conn, "index.json", items: items)
   end
 

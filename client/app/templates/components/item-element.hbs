@@ -1,0 +1,24 @@
+<li>
+  <div class="item-container">
+    <div class="item-labels">
+      <span class="item-feed-title label label-primary hidden-small-phone">
+        {{model.feed.title}}
+      </span>
+      <span class="item-date label label-default hidden-phone">
+        {{model.date}}
+      </span>
+    </div>
+    <div class="item-title">
+      <i onclick="" class="favoriteIcon fa fa-star-o"></i>
+      <i onclick="" class="readUnreadIcon fa fa-circle"></i>
+      <b>{{model.title}}</b>
+    </div>
+  </div>
+  {{#if selected}}
+    <div class="well item-content">
+      <a class="item-content-title" href="{{model.url}}" target="_blank">{{model.title}}</a>
+      <br>
+      {{model.content}}
+    </div>
+  {{/if}}
+</li>

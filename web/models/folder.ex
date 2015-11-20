@@ -6,13 +6,13 @@ defmodule Exagg.Folder do
     field :open, :boolean, default: false
     field :position, :integer
     belongs_to :user, Exagg.User
-    has_many :feeds, Exagg.Feed
+    has_many :feeds, Exagg.Feed, on_delete: :fetch_and_delete
 
     timestamps
   end
 
-  @required_fields ~w(title open position)
-  @optional_fields ~w()
+  @required_fields ~w(title open)
+  @optional_fields ~w(position)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

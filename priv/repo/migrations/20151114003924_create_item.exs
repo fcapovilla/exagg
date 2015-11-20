@@ -7,7 +7,6 @@ defmodule Exagg.Repo.Migrations.CreateItem do
       add :url, :string, size: 2000
       add :guid, :string, size: 2000
       add :content, :text
-      add :medias, {:array, :map}, default: []
       add :read, :boolean, default: false
       add :favorite, :boolean, default: false
       add :date, :datetime

@@ -15,7 +15,6 @@ defmodule Exagg.ItemView do
       url: item.url,
       guid: item.guid,
       content: item.content,
-      medias: item.medias,
       read: item.read,
       favorite: item.favorite,
       date: item.date,

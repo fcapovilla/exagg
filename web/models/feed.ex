@@ -11,13 +11,13 @@ defmodule Exagg.Feed do
     field :position, :integer
     belongs_to :user, Exagg.User
     belongs_to :folder, Exagg.Folder
-    has_many :items, Exagg.Item
+    has_many :items, Exagg.Item, on_delete: :fetch_and_delete
 
     timestamps
   end
 
-  @required_fields ~w(title url last_sync unread_count position)
-  @optional_fields ~w(sync_status favicon)
+  @required_fields ~w(title url last_sync unread_count)
+  @optional_fields ~w(sync_status favicon position)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

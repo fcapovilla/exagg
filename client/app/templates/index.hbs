@@ -58,11 +58,13 @@
         </div>
       </li>
       {{#each model as |folder|}}
-        {{render "folder" folder}}
+        {{folder-element model=folder boundController=controller}}
       {{/each}}
     </ul>
   </div>
 </div>
 <div class="content">
-  {{outlet}}
+  <div>
+    {{outlet}}
+  </div>
 </div>

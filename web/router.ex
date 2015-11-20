@@ -28,6 +28,7 @@ defmodule Exagg.Router do
 
     resources "/folders", FolderController do
       get "/feeds", FeedController, :index
+      get "/items", ItemController, :index
     end
     resources "/feeds", FeedController do
       get "/items", ItemController, :index
