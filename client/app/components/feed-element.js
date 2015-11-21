@@ -15,8 +15,13 @@ export default Ember.Component.extend({
       this.get('boundController').transitionToRoute('feed', this.model);
     },
 
-    toggleMenu() {
-      this.set('menuOpen', !this.get('menuOpen'));
+    openMenu() {
+      var that = this;
+      that.set('menuOpen', true);
+
+      $(document).one('mouseup', function() {
+        that.set('menuOpen', false);
+      });
     },
 
     markFeedRead() {
@@ -26,6 +31,7 @@ export default Ember.Component.extend({
     },
 
     editFeed() {
+      this.get('boundController').transitionToRoute('feed.edit', this.model);
     },
 
     deleteFeed() {

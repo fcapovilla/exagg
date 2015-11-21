@@ -1,12 +1,21 @@
 <div {{action "selectFolder"}} class="folder-title {{if active "active"}}">
+  {{#if model.unreadCount}}
+    <div class="folder-badge">
+      <span class="badge badge-primary">{{model.unreadCount}}</span>
+    </div>
+  {{/if}}
   <div class="folder-text">
-    <div {{action "toggleOpen"}} class="folder-toggle">
+    <div {{action "toggleOpen" bubbles=false}} class="folder-toggle">
       <i class="fa fa-plus-square-o"></i>
     </div>
-    <div {{action "toggleMenu"}} class="folder-icon">
+    <div {{action "openMenu" bubbles=false}} class="folder-icon">
       <i class="fa fa-folder"></i>
     </div>
+    {{#if model.unreadCount}}
+      <b>{{model.title}}</b>
+    {{else}}
       {{model.title}}
+    {{/if}}
   </div>
 </div>
 {{#if menuOpen}}

@@ -19,8 +19,13 @@ export default Ember.Component.extend({
       this.model.save();
     },
 
-    toggleMenu() {
-      this.set('menuOpen', !this.get('menuOpen'));
+    openMenu() {
+      this.set('menuOpen', true);
+
+      var that = this;
+      $(document).one('mouseup', function() {
+        that.set('menuOpen', false);
+      });
     },
 
     markFolderRead() {
@@ -30,6 +35,7 @@ export default Ember.Component.extend({
     },
 
     editFolder() {
+      this.get('boundController').transitionToRoute('folder.edit', this.model);
     },
 
     deleteFolder() {

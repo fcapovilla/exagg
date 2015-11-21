@@ -1,12 +1,18 @@
 <div {{action "selectFeed"}} class="feed-title {{if active "active"}}">
-  <div class="feed-badge">
-    <span class="badge badge-primary">{{model.unreadCount}}</span>
-  </div>
+  {{#if model.unreadCount}}
+    <div class="feed-badge">
+      <span class="badge badge-primary">{{model.unreadCount}}</span>
+    </div>
+  {{/if}}
   <div class="feed-text">
-    <div {{action "toggleMenu"}} class="feed-icon">
+    <div {{action "openMenu" bubbles=false}} class="feed-icon">
         <img class="favicon" src="/favicon/38.ico">
     </div>
-    <b>{{model.title}}</b>
+    {{#if model.unreadCount}}
+      <b>{{model.title}}</b>
+    {{else}}
+      {{model.title}}
+    {{/if}}
   </div>
 </div>
 {{#if menuOpen}}
