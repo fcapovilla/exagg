@@ -5,6 +5,10 @@ export default Ember.Component.extend({
 
   menuOpen: false,
 
+  active: Ember.computed('boundController.selectedElement', function() {
+    return this.get('boundController.selectedElement') === this.model;
+  }),
+
   actions: {
     selectFolder() {
       this.get('boundController').transitionToRoute('folder', this.model);

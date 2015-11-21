@@ -6,6 +6,10 @@ export default Ember.Component.extend({
 
   menuOpen : false,
 
+  active: Ember.computed('boundController.selectedElement', function() {
+    return this.get('boundController.selectedElement') === this.model;
+  }),
+
   actions: {
     selectFeed() {
       this.get('boundController').transitionToRoute('feed', this.model);

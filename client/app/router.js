@@ -7,6 +7,8 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('index', { path: '/' }, function() {
+    this.route('items', {resetNamespace: true});
+    this.route('favorites', {resetNamespace: true});
     this.route('folder', { resetNamespace: true, path: '/folder/:folder_id' });
     this.route('feed', { resetNamespace: true, path: '/feed/:feed_id' });
   });
