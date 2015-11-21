@@ -19,7 +19,7 @@ defmodule Exagg.ItemView do
       favorite: item.favorite,
       date: item.date,
       orig_feed_title: item.orig_feed_title,
-      user_id: item.user_id,
-      feed_id: item.feed_id}
+      user: item.user_id,
+      feed: item.feed_id}
   end
 end

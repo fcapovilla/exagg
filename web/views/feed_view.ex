@@ -17,8 +17,8 @@ defmodule Exagg.FeedView do
       unread_count: feed.unread_count,
       sync_status: feed.sync_status,
       favicon: feed.favicon,
-      user_id: feed.user_id,
-      folder_id: feed.folder_id,
+      user: feed.user_id,
+      folder: feed.folder_id,
       position: feed.position,
       links: %{
         items: "./items"

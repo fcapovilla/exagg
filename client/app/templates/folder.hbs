@@ -1,5 +1,9 @@
-<ul class="item-list list-unstyled">
-  {{#each model.items as |item|}}
-    {{item-element model=item}}
-  {{/each}}
-</ul>
+<div id="item-list">
+  <div>
+    <ul class="item-list list-unstyled">
+      {{#each model.items as |item|}}
+        {{item-element model=item onSelect=(action "selectItem")}}
+      {{/each}}
+    </ul>
+  </div>
+</div>

@@ -13,7 +13,7 @@ defmodule Exagg.FolderView do
     %{id: folder.id,
       title: folder.title,
       open: folder.open,
-      user_id: folder.user_id,
+      user: folder.user_id,
       position: folder.position,
       links: %{
         feeds: "./feeds",

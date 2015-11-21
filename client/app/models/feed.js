@@ -10,5 +10,5 @@ export default DS.Model.extend({
   position: DS.attr('number'),
 
   items: DS.hasMany('item', {async: true}),
-  folder: DS.belongsTo('folder')
+  folder: DS.belongsTo('folder', {async: true})
 });

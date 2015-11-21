@@ -9,5 +9,5 @@ export default DS.Model.extend({
   favorite: DS.attr('boolean'),
   date: DS.attr('date'),
   origFeedTitle: DS.attr('string'),
-  feed: DS.belongsTo('feed'),
+  feed: DS.belongsTo('feed', {async: true}),
 });
