@@ -1,1 +1,43 @@
 <h1>{{model.title}}</h1>
+<form id="editFeedForm" {{action "saveFeed" on="submit"}}>
+  <div class="modal-body">
+    <label for="feedUrl">#{t.edit_feed.url}</label>
+    {{input type="text" class="form-control" id="feedUrl" value=model.url}}
+    <label for="feedFolder">#{t.edit_feed.folder}</label>
+    {{input type="text" class="form-control" id="feedFolder" value=folderTitle}}
+    <div class="checkbox">
+      <label for="resetFeed">
+        <input type="checkbox" id="resetFeed" />
+        {{input type="checkbox" id="resetFeed" checked=resetFeed}}
+        #{t.edit_feed.reset}
+      </label>
+    </div>
+    {{#if model.pshb}}
+      <div class="feedPSHBInfos">
+        <table class="table table-bordered">
+          <tr>
+            <td>#{t.edit_feed.pshb_hub}</td>
+            <td>{{model.pshb_hub}}</td>
+          </tr>
+          <tr>
+            <td>#{t.edit_feed.pshb_topic}</td>
+            <td>{{model.pshb_topic}}</td>
+          </tr>
+          <tr>
+            <td>#{t.edit_feed.pshb_expiration}</td>
+            <td>{{model.pshb_expiration}}</td>
+          </tr>
+          <tr>
+            <td>#{t.edit_feed.pshb_status}</td>
+            <td>{{model.pshb}}</td>
+          </tr>
+        </table>
+      </div>
+    {{/if}}
+  </div>
+  <div class="modal-footer">
+    <button type="submit" id="saveFeedButton" class="btn btn-primary">
+      #{t.edit_feed.save}
+    </button>
+  </div>
+</form>
