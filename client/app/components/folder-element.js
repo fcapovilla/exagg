@@ -5,13 +5,17 @@ export default Ember.Component.extend({
 
   menuOpen: false,
 
-  active: Ember.computed('boundController.selectedElement', function() {
-    return this.get('boundController.selectedElement') === this.model;
+  active: Ember.computed('selectedElement', function() {
+    return this.get('selectedElement') === this.model;
   }),
 
   actions: {
     selectFolder() {
-      this.get('boundController').transitionToRoute('folder', this.model);
+      this.get('onSelect')(this.model);
+    },
+
+    editFolder() {
+      this.get('onEdit')(this.model);
     },
 
     toggleOpen() {
@@ -32,10 +36,6 @@ export default Ember.Component.extend({
     },
 
     markFolderUnread() {
-    },
-
-    editFolder() {
-      this.get('boundController').transitionToRoute('folder.edit', this.model);
     },
 
     deleteFolder() {

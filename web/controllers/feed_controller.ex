@@ -3,7 +3,7 @@ defmodule Exagg.FeedController do
 
   alias Exagg.Feed
 
-  plug :scrub_params, "feed" when action in [:create, :update]
+  plug :scrub_params, "data" when action in [:create, :update]
 
   def index(conn, %{"folder_id" => folder_id}) do
     feeds = Repo.all(from f in Feed, where: f.folder_id == ^folder_id)
@@ -15,7 +15,7 @@ defmodule Exagg.FeedController do
     render(conn, "index.json", feeds: feeds)
   end
 
-  def create(conn, %{"feed" => feed_params}) do
+  def create(conn, %{"data" => %{"type" => "feeds", "attributes" => feed_params}}) do
     changeset = Feed.changeset(%Feed{}, feed_params)
 
     case Repo.insert(changeset) do
@@ -36,7 +36,7 @@ defmodule Exagg.FeedController do
     render(conn, "show.json", feed: feed)
   end
 
-  def update(conn, %{"id" => id, "feed" => feed_params}) do
+  def update(conn, %{"id" => id, "data" => %{"type" => "feeds", "attributes" => feed_params}}) do
     feed = Repo.get!(Feed, id)
     changeset = Feed.changeset(feed, feed_params)
 

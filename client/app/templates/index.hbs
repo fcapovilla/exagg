@@ -58,7 +58,11 @@
         </div>
       </li>
       {{#each model as |folder|}}
-        {{folder-element model=folder boundController=controller}}
+        {{#folder-element model=folder onEdit=(action "editModel") onSelect=(action "selectModel") selectedElement=selectedElement}}
+          {{#each folder.feeds as |feed|}}
+            {{feed-element model=feed onEdit=(action "editModel") onSelect=(action "selectModel") selectedElement=selectedElement}}
+          {{/each}}
+        {{/folder-element}}
       {{/each}}
     </ul>
   </div>

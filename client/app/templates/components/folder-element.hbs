@@ -28,8 +28,6 @@
 {{/if}}
 {{#if model.open}}
   <ul class="list-unstyled">
-    {{#each model.feeds as |feed|}}
-      {{feed-element model=feed boundController=boundController}}
-    {{/each}}
+    {{yield}}
   </ul>
 {{/if}}

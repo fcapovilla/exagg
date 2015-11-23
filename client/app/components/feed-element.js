@@ -6,13 +6,17 @@ export default Ember.Component.extend({
 
   menuOpen : false,
 
-  active: Ember.computed('boundController.selectedElement', function() {
-    return this.get('boundController.selectedElement') === this.model;
+  active: Ember.computed('selectedElement', function() {
+    return this.get('selectedElement') === this.model;
   }),
 
   actions: {
     selectFeed() {
-      this.get('boundController').transitionToRoute('feed', this.model);
+      this.get('onSelect')(this.model);
+    },
+
+    editFeed() {
+      this.get('onEdit')(this.model);
     },
 
     openMenu() {
@@ -28,10 +32,6 @@ export default Ember.Component.extend({
     },
 
     markFeedUnread() {
-    },
-
-    editFeed() {
-      this.get('boundController').transitionToRoute('feed.edit', this.model);
     },
 
     deleteFeed() {
