@@ -10,8 +10,15 @@ defmodule Exagg.FeedController do
     render(conn, "index.json", feeds: feeds)
   end
 
-  def index(conn, _params) do
-    feeds = Repo.all(Feed)
+  def index(conn, params) do
+    query = from f in Feed
+    if params["filter"] do
+      query = Enum.reduce(params["filter"], query, fn {col, val}, query ->
+        from f in query, where: field(f, ^String.to_atom(col)) == ^val
+      end)
+    end
+
+    feeds = Repo.all(query)
     render(conn, "index.json", feeds: feeds)
   end
 

@@ -5,8 +5,15 @@ defmodule Exagg.FolderController do
 
   plug :scrub_params, "data" when action in [:create, :update]
 
-  def index(conn, _params) do
-    folders = Repo.all(Folder)
+  def index(conn, params) do
+    query = from f in Folder
+    if params["filter"] do
+      query = Enum.reduce(params["filter"], query, fn {col, val}, query ->
+        from f in query, where: field(f, ^String.to_atom(col)) == ^val
+      end)
+    end
+
+    folders = Repo.all(query)
     render(conn, "index.json", folders: folders)
   end
 

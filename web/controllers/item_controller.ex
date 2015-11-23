@@ -24,8 +24,15 @@ defmodule Exagg.ItemController do
     render(conn, "index.json", items: items)
   end
 
-  def index(conn, _params) do
-    items = Repo.all(Item)
+  def index(conn, params) do
+    query = from f in Item
+    if params["filter"] do
+      query = Enum.reduce(params["filter"], query, fn {col, val}, query ->
+        from i in query, where: field(i, ^String.to_atom(col)) == ^val
+      end)
+    end
+
+    items = Repo.all(query)
     render(conn, "index.json", items: items)
   end
 
