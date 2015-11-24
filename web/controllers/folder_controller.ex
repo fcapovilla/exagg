@@ -4,6 +4,7 @@ defmodule Exagg.FolderController do
   alias Exagg.Folder
 
   plug :scrub_params, "data" when action in [:create, :update]
+  plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, params) do
     query = from f in Folder
@@ -17,7 +18,7 @@ defmodule Exagg.FolderController do
     render(conn, "index.json", folders: folders)
   end
 
-  def create(conn, %{"data" => %{"type" => "folders", "attributes" => folder_params}}) do
+  def create(conn, %{"data" => folder_params}) do
     changeset = Folder.changeset(%Folder{}, folder_params)
 
     case Repo.insert(changeset) do
@@ -38,7 +39,7 @@ defmodule Exagg.FolderController do
     render(conn, "show.json", folder: folder)
   end
 
-  def update(conn, %{"id" => id, "data" => %{"type" => "folders", "attributes" => folder_params}}) do
+  def update(conn, %{"id" => id, "data" => folder_params}) do
     folder = Repo.get!(Folder, id)
     changeset = Folder.changeset(folder, folder_params)
 

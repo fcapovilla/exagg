@@ -5,6 +5,7 @@ defmodule Exagg.ItemController do
   alias Exagg.Feed
 
   plug :scrub_params, "data" when action in [:create, :update]
+  plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, %{"folder_id" => folder_id}) do
     items = Repo.all(
@@ -36,7 +37,7 @@ defmodule Exagg.ItemController do
     render(conn, "index.json", items: items)
   end
 
-  def create(conn, %{"data" => %{"type" => "items", "attributes" => item_params}}) do
+  def create(conn, %{"data" => item_params}) do
     changeset = Item.changeset(%Item{}, item_params)
 
     case Repo.insert(changeset) do
@@ -57,7 +58,7 @@ defmodule Exagg.ItemController do
     render(conn, "show.json", item: item)
   end
 
-  def update(conn, %{"id" => id, "data" => %{"type" => "items", "attributes" => item_params}}) do
+  def update(conn, %{"id" => id, "data" => item_params}) do
     item = Repo.get!(Item, id)
     changeset = Item.changeset(item, item_params)
 
