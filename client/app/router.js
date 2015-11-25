@@ -13,6 +13,7 @@ Router.map(function() {
     this.route('folder.edit', { resetNamespace: true, path: '/folder/:folder_id/edit' });
     this.route('feed', { resetNamespace: true, path: '/feed/:feed_id' });
     this.route('feed.edit', { resetNamespace: true, path: '/feed/:feed_id/edit' });
+    this.route('feed.new', { resetNamespace: true, path: '/feed/new' });
   });
 });
 

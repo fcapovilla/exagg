@@ -5,20 +5,8 @@
         <button class="btn btn-primary hidden-tiny-phone">
           <img id="spinner" class="invisible" src="img/ajax-loader.gif">
         </button>
-        <button class="btn btn-default" id="syncButton" title="Synchroniser">
-          <i class="fa fa-refresh"></i>
-        </button>
-        <button class="btn btn-default hidden-tiny-phone" id="toggleReadVisibility" title="Afficher/Cacher les items lus">
-          <i class="fa fa-eye"></i>
-        </button>
-        <button class="btn btn-default hidden-xs" id="toggleSearchFilters" title="Afficher/Cacher la barre de recherche">
-          <i class="fa fa-search"></i>
-        </button>
-        <button class="btn btn-default" id="subscriptionModalButton" title="Abonnement">
+        <button {{action "addFeed"}} class="btn btn-default" title="Abonnement">
           <i class="fa fa-plus"></i>
-        </button>
-        <button class="btn btn-default hidden-xs" id="settingsModalButton" title="Préférences">
-          <i class="fa fa-cog"></i>
         </button>
         <a class="btn btn-default" href="/logout" title="Déconnexion">
           <i class="fa fa-sign-out"></i>

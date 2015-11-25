@@ -24,6 +24,10 @@ export default Ember.Controller.extend({
 
     editModel(model) {
       this.transitionToRoute(model.get('constructor.modelName') + '.edit', model);
+    },
+
+    addFeed() {
+      this.transitionToRoute('feed.new');
     }
   }
 });

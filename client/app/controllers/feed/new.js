@@ -1,9 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-  folderTitle: function() {
-    return this.model.get('folder.title');
-  }.property('model.folder.title'),
+  folderTitle: "",
 
   actions: {
     saveFeed() {
