@@ -17,8 +17,8 @@ defmodule Exagg.Item do
     timestamps
   end
 
-  @required_fields ~w(title url guid read favorite date)
-  @optional_fields ~w(content orig_feed_title)
+  @required_fields ~w(guid read favorite)
+  @optional_fields ~w(title url content orig_feed_title date user_id feed_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

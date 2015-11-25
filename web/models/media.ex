@@ -11,7 +11,7 @@ defmodule Exagg.Media do
   end
 
   @required_fields ~w(type url)
-  @optional_fields ~w()
+  @optional_fields ~w(item_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

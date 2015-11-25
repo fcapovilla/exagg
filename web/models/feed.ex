@@ -16,8 +16,8 @@ defmodule Exagg.Feed do
     timestamps
   end
 
-  @required_fields ~w(title url last_sync unread_count)
-  @optional_fields ~w(sync_status favicon position)
+  @required_fields ~w(url)
+  @optional_fields ~w(title sync_status favicon position last_sync unread_count folder_id user_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

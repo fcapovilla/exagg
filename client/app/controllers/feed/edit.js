@@ -7,16 +7,21 @@ export default Ember.Controller.extend({
 
   actions: {
     saveFeed() {
-      this.store.queryRecord('folder', {filter: {title: this.get('folderTitle')}}).then(function(folder) {
-        if(folder === null) {
-          folder = this.store.createRecord('folder', {
-            title: this.get('folderTitle')
+      var that = this;
+      this.store.queryRecord('folder', {filter: {title: this.get('folderTitle')}}).then(function(folders) {
+        var folder = folders[0];
+
+        if(!folder) {
+          folder = that.store.createRecord('folder', {
+            title: that.get('folderTitle')
           });
         }
-        this.model.set('folder', folder);
-      });
 
-      this.model.save();
+        folder.save().then(function() {
+          that.model.set('folder', folder);
+          that.model.save();
+        });
+      });
     }
   }
 });

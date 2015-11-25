@@ -45,7 +45,6 @@ defmodule Exagg.FeedController do
   end
 
   def update(conn, %{"id" => id, "data" => feed_params}) do
-    IO.inspect feed_params
     feed = Repo.get!(Feed, id)
     changeset = Feed.changeset(feed, feed_params)
 

@@ -12,7 +12,7 @@ defmodule Exagg.Folder do
   end
 
   @required_fields ~w(title open)
-  @optional_fields ~w(position)
+  @optional_fields ~w(position user_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
