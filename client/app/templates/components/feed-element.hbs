@@ -17,9 +17,9 @@
 </div>
 {{#if menuOpen}}
   <div class="btn-group feedMenu">
-    <a {{action "markFeedRead"}} class="btn btn-default" title="Marquer comme lu"><i class="fa fa-eye"></i></a>
-    <a {{action "markFeedUnread"}} class="btn btn-default" title="Marquer comme non lu"><i class="fa fa-eye-slash"></i></a>
-    <a {{action "editFeed"}} class="btn btn-default" title="Modifier"><i class="fa fa-edit"></i></a>
-    <a {{action "deleteFeed"}} class="btn btn-default" title="Supprimer"><i class="fa fa-trash-o"></i></a>
+    <a {{action "markFeedRead"}} class="btn btn-default" title="{{t "feed.markRead"}}"><i class="fa fa-eye"></i></a>
+    <a {{action "markFeedUnread"}} class="btn btn-default" title="{{t "feed.markUnread"}}"><i class="fa fa-eye-slash"></i></a>
+    <a {{action "editFeed"}} class="btn btn-default" title="{{t "feed.edit"}}"><i class="fa fa-edit"></i></a>
+    <a {{action "deleteFeed"}} class="btn btn-default" title="{{t "feed.delete"}}"><i class="fa fa-trash-o"></i></a>
   </div>
 {{/if}}

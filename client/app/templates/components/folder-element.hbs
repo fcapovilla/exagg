@@ -20,10 +20,10 @@
 </div>
 {{#if menuOpen}}
   <div class="btn-group folderMenu">
-    <a {{action "markFolderRead"}} class="btn btn-default" title="Marquer comme lu"><i class="fa fa-eye"></i></a>
-    <a {{action "markFolderUnread"}} class="btn btn-default" title="Marquer comme non lu"><i class="fa fa-eye-slash"></i></a>
-    <a {{action "editFolder"}} class="btn btn-default" title="Modifier"><i class="fa fa-edit"></i></a>
-    <a {{action "deleteFolder"}} class="btn btn-default" title="Supprimer"><i class="fa fa-trash-o"></i></a>
+    <a {{action "markFolderRead"}} class="btn btn-default" title="{{t "folder.markRead"}}"><i class="fa fa-eye"></i></a>
+    <a {{action "markFolderUnread"}} class="btn btn-default" title="{{t "folder.markUnread"}}"><i class="fa fa-eye-slash"></i></a>
+    <a {{action "editFolder"}} class="btn btn-default" title="{{t "folder.edit"}}"><i class="fa fa-edit"></i></a>
+    <a {{action "deleteFolder"}} class="btn btn-default" title="{{t "folder.delete"}}"><i class="fa fa-trash-o"></i></a>
   </div>
 {{/if}}
 {{#if model.open}}

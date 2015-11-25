@@ -2,12 +2,12 @@
 
 <form id="editFolderForm" {{action "saveFolder" on="submit"}}>
   <div class="modal-body">
-    <label for="folderTitle">#{t.edit_folder.title_label}</label>
+    <label for="folderTitle">{{t "folder.title"}}</label>
     {{input type="text" class="form-control" id="folderTitle" value=model.title}}
   </div>
   <div class="modal-footer">
     <button type="submit" id="saveFolderButton" class="btn btn-primary">
-      #{t.edit_feed.save}
+      {{t "save"}}
     </button>
   </div>
 </form>

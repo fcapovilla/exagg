@@ -1,14 +1,14 @@
 <h1>Add feed</h1>
 <form id="addFeedForm" {{action "saveFeed" on="submit"}}>
   <div class="modal-body">
-    <label for="feedUrl">#{t.edit_feed.url}</label>
+    <label for="feedUrl">{{t "feed.url"}}</label>
     {{input type="text" class="form-control" id="feedUrl" value=model.url}}
-    <label for="feedFolder">#{t.edit_feed.folder}</label>
+    <label for="feedFolder">{{t "feed.folder"}}</label>
     {{input type="text" class="form-control" id="feedFolder" value=folderTitle}}
   </div>
   <div class="modal-footer">
     <button type="submit" id="saveFeedButton" class="btn btn-primary">
-      #{t.edit_feed.save}
+      {{t "save"}}
     </button>
   </div>
 </form>

@@ -5,18 +5,18 @@
         <button class="btn btn-primary hidden-tiny-phone">
           <img id="spinner" class="invisible" src="img/ajax-loader.gif">
         </button>
-        <button {{action "addFeed"}} class="btn btn-default" title="Abonnement">
+        <button {{action "addFeed"}} class="btn btn-default" title="{{t "addFeed"}}">
           <i class="fa fa-plus"></i>
         </button>
-        <a class="btn btn-default" href="/logout" title="Déconnexion">
+        <a class="btn btn-default" href="/logout" title="{{t "logOut"}}">
           <i class="fa fa-sign-out"></i>
         </a>
       </div>
       <div class="btn-group mobile-item-buttons">
-        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobilePrevItem" title="Suivant">
+        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobilePrevItem" title="{{t "next"}}">
           <i class="fa fa-arrow-circle-o-up"></i>
         </button>
-        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobileNextItem" title="Précédent">
+        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobileNextItem" title="{{t "previous"}}">
           <i class="fa fa-arrow-circle-o-down"></i>
         </button>
       </div>
@@ -33,7 +33,7 @@
 
           <div  class="folder-text">
             <i class="folder-icon fa fa-asterisk"></i>
-            Tous les items
+            {{t "allItems"}}
           </div>
         </div>
       </li>
@@ -41,7 +41,7 @@
         <div {{action "selectFavorites"}} class="folder-title {{if favoritesSelected "active"}}">
           <div class="folder-text">
             <i class="folder-icon fa fa-star"></i>
-            Favoris
+            {{t "favorites"}}
           </div>
         </div>
       </li>
