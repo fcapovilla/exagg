@@ -4,9 +4,10 @@ defmodule Exagg.FolderView do
   alias Exagg.Repo
 
   def render("index.json", params = %{folders: folders}) do
-    data = render_many(folders, Exagg.FolderView, "folder.json", %{sideload: params.sideload})
+    sideload = Map.get(params, :sideload, false)
+    data = render_many(folders, Exagg.FolderView, "folder.json", %{sideload: sideload})
 
-    if params.sideload do
+    if sideload do
       data = data ++ Enum.map(folders, fn folder ->
         render_many(folder.feeds, Exagg.FeedView, "feed.json")
       end)
@@ -41,7 +42,8 @@ defmodule Exagg.FolderView do
       }
     }
 
-    if params.sideload do
+    sideload = Map.get(params, :sideload, false)
+    if sideload do
       relation_data = %{data: Enum.map(folder.feeds, fn feed -> %{type: "feeds", id: feed.id} end)}
       data.relationships.feeds
       |> update_in(&Map.merge(&1, relation_data))

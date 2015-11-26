@@ -9,6 +9,12 @@ export default Ember.Controller.extend({
     return this.get('selectedElement') === 'items';
   }),
 
+  totalUnreadCount: Ember.computed('model.@each.unreadCount', function() {
+    return this.model.reduce(function(acc, folder) {
+      return acc + folder.get('unreadCount');
+    }, 0);
+  }),
+
   actions: {
     selectFavorites() {
       this.transitionToRoute('favorites');
