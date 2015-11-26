@@ -1,4 +1,6 @@
 defmodule Exagg.Syncer do
+  require Logger
+
   alias Exagg.Feed
   alias Exagg.Item
   alias Exagg.Repo
@@ -7,13 +9,13 @@ defmodule Exagg.Syncer do
   import Pipe
   import Paratize.Pool
 
-  def sync do
-    parallel_each(Repo.all(Feed), &sync_feed(&1), timeout: 30000)
+  def sync_all do
+    Repo.all(Feed) |> parallel_each(&sync_feed(&1), timeout: 15000)
     %{sync: "ok"}
   end
 
   # Update items for the feed in parameter.
-  defp sync_feed(feed) do
+  def sync_feed(feed) do
     parsed_feed = fetch_data(feed.url) |> parse_feed
 
     # Update feed items
@@ -39,10 +41,13 @@ defmodule Exagg.Syncer do
   # Fetch data from the URL in parameter.
   # Return an empty string on error.
   defp fetch_data(url) do
+    Logger.debug "Fetching " <> url
     HTTPoison.start
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{body: body}} -> body
-      {:error, _} -> ""
+      _ ->
+        Logger.error "Error fetching " <> url
+        ""
     end
   end
 

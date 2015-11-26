@@ -32,3 +32,12 @@ config :phoenix, :generators,
 config :plug, :mimes, %{
   "application/vnd.api+json" => ["json-api"]
 }
+
+# Quantum scheduled tasks
+config :quantum, cron: [
+  sync: [
+    schedule: "*/5 * * * *",
+    task: {Exagg.Syncer, :sync_all},
+    overlap: false
+  ]
+]

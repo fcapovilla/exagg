@@ -3,7 +3,7 @@ defmodule Exagg.Repo.Migrations.CreateFolder do
 
   def change do
     create table(:folders) do
-      add :title, :string
+      add :title, :text
       add :open, :boolean, default: false
       add :position, :integer
       add :user_id, references(:users)

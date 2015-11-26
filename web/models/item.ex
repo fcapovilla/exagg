@@ -30,4 +30,17 @@ defmodule Exagg.Item do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  before_insert :truncate, [:guid, 255]
+  before_update :truncate, [:guid, 255]
+  def truncate(changeset, field, size) do
+    import Ecto.Changeset
+
+    value = get_field(changeset, field)
+    if String.length(value) > size do
+      put_change(changeset, field, String.slice(value, 1..size))
+    else
+      changeset
+    end
+  end
 end

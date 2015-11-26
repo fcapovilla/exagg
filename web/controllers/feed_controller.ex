@@ -28,6 +28,8 @@ defmodule Exagg.FeedController do
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
+        Exagg.Syncer.sync_feed(feed)
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", feed_path(conn, :show, feed))

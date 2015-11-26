@@ -3,11 +3,11 @@ defmodule Exagg.Repo.Migrations.CreateFeed do
 
   def change do
     create table(:feeds) do
-      add :title, :string
+      add :title, :text
       add :url, :string, size: 2000
       add :last_sync, :datetime
       add :unread_count, :integer
-      add :sync_status, :string
+      add :sync_status, :text
       add :favicon, :binary
       add :position, :integer
       add :user_id, references(:users)
