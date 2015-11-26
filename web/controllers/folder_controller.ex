@@ -7,7 +7,7 @@ defmodule Exagg.FolderController do
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, params) do
-    query = from f in Folder
+    query = from f in Folder, join: fd in assoc(f, :feeds), preload: [feeds: fd]
     if params["filter"] do
       query = Enum.reduce(params["filter"], query, fn {col, val}, query ->
         from f in query, where: field(f, ^String.to_atom(col)) == ^val
@@ -15,7 +15,7 @@ defmodule Exagg.FolderController do
     end
 
     folders = Repo.all(query)
-    render(conn, "index.json", folders: folders)
+    render(conn, "index.json", folders: folders, sideload: true)
   end
 
   def create(conn, %{"data" => folder_params}) do

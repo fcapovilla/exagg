@@ -15,9 +15,9 @@ defmodule Exagg.FeedView do
       attributes: %{
         title: feed.title,
         url: feed.url,
-        last_sync: feed.last_sync,
-        unread_count: feed.unread_count,
-        sync_status: feed.sync_status,
+        "last-sync": feed.last_sync,
+        "unread-count": feed.unread_count,
+        "sync-status": feed.sync_status,
         favicon: feed.favicon,
         position: feed.position,
       },

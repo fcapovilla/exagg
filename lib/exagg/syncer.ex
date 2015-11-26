@@ -5,6 +5,8 @@ defmodule Exagg.Syncer do
   alias Exagg.Item
   alias Exagg.Repo
 
+  import Ecto.Query, only: [from: 2]
+
   use Timex
   import Pipe
   import Paratize.Pool
@@ -36,6 +38,12 @@ defmodule Exagg.Syncer do
         end
       end
     end)
+
+    # Update feed unread count
+    Repo.transaction fn ->
+      count = Repo.one(from i in Item, where: i.feed_id == ^feed.id and i.read == false, select: count(i.id))
+      Repo.update!(Feed.changeset(feed, %{unread_count: count}))
+    end
   end
 
   # Fetch data from the URL in parameter.

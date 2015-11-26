@@ -20,7 +20,7 @@ defmodule Exagg.ItemView do
         read: item.read,
         favorite: item.favorite,
         date: item.date,
-        orig_feed_title: item.orig_feed_title,
+        "orig-feed-title": item.orig_feed_title,
       },
       relationships: %{
         feed: %{
