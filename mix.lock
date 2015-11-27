@@ -12,6 +12,7 @@
   "httpotion": {:hex, :httpotion, "2.1.0"},
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "ea3305d21f37eced4fac290f64b068e56df7de80", [tag: "v4.1.2"]},
   "idna": {:hex, :idna, "1.0.2"},
+  "inflex": {:hex, :inflex, "1.5.0"},
   "mimerl": {:hex, :mimerl, "1.0.0"},
   "parallel": {:hex, :parallel, "0.0.2"},
   "paratize": {:hex, :paratize, "2.1.1"},

@@ -1,14 +1,28 @@
 defmodule Exagg.ItemView do
   use Exagg.Web, :view
 
+  def render("index.json", %{items: items, sideload: sideload}) do
+    %{data: render_many(items, Exagg.ItemView, "item.json", %{sideload: sideload}),
+      included: sideload_relations([], items, sideload)
+    }
+  end
   def render("index.json", %{items: items}) do
     %{data: render_many(items, Exagg.ItemView, "item.json")}
   end
 
+  def render("show.json", %{item: item, sideload: sideload}) do
+    %{data: render_one(item, Exagg.ItemView, "item.json", %{sideload: sideload}),
+      included: sideload_relations([], [item], sideload)
+    }
+  end
   def render("show.json", %{item: item}) do
     %{data: render_one(item, Exagg.ItemView, "item.json")}
   end
 
+  def render("item.json", %{item: item, sideload: sideload}) do
+    render("item.json", %{item: item})
+    |> insert_relationships(item, sideload)
+  end
   def render("item.json", %{item: item}) do
     %{type: "items",
       id: item.id,

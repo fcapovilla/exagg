@@ -59,12 +59,20 @@ defmodule Exagg.ItemController do
   end
 
   def update(conn, %{"id" => id, "data" => item_params}) do
-    item = Repo.get!(Item, id)
+    item = Repo.get!((from i in Item, join: f in assoc(i, :feed), preload: [feed: f]), id)
     changeset = Item.changeset(item, item_params)
 
     case Repo.update(changeset) do
       {:ok, item} ->
-        render(conn, "show.json", item: item)
+        # Update feed unread count
+        {:ok, feed} = Repo.transaction fn ->
+          feed = item.feed
+          count = Repo.one(from i in Item, where: i.feed_id == ^feed.id and i.read == false, select: count(i.id))
+          Repo.update!(Feed.changeset(feed, %{unread_count: count}))
+        end
+        item = %{item | feed: feed}
+
+        render(conn, "show.json", item: item, sideload: [:feed])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

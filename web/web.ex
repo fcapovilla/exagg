@@ -48,6 +48,7 @@ defmodule Exagg.Web do
       use Phoenix.HTML
 
       import Exagg.Router.Helpers
+      import Exagg.JsonApiViewHelper
     end
   end
 

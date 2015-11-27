@@ -15,7 +15,7 @@ defmodule Exagg.FolderController do
     end
 
     folders = Repo.all(query)
-    render(conn, "index.json", folders: folders, sideload: true)
+    render(conn, "index.json", folders: folders, sideload: [:feeds])
   end
 
   def create(conn, %{"data" => folder_params}) do
