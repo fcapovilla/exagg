@@ -16,16 +16,13 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-    selectFavorites() {
-      this.transitionToRoute('favorites');
-    },
-
-    selectItems() {
-      this.transitionToRoute('items');
-    },
-
     selectModel(model) {
-      this.transitionToRoute(model.get('constructor.modelName'), model);
+      if(typeof model === 'string') {
+        this.transitionToRoute(model);
+      }
+      else {
+        this.transitionToRoute(model.get('constructor.modelName'), model.get('id'));
+      }
     },
 
     editModel(model) {

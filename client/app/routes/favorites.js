@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model() {
-    return this.store.query('item', {filter: {favorite: true}});
+    return this.store.query('item', {filter: {favorite: true}, limit: 20});
   },
 
   setupController(controller, model) {

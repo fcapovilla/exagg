@@ -7,21 +7,23 @@ defmodule Exagg.ItemController do
   plug :scrub_params, "data" when action in [:create, :update]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
-  def index(conn, %{"folder_id" => folder_id}) do
-    items = Repo.all(
+  def index(conn, params = %{"folder_id" => folder_id}) do
+    query =
       from i in Item,
       join: f in Feed, on: i.feed_id == f.id,
       where: f.folder_id == ^folder_id,
       select: i
-    )
+    if params["limit"] do query = from i in query, limit: ^params["limit"] end
+    items = Repo.all(query)
     render(conn, "index.json", items: items)
   end
 
-  def index(conn, %{"feed_id" => feed_id}) do
-    items = Repo.all(
+  def index(conn, params = %{"feed_id" => feed_id}) do
+    query =
       from i in Item,
       where: i.feed_id == ^feed_id
-    )
+    if params["limit"] do query = from i in query, limit: ^params["limit"] end
+    items = Repo.all(query)
     render(conn, "index.json", items: items)
   end
 
@@ -32,6 +34,7 @@ defmodule Exagg.ItemController do
         from i in query, where: field(i, ^String.to_atom(col)) == ^val
       end)
     end
+    if params["limit"] do query = from i in query, limit: ^params["limit"] end
 
     items = Repo.all(query)
     render(conn, "index.json", items: items)

@@ -36,7 +36,7 @@ config :plug, :mimes, %{
 # Quantum scheduled tasks
 config :quantum, cron: [
   sync: [
-    schedule: "*/5 * * * *",
+    schedule: "*/30 * * * *",
     task: {Exagg.Syncer, :sync_all},
     overlap: false
   ]
