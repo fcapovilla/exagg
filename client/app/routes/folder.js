@@ -11,5 +11,9 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     this._super(controller, model.items);
     this.controllerFor('index').set('selectedElement', model.folder);
+  },
+
+  renderTemplate: function() {
+    this.render('item-list');
   }
 });

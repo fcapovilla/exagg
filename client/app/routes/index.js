@@ -2,6 +2,8 @@ import Ember from 'ember';
 import KeyboardShortcuts from 'ember-keyboard-shortcuts/mixins/route';
 
 export default Ember.Route.extend(KeyboardShortcuts,{
+  selectedItem: null,
+
   model() {
     return this.store.findAll('folder');
   },
@@ -49,6 +51,13 @@ export default Ember.Route.extend(KeyboardShortcuts,{
       if(nextElement) {
         this.controller.send('selectModel', nextElement);
       }
+    },
+
+    selectItem(item) {
+      if(this.get('selectedItem') !== null && this.get('selectedItem') !== item) {
+        this.get('selectedItem').set('open', false);
+      }
+      this.set('selectedItem', item);
     }
   }
 

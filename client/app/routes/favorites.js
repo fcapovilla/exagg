@@ -8,5 +8,9 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
     this.controllerFor('index').set('selectedElement', 'favorites');
+  },
+
+  renderTemplate: function() {
+    this.render('item-list');
   }
 });

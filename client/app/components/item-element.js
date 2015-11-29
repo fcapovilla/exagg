@@ -20,7 +20,7 @@ export default Ember.Component.extend({
       this.set('open', !this.get('open'));
 
       if(this.get('open')) {
-        this.get('onSelect')(this);
+        this.sendAction('onSelect', this);
       }
 
       this.model.set('read', true);
