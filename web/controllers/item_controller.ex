@@ -11,10 +11,8 @@ defmodule Exagg.ItemController do
     query =
       from i in Item,
       join: f in Feed, on: i.feed_id == f.id,
-      where: f.folder_id == ^folder_id,
-      select: i
-    if params["limit"] do query = from i in query, limit: ^params["limit"] end
-    items = Repo.all(query)
+      where: f.folder_id == ^folder_id
+    items = Repo.all(query |> paginate(params) |> filter(params))
     render(conn, "index.json", items: items)
   end
 
@@ -22,21 +20,13 @@ defmodule Exagg.ItemController do
     query =
       from i in Item,
       where: i.feed_id == ^feed_id
-    if params["limit"] do query = from i in query, limit: ^params["limit"] end
-    items = Repo.all(query)
+    items = Repo.all(query |> paginate(params) |> filter(params))
     render(conn, "index.json", items: items)
   end
 
   def index(conn, params) do
-    query = from f in Item
-    if params["filter"] do
-      query = Enum.reduce(params["filter"], query, fn {col, val}, query ->
-        from i in query, where: field(i, ^String.to_atom(col)) == ^val
-      end)
-    end
-    if params["limit"] do query = from i in query, limit: ^params["limit"] end
-
-    items = Repo.all(query)
+    query = from i in Item
+    items = Repo.all(query |> paginate(params) |> filter(params))
     render(conn, "index.json", items: items)
   end
 
@@ -91,5 +81,25 @@ defmodule Exagg.ItemController do
     Repo.delete!(item)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp paginate(query, params) do
+    if params["limit"] do query = from i in query, limit: ^params["limit"] end
+    if params["offset"] do query = from i in query, offset: ^params["offset"] end
+    query
+  end
+
+  defp filter(query, params) do
+    case params["filter"] do
+      nil -> query
+      filters ->
+        Enum.reduce(filters, query, fn {col, val}, query ->
+          from i in query, where: field(i, ^String.to_atom(col)) == ^val
+        end)
+    end
+  end
+
+  defp count(query) do
+    from i in query, select: count(i.id)
   end
 end
