@@ -3,7 +3,9 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   tagName: 'li',
 
-  open: false,
+  open: Ember.computed('selectedItem', function() {
+    return this.get('selectedItem') === this.model;
+  }),
 
   actions: {
     toggleFavorite() {
@@ -17,15 +19,11 @@ export default Ember.Component.extend({
     },
 
     toggleOpen() {
-      this.set('open', !this.get('open'));
-
       if(this.get('open')) {
-        this.sendAction('onSelect', this);
+        this.sendAction('onSelect', null);
       }
-
-      this.model.set('read', true);
-      if(this.model.get('hasDirtyAttributes')) {
-        this.model.save();
+      else {
+        this.sendAction('onSelect', this.model);
       }
     },
   }

@@ -5,12 +5,14 @@ export default Ember.Route.extend({
     return this.store.query('item', {limit: 20});
   },
 
-  setupController(controller, model) {
-    this._super(controller, model);
+  setupController() {
     this.controllerFor('index').set('selectedElement', 'items');
   },
 
-  renderTemplate: function() {
-    this.render('item-list');
+  renderTemplate: function(controller, model) {
+    this.render('item-list', {
+      controller: 'itemList',
+      model: model
+    });
   }
 });

@@ -2,7 +2,7 @@
   <div>
     <ul class="item-list list-unstyled">
       {{#each model as |item|}}
-        {{item-element model=item onSelect="selectItem"}}
+        {{item-element model=item onSelect="selectItem" selectedItem=selectedItem}}
       {{/each}}
     </ul>
   </div>

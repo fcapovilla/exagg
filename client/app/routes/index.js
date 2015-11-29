@@ -2,16 +2,14 @@ import Ember from 'ember';
 import KeyboardShortcuts from 'ember-keyboard-shortcuts/mixins/route';
 
 export default Ember.Route.extend(KeyboardShortcuts,{
-  selectedItem: null,
-
   model() {
     return this.store.findAll('folder');
   },
 
   keyboardShortcuts: {
     'h' : 'previousFeed',
-    'j' : 'previousItem',
-    'k' : 'nextItem',
+    'j' : 'nextItem',
+    'k' : 'previousItem',
     'l' : 'nextFeed',
   },
 
@@ -39,9 +37,11 @@ export default Ember.Route.extend(KeyboardShortcuts,{
     },
 
     previousItem() {
+      this.controllerFor('itemList').send('previousItem');
     },
 
     nextItem() {
+      this.controllerFor('itemList').send('nextItem');
     },
 
     nextFeed() {
@@ -51,13 +51,6 @@ export default Ember.Route.extend(KeyboardShortcuts,{
       if(nextElement) {
         this.controller.send('selectModel', nextElement);
       }
-    },
-
-    selectItem(item) {
-      if(this.get('selectedItem') !== null && this.get('selectedItem') !== item) {
-        this.get('selectedItem').set('open', false);
-      }
-      this.set('selectedItem', item);
     }
   }
 
