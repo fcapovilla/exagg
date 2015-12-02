@@ -4,7 +4,7 @@
       {{#each model as |item|}}
         {{item-element model=item onSelect="selectItem" selectedItem=selectedItem}}
       {{/each}}
-      {{infinity-loader infinityModel=model loadedText=""}}
+      {{infinity-loader infinityModel=model loadingText=(t "loading") loadedText=""}}
     </ul>
   </div>
 </div>

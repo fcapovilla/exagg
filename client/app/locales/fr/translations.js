@@ -29,5 +29,6 @@ export default {
   'next': 'Suivant',
   'previous': 'Précédent',
   'allItems': 'Tous les items',
-  'favorites': 'Favoris'
+  'favorites': 'Favoris',
+  'loading': 'Chargement...'
 };
