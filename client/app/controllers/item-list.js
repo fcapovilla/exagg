@@ -3,6 +3,9 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   selectedItem: null,
 
+  itemsSorting: ['date:desc'],
+  sortedItems: Ember.computed.sort('model', 'itemsSorting'),
+
   actions: {
     selectItem(item) {
       this.set('selectedItem', item);
