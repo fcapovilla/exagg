@@ -12,22 +12,22 @@ defmodule Exagg.ItemController do
       from i in Item,
       join: f in Feed, on: i.feed_id == f.id,
       where: f.folder_id == ^folder_id
-    items = Repo.all(query |> paginate(params) |> filter(params))
-    render(conn, "index.json", items: items)
+    page = query |> filter(params) |> Repo.paginate(params)
+    render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
   def index(conn, params = %{"feed_id" => feed_id}) do
     query =
       from i in Item,
       where: i.feed_id == ^feed_id
-    items = Repo.all(query |> paginate(params) |> filter(params))
-    render(conn, "index.json", items: items)
+    page = query |> filter(params) |> Repo.paginate(params)
+    render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
   def index(conn, params) do
     query = from i in Item
-    items = Repo.all(query |> paginate(params) |> filter(params))
-    render(conn, "index.json", items: items)
+    page = query |> filter(params) |> Repo.paginate(params)
+    render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
   def create(conn, %{"data" => item_params}) do
@@ -81,12 +81,6 @@ defmodule Exagg.ItemController do
     Repo.delete!(item)
 
     send_resp(conn, :no_content, "")
-  end
-
-  defp paginate(query, params) do
-    if params["limit"] do query = from i in query, limit: ^params["limit"] end
-    if params["offset"] do query = from i in query, offset: ^params["offset"] end
-    query
   end
 
   defp filter(query, params) do

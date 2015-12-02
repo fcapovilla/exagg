@@ -1,11 +1,18 @@
 defmodule Exagg.ItemView do
   use Exagg.Web, :view
 
+  # Add total_pages metadata to data
+  def render("index.json", params = %{total_pages: total_pages}) do
+    %{meta: %{total_pages: total_pages}}
+    |> Map.merge(render("index.json", Map.delete(params, :total_pages)))
+  end
+
   def render("index.json", %{items: items, sideload: sideload}) do
     %{data: render_many(items, Exagg.ItemView, "item.json", %{sideload: sideload}),
       included: sideload_relations([], items, sideload)
     }
   end
+
   def render("index.json", %{items: items}) do
     %{data: render_many(items, Exagg.ItemView, "item.json")}
   end
@@ -15,6 +22,7 @@ defmodule Exagg.ItemView do
       included: sideload_relations([], [item], sideload)
     }
   end
+
   def render("show.json", %{item: item}) do
     %{data: render_one(item, Exagg.ItemView, "item.json")}
   end

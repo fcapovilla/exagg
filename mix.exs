@@ -42,6 +42,7 @@ defmodule Exagg.Mixfile do
      {:quantum, ">= 1.6.0"},
      {:phoenix_html, "~> 2.1"},
      {:inflex, "~> 1.5.0"},
+     {:scrivener, "~> 1.0"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"}]
   end

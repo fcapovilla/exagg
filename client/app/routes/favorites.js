@@ -1,11 +1,15 @@
 import Ember from 'ember';
+import InfinityRoute from 'ember-infinity/mixins/route';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(InfinityRoute, {
+  perPageParam: "page_size",
+
   model() {
-    return this.store.query('item', {filter: {favorite: true}, limit: 20});
+    return this.infinityModel('item', {perPage: 20, startingPage: 1, filter: {favorite: true}});
   },
 
-  setupController() {
+  setupController(controller, model) {
+    this._super(controller, model);
     this.controllerFor('index').set('selectedElement', 'favorites');
   },
 
