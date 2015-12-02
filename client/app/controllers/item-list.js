@@ -8,17 +8,25 @@ export default Ember.Controller.extend({
 
   actions: {
     selectItem(item) {
+      var selected = this.get('selectedItem');
+      if(selected) {
+        selected.set('open', false);
+      }
+
       this.set('selectedItem', item);
 
-      item.set('read', true);
-      if(item.get('hasDirtyAttributes')) {
-        item.save();
+      if(item !== null && selected !== item) {
+        item.set('open', true);
+        item.set('read', true);
+        if(item.get('hasDirtyAttributes')) {
+          item.save();
+        }
       }
     },
 
     nextItem() {
       var selected = this.get('selectedItem');
-      var itemList = this.model.toArray();
+      var itemList = this.get('sortedItems');
       var item = itemList[itemList.indexOf(selected)+1];
       if(item) {
         this.send('selectItem', item);
@@ -27,7 +35,7 @@ export default Ember.Controller.extend({
 
     previousItem() {
       var selected = this.get('selectedItem');
-      var itemList = this.model.toArray();
+      var itemList = this.get('sortedItems');
       var item = itemList[itemList.indexOf(selected)-1];
       if(item) {
         this.send('selectItem', item);

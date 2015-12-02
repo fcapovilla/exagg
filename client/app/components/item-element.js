@@ -4,10 +4,6 @@ import momentFormat from 'ember-moment/computeds/format';
 export default Ember.Component.extend({
   tagName: 'li',
 
-  open: Ember.computed('selectedItem', function() {
-    return this.get('selectedItem') === this.model;
-  }),
-
   formattedDate: momentFormat('model.date', 'DD/MM/YYYY hh:mm'),
 
   actions: {
@@ -22,7 +18,7 @@ export default Ember.Component.extend({
     },
 
     toggleOpen() {
-      if(this.get('open')) {
+      if(this.model.get('open')) {
         this.sendAction('onSelect', null);
       }
       else {

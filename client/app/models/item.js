@@ -10,4 +10,6 @@ export default DS.Model.extend({
   date: DS.attr('date'),
   origFeedTitle: DS.attr('string'),
   feed: DS.belongsTo('feed', {async: true}),
+
+  open: false
 });

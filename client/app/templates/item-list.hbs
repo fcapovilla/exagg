@@ -2,7 +2,7 @@
   <div>
     <ul class="item-list list-unstyled">
       {{#each sortedItems as |item|}}
-        {{item-element model=item onSelect="selectItem" selectedItem=selectedItem}}
+        {{item-element model=item onSelect="selectItem"}}
       {{/each}}
       {{infinity-loader infinityModel=model loadingText=(t "loading") loadedText=""}}
     </ul>
