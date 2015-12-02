@@ -12,7 +12,7 @@ defmodule Exagg.ItemController do
       from i in Item,
       join: f in Feed, on: i.feed_id == f.id,
       where: f.folder_id == ^folder_id
-    page = query |> filter(params) |> Repo.paginate(params)
+    page = query |> filter(params) |> order(params) |> Repo.paginate(params)
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
@@ -20,13 +20,13 @@ defmodule Exagg.ItemController do
     query =
       from i in Item,
       where: i.feed_id == ^feed_id
-    page = query |> filter(params) |> Repo.paginate(params)
+    page = query |> filter(params) |> order(params) |> Repo.paginate(params)
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
   def index(conn, params) do
     query = from i in Item
-    page = query |> filter(params) |> Repo.paginate(params)
+    page = query |> filter(params) |> order(params) |> Repo.paginate(params)
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
@@ -93,7 +93,7 @@ defmodule Exagg.ItemController do
     end
   end
 
-  defp count(query) do
-    from i in query, select: count(i.id)
+  defp order(query, params) do
+    from i in query, order_by: [desc: i.date]
   end
 end

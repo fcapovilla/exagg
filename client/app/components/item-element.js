@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import momentFormat from 'ember-moment/computeds/format';
 
 export default Ember.Component.extend({
   tagName: 'li',
@@ -6,6 +7,8 @@ export default Ember.Component.extend({
   open: Ember.computed('selectedItem', function() {
     return this.get('selectedItem') === this.model;
   }),
+
+  formattedDate: momentFormat('model.date', 'DD/MM/YYYY hh:mm'),
 
   actions: {
     toggleFavorite() {
