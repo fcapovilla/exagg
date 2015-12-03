@@ -1,6 +1,20 @@
 import Ember from 'ember';
+import ResizeAware from 'ember-resize/mixins/resize-aware';
 
-export default Ember.Controller.extend({
+export default Ember.Component.extend(ResizeAware, {
+  debouncedDidResize() {
+    var feedlist = this.$('.feed-list');
+    feedlist.css('height', Ember.$(window).height() - feedlist.position().top);
+  },
+
+  init() {
+    this._super();
+
+    Ember.run.scheduleOnce('afterRender', this, function() {
+      this.get('resizeService').trigger('debouncedDidResize');
+    });
+  },
+
   favoritesSelected: Ember.computed('selectedElement', function() {
     return this.get('selectedElement') === 'favorites';
   }),
@@ -18,19 +32,15 @@ export default Ember.Controller.extend({
   actions: {
     selectModel(model) {
       if(typeof model === 'string') {
-        this.transitionToRoute(model);
+        this.sendAction('onSelect', model);
       }
       else {
-        this.transitionToRoute(model.get('constructor.modelName'), model.get('id'));
+        this.sendAction('onSelect', model);
       }
     },
 
     editModel(model) {
-      this.transitionToRoute(model.get('constructor.modelName') + '.edit', model);
-    },
-
-    addFeed() {
-      this.transitionToRoute('feed.new');
+      this.sendAction('onEdit', model);
     }
   }
 });

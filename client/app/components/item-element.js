@@ -6,6 +6,16 @@ export default Ember.Component.extend({
 
   formattedDate: momentFormat('model.date', 'DD/MM/YYYY hh:mm'),
 
+  openChanged: Ember.observer('model.open', function() {
+    if(this.model.get('open')) {
+      Ember.run.scheduleOnce('afterRender', this, function() {
+        var list = Ember.$('#item-list').eq(0);
+        var elem = this.$(this.get('element'));
+        list.scrollTop(elem.position().top + list.scrollTop());
+      });
+    }
+  }),
+
   actions: {
     toggleFavorite() {
       this.model.set('favorite', !this.model.get('favorite'));

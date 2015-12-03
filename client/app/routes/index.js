@@ -8,8 +8,6 @@ export default Ember.Route.extend(KeyboardShortcuts,{
 
   keyboardShortcuts: {
     'h' : 'previousFeed',
-    'j' : 'nextItem',
-    'k' : 'previousItem',
     'l' : 'nextFeed',
   },
 
@@ -32,16 +30,8 @@ export default Ember.Route.extend(KeyboardShortcuts,{
       var flatlist = this.get('flatList');
       var nextElement = flatlist[flatlist.indexOf(selected)-1];
       if(nextElement) {
-        this.controller.send('selectModel', nextElement);
+        this.send('selectFeed', nextElement);
       }
-    },
-
-    previousItem() {
-      this.controllerFor('itemList').send('previousItem');
-    },
-
-    nextItem() {
-      this.controllerFor('itemList').send('nextItem');
     },
 
     nextFeed() {
@@ -49,8 +39,25 @@ export default Ember.Route.extend(KeyboardShortcuts,{
       var flatlist = this.get('flatList');
       var nextElement = flatlist[flatlist.indexOf(selected)+1];
       if(nextElement) {
-        this.controller.send('selectModel', nextElement);
+        this.send('selectFeed', nextElement);
       }
+    },
+
+    selectFeed(model) {
+      if(typeof model === 'string') {
+        this.transitionTo(model);
+      }
+      else {
+        this.transitionTo(model.get('constructor.modelName'), model.get('id'));
+      }
+    },
+
+    editFeed(model) {
+      this.transitionTo(model.get('constructor.modelName') + '.edit', model.get('id'));
+    },
+
+    addFeed() {
+      this.transitionTo('feed.new');
     }
   }
 

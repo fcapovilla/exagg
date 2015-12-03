@@ -15,14 +15,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
   renderTemplate: function(controller, model) {
     this.render('item-list', {
-      controller: 'itemList',
       model: model
     });
-  },
-
-  actions: {
-    didTransition() {
-      this.controllerFor('item-list').send('selectItem', null);
-    }
   }
 });
