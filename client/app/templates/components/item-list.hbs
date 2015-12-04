@@ -5,6 +5,6 @@
         {{item-element model=item onSelect="selectItem"}}
       {{/each}}
     </ul>
+    {{infinity-loader infinityModel=model loadingText=(t "loading") loadedText=""}}
   </div>
-  {{infinity-loader infinityModel=model loadingText=(t "loading") loadedText="" scrollable="#item-list"}}
 </div>

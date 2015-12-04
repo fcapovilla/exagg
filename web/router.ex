@@ -17,8 +17,6 @@ defmodule Exagg.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    post "/opml_upload", PageController, :opml_upload
-    get "/sync", PageController, :sync
 
     resources "/users", UserController
   end
@@ -35,5 +33,8 @@ defmodule Exagg.Router do
     end
     resources "/items", ItemController do
     end
+
+    post "/opml_upload", SettingsController, :opml_upload
+    get "/sync", SettingsController, :sync
   end
 end

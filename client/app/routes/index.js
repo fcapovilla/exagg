@@ -58,6 +58,10 @@ export default Ember.Route.extend(KeyboardShortcuts,{
 
     addFeed() {
       this.transitionTo('feed.new');
+    },
+
+    openSettings() {
+      this.transitionTo('settings');
     }
   }
 

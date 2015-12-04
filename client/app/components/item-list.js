@@ -13,10 +13,12 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   itemsSorting: ['date:desc'],
   sortedItems: Ember.computed.sort('model', 'itemsSorting'),
 
+  /*
   debouncedDidResize() {
     var itemlist = Ember.$('#item-list');
     itemlist.css('height', Ember.$(window).height() - itemlist.position().top);
   },
+  */
 
   modelChange: Ember.observer('model', function() {
     this.send('selectItem', null);

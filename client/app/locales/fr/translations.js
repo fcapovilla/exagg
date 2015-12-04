@@ -30,5 +30,6 @@ export default {
   'previous': 'Précédent',
   'allItems': 'Tous les items',
   'favorites': 'Favoris',
-  'loading': 'Chargement...'
+  'loading': 'Chargement...',
+  'settings': 'Configuration'
 };

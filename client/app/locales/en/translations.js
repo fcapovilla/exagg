@@ -30,5 +30,6 @@ export default {
   'previous': 'Previous',
   'allItems': 'All items',
   'favorites': 'Favorites',
-  'loading': 'Loading...'
+  'loading': 'Loading...',
+  'settings': 'Settings'
 };
