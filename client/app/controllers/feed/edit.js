@@ -20,7 +20,9 @@ export default Ember.Controller.extend({
 
         folder.save().then(function() {
           that.model.set('folder', folder);
-          that.model.save();
+          that.model.save().then(function(feed) {
+            that.transitionToRoute('feed', feed.id);
+          });
         });
       });
     }
