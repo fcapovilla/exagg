@@ -3,7 +3,7 @@ defmodule Exagg.Folder do
 
   schema "folders" do
     field :title, :string
-    field :open, :boolean, default: false
+    field :open, :boolean, default: true
     field :position, :integer
     belongs_to :user, Exagg.User
     has_many :feeds, Exagg.Feed, on_delete: :fetch_and_delete

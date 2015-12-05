@@ -1,8 +1,16 @@
 <h1>{{t "settings"}}</h1>
 
-<form accept-charset="UTF-8" action="/opml_upload" enctype="multipart/form-data" method="post">
-  <input class="form-control" id="opml_file" name="opml[file]" type="file" />
-  <input class="btn btn-primary" value="Upload" type="submit" />
+<form accept-charset="UTF-8" action="/opml_upload" enctype="multipart/form-data" method="post" class="form-inline">
+  <div class="form-group">
+    <label for="opmlFile">{{t "import_opml"}}</label>
+    <input class="form-control" id="opmlFile" name="opml[file]" type="file" />
+    <input class="btn btn-primary" value="Upload" type="submit" />
+  </div>
 </form>
 
-<input {{action "doSync"}} class="btn btn-primary" value="Sync" type="button" />
+<div class="form-inline">
+  <div class="form-group">
+    <label for="forceSync">{{t "force_sync"}}</label>
+    <input {{action "doSync"}} class="btn btn-primary" value="Sync" type="button" />
+  </div>
+</div>

@@ -31,5 +31,7 @@ export default {
   'allItems': 'Tous les items',
   'favorites': 'Favoris',
   'loading': 'Chargement...',
-  'settings': 'Configuration'
+  'settings': 'Configuration',
+  'import_opml': 'Importation de fichier OPML',
+  'force_sync': 'Forcer la synchronisation des flux'
 };

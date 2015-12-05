@@ -28,7 +28,7 @@ defmodule Exagg.FeedController do
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
-        Exagg.Syncer.sync_feed(feed)
+        {:ok, feed} = Exagg.Syncer.sync_feed(feed)
 
         conn
         |> put_status(:created)

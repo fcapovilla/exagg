@@ -9,9 +9,11 @@ export default Ember.Component.extend({
   openChanged: Ember.observer('model.open', function() {
     if(this.model.get('open')) {
       Ember.run.scheduleOnce('afterRender', this, function() {
-        var list = Ember.$('#item-list').eq(0);
         var elem = this.$(this.get('element'));
-        list.scrollTop(elem.position().top + list.scrollTop());
+        //var list = Ember.$('#item-list').eq(0);
+        //list.scrollTop(elem.position().top + list.scrollTop());
+        var list = Ember.$(document);
+        list.scrollTop(elem.position().top);
       });
     }
   }),

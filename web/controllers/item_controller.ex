@@ -10,7 +10,7 @@ defmodule Exagg.ItemController do
   def index(conn, params = %{"folder_id" => folder_id}) do
     query =
       from i in Item,
-      join: f in Feed, on: i.feed_id == f.id,
+      left_join: f in Feed, on: i.feed_id == f.id,
       where: f.folder_id == ^folder_id
     page = query |> filter(params) |> order(params) |> Repo.paginate(params)
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
@@ -52,7 +52,7 @@ defmodule Exagg.ItemController do
   end
 
   def update(conn, %{"id" => id, "data" => item_params}) do
-    item = Repo.get!((from i in Item, join: f in assoc(i, :feed), preload: [feed: f]), id)
+    item = Repo.get!((from i in Item, left_join: f in assoc(i, :feed), preload: [feed: f]), id)
     changeset = Item.changeset(item, item_params)
 
     case Repo.update(changeset) do

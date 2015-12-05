@@ -31,5 +31,7 @@ export default {
   'allItems': 'All items',
   'favorites': 'Favorites',
   'loading': 'Loading...',
-  'settings': 'Settings'
+  'settings': 'Settings',
+  'import_opml': 'Import an OPML file',
+  'force_sync': 'Force feed synchronisation'
 };

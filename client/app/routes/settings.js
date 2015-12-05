@@ -4,7 +4,8 @@ export default Ember.Route.extend({
   actions: {
     doSync() {
       Ember.$.getJSON('/sync', function(data) {
-        //TODO: Check the server's response.
+        // TODO: Refresh data without reload.
+        window.location = window.location;
       });
     }
   }

@@ -3,7 +3,7 @@ import Ember from 'ember';
 
 export default DS.Model.extend({
   title: DS.attr('string'),
-  open: DS.attr('boolean'),
+  open: DS.attr('boolean', {defaultValue: true}),
   position: DS.attr('number'),
   feeds: DS.hasMany('feed', {async: false}),
   items: DS.hasMany('item', {async: true}),

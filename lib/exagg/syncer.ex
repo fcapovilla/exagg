@@ -39,18 +39,24 @@ defmodule Exagg.Syncer do
       end
     end)
 
-    # Update feed unread count
+    # Update feed data
     Repo.transaction fn ->
       count = Repo.one(from i in Item, where: i.feed_id == ^feed.id and i.read == false, select: count(i.id))
-      Repo.update!(Feed.changeset(feed, %{unread_count: count}))
+      Repo.update!(Feed.changeset(feed, %{unread_count: count, title: parsed_feed.title}))
     end
   end
 
   # Fetch data from the URL in parameter.
   # Return an empty string on error.
   defp fetch_data(url) do
-    case HTTPotion.get(url) do
-      %HTTPotion.Response{body: body} -> body
+    try do
+      case HTTPotion.get(url) do
+        %HTTPotion.Response{body: body} -> body
+        _ ->
+          Logger.error "Error fetching " <> url
+          ""
+      end
+    rescue
       _ ->
         Logger.error "Error fetching " <> url
         ""
@@ -63,12 +69,12 @@ defmodule Exagg.Syncer do
     try do
        case FeederEx.parse(xml) do
           {:ok, feed, _} -> feed
-          {:error, _} -> %{entries: []}
+          {:error, _} -> %{entries: [], title: ""}
        end
     rescue
-      _ -> %{entries: []}
+      _ -> %{entries: [], title: ""}
     catch
-      _ -> %{entries: []}
+      _ -> %{entries: [], title: ""}
     end
   end
 
