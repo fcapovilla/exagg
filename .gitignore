@@ -15,6 +15,8 @@ erl_crash.dump
 # this depending on your deployment strategy.
 /priv/static/
 
+/web/templates/page/index.html.eex
+
 # The config/prod.secret.exs file by default contains sensitive
 # data and you should not commit it into version control.
 #

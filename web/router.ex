@@ -13,14 +13,6 @@ defmodule Exagg.Router do
     plug :accepts, ["json-api"]
   end
 
-  scope "/", Exagg do
-    pipe_through :browser # Use the default browser stack
-
-    get "/", PageController, :index
-
-    resources "/users", UserController
-  end
-
   scope "/api", Exagg do
     pipe_through :api
 
@@ -36,5 +28,15 @@ defmodule Exagg.Router do
 
     post "/opml_upload", SettingsController, :opml_upload
     get "/sync", SettingsController, :sync
+  end
+
+  scope "/", Exagg do
+    pipe_through :browser # Use the default browser stack
+
+    resources "/users", UserController
+
+    get "/", PageController, :index
+    get "/:a", PageController, :index
+    get "/:a/:b", PageController, :index
   end
 end
