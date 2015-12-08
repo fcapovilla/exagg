@@ -24,7 +24,7 @@ module.exports = function(environment) {
       injectionFactories : ['view', 'component', 'controller']
     },
     'ember-simple-auth': {
-      authenticationRoute: 'signin'
+      authenticationRoute: 'login'
     }
   };
 
