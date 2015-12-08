@@ -44,6 +44,8 @@ export default Ember.Route.extend(KeyboardShortcuts,{
     },
 
     selectFeed(model) {
+      this.controller.set('selectedElement', model);
+
       if(typeof model === 'string') {
         this.transitionTo(model);
       }
