@@ -20,6 +20,7 @@ Router.map(function() {
     this.route('feed.edit', { resetNamespace: true, path: '/feed/:feed_id/edit' });
     this.route('feed.new', { resetNamespace: true, path: '/feed/new' });
   });
+  this.route('login');
 });
 
 export default Router;

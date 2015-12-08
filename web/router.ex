@@ -28,6 +28,8 @@ defmodule Exagg.Router do
 
     post "/opml_upload", SettingsController, :opml_upload
     get "/sync", SettingsController, :sync
+
+    post "/login", UserController, :login
   end
 
   scope "/", Exagg do

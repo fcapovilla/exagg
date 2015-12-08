@@ -64,4 +64,13 @@ defmodule Exagg.UserController do
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: user_path(conn, :index))
   end
+
+  def login(conn, %{"username" => username, "password" => password}) do
+    user = Repo.get_by(User, username: username)
+    if user do
+      # TODO: Check password
+      render conn, "user.json",
+        %{token: Phoenix.Token.sign(conn, "user", user.id), user: user}
+    end
+  end
 end
