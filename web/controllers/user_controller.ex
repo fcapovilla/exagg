@@ -1,9 +1,12 @@
 defmodule Exagg.UserController do
   use Exagg.Web, :controller
 
+  import Comeonin.Bcrypt, only: [hashpwsalt: 1, checkpw: 2]
+
   alias Exagg.User
 
   plug :scrub_params, "user" when action in [:create, :update]
+  plug Exagg.Plugs.TokenAuth when action in [:index, :new, :create, :show, :edit, :update, :delete]
 
   def index(conn, _params) do
     users = Repo.all(User)
@@ -17,6 +20,7 @@ defmodule Exagg.UserController do
 
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
+    |> hash_password
 
     case Repo.insert(changeset) do
       {:ok, _user} ->
@@ -42,6 +46,7 @@ defmodule Exagg.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
+    |> hash_password
 
     case Repo.update(changeset) do
       {:ok, user} ->
@@ -67,10 +72,18 @@ defmodule Exagg.UserController do
 
   def login(conn, %{"username" => username, "password" => password}) do
     user = Repo.get_by(User, username: username)
-    if user do
-      # TODO: Check password
-      render conn, "user.json",
-        %{token: Phoenix.Token.sign(conn, "user", user.id), user: user}
+    if user && checkpw(password, user.hashed_password) do
+      render(conn, "user.json", %{token: Phoenix.Token.sign(conn, "user", user.id), user: user})
+    else
+      send_resp(conn, 403, "Access denied")
+    end
+  end
+
+  defp hash_password(changeset) do
+    case changeset.params["password"] do
+      nil -> changeset
+      "********" -> changeset
+      password -> Ecto.Changeset.put_change(changeset, :hashed_password, hashpwsalt(password))
     end
   end
 end

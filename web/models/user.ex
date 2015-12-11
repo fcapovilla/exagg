@@ -3,8 +3,9 @@ defmodule Exagg.User do
 
   schema "users" do
     field :username, :string
-    field :password, :string
     field :admin, :boolean, default: false
+    field :hashed_password, :string
+    field :password, :string, virtual: true, default: "********"
 
     timestamps
   end

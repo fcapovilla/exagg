@@ -5,6 +5,7 @@ defmodule Exagg.ItemController do
   alias Exagg.Feed
 
   plug :scrub_params, "data" when action in [:create, :update]
+  plug Exagg.Plugs.TokenAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, params = %{"folder_id" => folder_id}) do

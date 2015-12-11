@@ -4,6 +4,7 @@ defmodule Exagg.FolderController do
   alias Exagg.Folder
 
   plug :scrub_params, "data" when action in [:create, :update]
+  plug Exagg.Plugs.TokenAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, params) do
