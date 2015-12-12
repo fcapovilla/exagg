@@ -24,6 +24,7 @@ defmodule Exagg.Syncer do
     Enum.each(parsed_feed.entries, fn entry ->
       item = %Item{
         feed_id: feed.id,
+        user_id: feed.user_id,
         title: entry.title || entry.link || entry.id,
         url: entry.link || entry.id,
         content: entry.summary,
@@ -32,18 +33,18 @@ defmodule Exagg.Syncer do
       }
 
       Repo.transaction fn ->
-        case Repo.get_by(Item, guid: item.guid) do
-          nil -> Repo.insert!(item)
-          existing -> Repo.update!(Item.changeset(existing, Map.from_struct item))
+        existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id)
+
+        if existing != nil do
+          Repo.update!(Item.changeset(existing, Map.from_struct item))
+        else
+          Repo.insert!(item)
         end
       end
     end)
 
     # Update feed data
-    Repo.transaction fn ->
-      count = Repo.one(from i in Item, where: i.feed_id == ^feed.id and i.read == false, select: count(i.id))
-      Repo.update!(Feed.changeset(feed, %{unread_count: count, title: parsed_feed.title}))
-    end
+    Repo.update_unread_count(feed, %{title: parsed_feed.title})
   end
 
   # Fetch data from the URL in parameter.

@@ -8,24 +8,23 @@ defmodule Exagg.FeedController do
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, %{"folder_id" => folder_id}) do
-    feeds = Repo.all(from f in Feed, where: f.folder_id == ^folder_id)
+    feeds =
+      (from f in Feed,
+      where: f.folder_id == ^folder_id)
+      |> Repo.filter(conn)
+      |> Repo.all
+
     render(conn, "index.json", feeds: feeds)
   end
 
-  def index(conn, params) do
-    query = from f in Feed
-    if params["filter"] do
-      query = Enum.reduce(params["filter"], query, fn {col, val}, query ->
-        from f in query, where: field(f, ^String.to_atom(col)) == ^val
-      end)
-    end
+  def index(conn, _params) do
+    feeds = Feed |> Repo.filter(conn) |> Repo.all
 
-    feeds = Repo.all(query)
     render(conn, "index.json", feeds: feeds)
   end
 
   def create(conn, %{"data" => feed_params}) do
-    changeset = Feed.changeset(%Feed{}, feed_params)
+    changeset = Feed.changeset(%Feed{user_id: conn.assigns[:user_id]}, feed_params)
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
@@ -43,12 +42,14 @@ defmodule Exagg.FeedController do
   end
 
   def show(conn, %{"id" => id}) do
-    feed = Repo.get!(Feed, id)
+    feed = Feed |> Repo.filter(conn) |> Repo.get!(id)
+
     render(conn, "show.json", feed: feed)
   end
 
   def update(conn, %{"id" => id, "data" => feed_params}) do
-    feed = Repo.get!(Feed, id)
+    feed = Feed |> Repo.filter(conn) |> Repo.get!(id)
+
     changeset = Feed.changeset(feed, feed_params)
 
     case Repo.update(changeset) do
@@ -62,7 +63,7 @@ defmodule Exagg.FeedController do
   end
 
   def delete(conn, %{"id" => id}) do
-    feed = Repo.get!(Feed, id)
+    feed = Feed |> Repo.filter(conn) |> Repo.get!(id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).

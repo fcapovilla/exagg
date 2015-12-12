@@ -1,6 +1,8 @@
 defmodule Exagg.SettingsController do
   use Exagg.Web, :controller
 
+  plug Exagg.Plugs.TokenAuth
+
   def opml_upload(conn, %{"opml" => opml}) do
     file = opml["file"]
     case file.content_type do

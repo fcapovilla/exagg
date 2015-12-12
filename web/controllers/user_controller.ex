@@ -6,7 +6,6 @@ defmodule Exagg.UserController do
   alias Exagg.User
 
   plug :scrub_params, "user" when action in [:create, :update]
-  plug Exagg.Plugs.TokenAuth when action in [:index, :new, :create, :show, :edit, :update, :delete]
 
   def index(conn, _params) do
     users = Repo.all(User)

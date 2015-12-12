@@ -8,31 +8,37 @@ defmodule Exagg.ItemController do
   plug Exagg.Plugs.TokenAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
-  def index(conn, params = %{"folder_id" => folder_id}) do
-    query =
-      from i in Item,
+  def index(conn, %{"folder_id" => folder_id}) do
+    page =
+      (from i in Item,
       left_join: f in Feed, on: i.feed_id == f.id,
-      where: f.folder_id == ^folder_id
-    page = query |> filter(params) |> order(params) |> Repo.paginate(params)
+      where: f.folder_id == ^folder_id)
+      |> Repo.filter(conn)
+      |> Repo.order(conn)
+      |> Repo.paginate(conn.params)
+
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
-  def index(conn, params = %{"feed_id" => feed_id}) do
-    query =
-      from i in Item,
-      where: i.feed_id == ^feed_id
-    page = query |> filter(params) |> order(params) |> Repo.paginate(params)
+  def index(conn, %{"feed_id" => feed_id}) do
+    page =
+      (from i in Item,
+      where: i.feed_id == ^feed_id)
+      |> Repo.filter(conn)
+      |> Repo.order(conn)
+      |> Repo.paginate(conn.params)
+
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
-  def index(conn, params) do
-    query = from i in Item
-    page = query |> filter(params) |> order(params) |> Repo.paginate(params)
+  def index(conn, _params) do
+    page = Item |> Repo.filter(conn) |> Repo.order(conn) |> Repo.paginate(conn.params)
+
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
   end
 
   def create(conn, %{"data" => item_params}) do
-    changeset = Item.changeset(%Item{}, item_params)
+    changeset = Item.changeset(%Item{user_id: conn.assigns[:user_id]}, item_params)
 
     case Repo.insert(changeset) do
       {:ok, item} ->
@@ -48,22 +54,21 @@ defmodule Exagg.ItemController do
   end
 
   def show(conn, %{"id" => id}) do
-    item = Repo.get!(Item, id)
+    item = Item |> Repo.filter(conn) |> Repo.get!(id)
+
     render(conn, "show.json", item: item)
   end
 
   def update(conn, %{"id" => id, "data" => item_params}) do
-    item = Repo.get!((from i in Item, left_join: f in assoc(i, :feed), preload: [feed: f]), id)
+    item = (from i in Item, left_join: f in assoc(i, :feed), preload: [feed: f])
+    |> Repo.filter(conn)
+    |> Repo.get!(id)
+
     changeset = Item.changeset(item, item_params)
 
     case Repo.update(changeset) do
       {:ok, item} ->
-        # Update feed unread count
-        {:ok, feed} = Repo.transaction fn ->
-          feed = item.feed
-          count = Repo.one(from i in Item, where: i.feed_id == ^feed.id and i.read == false, select: count(i.id))
-          Repo.update!(Feed.changeset(feed, %{unread_count: count}))
-        end
+        {:ok, feed} = Repo.update_unread_count(item.feed)
         item = %{item | feed: feed}
 
         render(conn, "show.json", item: item, sideload: [:feed])
@@ -75,26 +80,12 @@ defmodule Exagg.ItemController do
   end
 
   def delete(conn, %{"id" => id}) do
-    item = Repo.get!(Item, id)
+    item = Item |> Repo.filter(conn) |> Repo.get!(id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
     Repo.delete!(item)
 
     send_resp(conn, :no_content, "")
-  end
-
-  defp filter(query, params) do
-    case params["filter"] do
-      nil -> query
-      filters ->
-        Enum.reduce(filters, query, fn {col, val}, query ->
-          from i in query, where: field(i, ^String.to_atom(col)) == ^val
-        end)
-    end
-  end
-
-  defp order(query, params) do
-    from i in query, order_by: [desc: i.date]
   end
 end
