@@ -46,6 +46,7 @@ defmodule Exagg.SettingsController do
   end
 
   def sync(conn, _params) do
-    json(conn, Exagg.Syncer.sync_all)
+    Exagg.Syncer.sync_all
+    redirect conn, to: folder_path(conn, :index)
   end
 end
