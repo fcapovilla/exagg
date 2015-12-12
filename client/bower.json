@@ -16,6 +16,7 @@
     "font-awesome": "~4.4.0",
     "mousetrap": "~1.5.2",
     "moment": ">= 2.8.0",
-    "moment-timezone": ">= 0.1.0"
+    "moment-timezone": ">= 0.1.0",
+    "ember-uploader": "0.3.11"
   }
 }

@@ -3,40 +3,42 @@ defmodule Exagg.SettingsController do
 
   plug Exagg.Plugs.TokenAuth
 
-  def opml_upload(conn, %{"opml" => opml}) do
-    file = opml["file"]
+  def opml_upload(conn, %{"file" => file}) do
     case file.content_type do
       "text/x-opml+xml" ->
-        import_opml(file)
-        json(conn, %{info: "OPML file imported"})
+        import_opml(conn, file)
+        redirect conn, to: folder_path(conn, :index)
       _ ->
         json(conn, %{error: "Invalid OPML file."})
     end
   end
 
-  defp import_opml(file) do
+  defp import_opml(conn, file) do
     alias Exagg.Folder
     alias Exagg.Feed
     alias XmlNode, as: Xml
 
+    user_id = conn.assigns[:user_id]
     doc = Xml.from_file file.path
     Enum.each(Xml.all(doc, "body/outline"), fn(node) ->
       case Xml.attr(node, "type") do
         "rss" ->
-          folder = Repo.get_by(Folder, title: "Feeds") || Repo.insert!(%Folder{title: "Feeds"})
+          folder = Folder |> Repo.filter(conn) |> Repo.get_by(title: "Feeds") || Repo.insert!(%Folder{title: "Feeds", user_id: user_id})
           Repo.insert(%Feed{
             folder_id: folder.id,
             title: Xml.attr(node, "title"),
             url: Xml.attr(node, "xmlUrl"),
+            user_id: user_id
           })
         _ ->
           title = Xml.attr(node, "title") || Xml.attr(node, "text")
-          folder = Repo.get_by(Folder, title: title) || Repo.insert!(%Folder{title: title})
+          folder = Folder |> Repo.filter(conn) |> Repo.get_by(title: title) || Repo.insert!(%Folder{title: title, user_id: user_id})
           Enum.each(Xml.all(node, "outline"), fn(node) ->
             Repo.insert(%Feed{
               folder_id: folder.id,
               title: Xml.attr(node, "title"),
               url: Xml.attr(node, "xmlUrl"),
+              user_id: user_id
             })
           end)
       end

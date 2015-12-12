@@ -7,6 +7,10 @@ export default Ember.Route.extend({
         // TODO: Refresh data without reload.
         window.location = window.location;
       });
+    },
+
+    onOpmlUpload(data) {
+      this.store.pushPayload(data);
     }
   }
 });

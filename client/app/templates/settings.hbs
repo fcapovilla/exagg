@@ -1,12 +1,9 @@
 <h1>{{t "settings"}}</h1>
 
-<form accept-charset="UTF-8" action="/api/opml_upload" enctype="multipart/form-data" method="post" class="form-inline">
-  <div class="form-group">
-    <label for="opmlFile">{{t "import_opml"}}</label>
-    <input class="form-control" id="opmlFile" name="opml[file]" type="file" />
-    <input class="btn btn-primary" value="Upload" type="submit" />
-  </div>
-</form>
+<div class="form-group">
+  <label for="opmlFile">{{t "import_opml"}}</label>
+  {{file-upload url="/api/opml_upload" onUpload="onOpmlUpload"}}
+</div>
 
 <div class="form-inline">
   <div class="form-group">
