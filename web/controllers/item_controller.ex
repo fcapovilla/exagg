@@ -11,7 +11,7 @@ defmodule Exagg.ItemController do
   def index(conn, %{"folder_id" => folder_id}) do
     page =
       (from i in Item,
-      left_join: f in Feed, on: i.feed_id == f.id,
+      left_join: f in assoc(i, :feed),
       where: f.folder_id == ^folder_id)
       |> Repo.filter(conn)
       |> Repo.order(conn)

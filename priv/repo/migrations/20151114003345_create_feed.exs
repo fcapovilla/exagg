@@ -12,11 +12,13 @@ defmodule Exagg.Repo.Migrations.CreateFeed do
       add :position, :integer
       add :user_id, references(:users)
       add :folder_id, references(:folders)
+      add :favicon_id, references(:favicons)
 
       timestamps
     end
     create index(:feeds, [:user_id])
     create index(:feeds, [:folder_id])
+    create index(:feeds, [:favicon_id])
 
   end
 end

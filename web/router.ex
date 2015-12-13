@@ -32,6 +32,8 @@ defmodule Exagg.Router do
     post "/login", UserController, :login
   end
 
+  get "/favicons/:id", Exagg.FaviconController, :show
+
   scope "/", Exagg do
     pipe_through :browser # Use the default browser stack
 

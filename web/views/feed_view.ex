@@ -32,7 +32,7 @@ defmodule Exagg.FeedView do
         "last-sync": feed.last_sync,
         "unread-count": feed.unread_count,
         "sync-status": feed.sync_status,
-        favicon: feed.favicon,
+        "favicon-id": feed.favicon_id,
         position: feed.position,
       },
       relationships: %{

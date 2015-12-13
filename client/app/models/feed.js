@@ -6,7 +6,7 @@ export default DS.Model.extend({
   lastSync: DS.attr('date'),
   unreadCount: DS.attr('number'),
   syncStatus: DS.attr('string'),
-  favicon: DS.attr('string'),
+  faviconId: DS.attr('number'),
   position: DS.attr('number'),
 
   items: DS.hasMany('item', {async: true}),
