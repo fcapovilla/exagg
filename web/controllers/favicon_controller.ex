@@ -4,10 +4,6 @@ defmodule Exagg.FaviconController do
   alias Exagg.Favicon
 
   def show(conn, %{"id" => id}) do
-    id = case Integer.parse(id) do
-      {id, _} -> id
-      :error -> 0
-    end
     favicon = Repo.get!(Favicon, id)
 
     conn

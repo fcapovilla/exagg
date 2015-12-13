@@ -5,10 +5,26 @@ export default Ember.Component.extend({
   classNames: ['feed'],
 
   menuOpen : false,
+  validFavicon: true,
 
   active: Ember.computed('selectedElement', function() {
     return this.get('selectedElement') === this.model;
   }),
+
+  didInsertElement: function(){
+    var that = this;
+    this.$('.favicon').on('error', function(){
+      return that.imageError();
+    });
+  },
+
+  willDestroyElement: function(){
+    this.$('.favicon').off('error');
+  },
+
+  imageError: function() {
+    this.set('validFavicon', false);
+  },
 
   actions: {
     selectFeed() {

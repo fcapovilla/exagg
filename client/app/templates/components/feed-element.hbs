@@ -6,7 +6,11 @@
   {{/if}}
   <div class="feed-text">
     <div {{action "openMenu" bubbles=false}} class="feed-icon">
-        <img class="favicon" src="/favicons/{{model.faviconId}}.ico">
+      {{#if validFavicon}}
+        <img class="favicon" src="/favicons/{{model.faviconId}}">
+      {{else}}
+        <i class="fa fa-rss-square"></i>
+      {{/if}}
     </div>
     {{#if model.unreadCount}}
       <b>{{model.title}}</b>
