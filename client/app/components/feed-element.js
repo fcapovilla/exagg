@@ -39,7 +39,7 @@ export default Ember.Component.extend({
       var that = this;
       that.set('menuOpen', true);
 
-      $(document).one('mouseup', function() {
+      Ember.$(document).one('mouseup', function() {
         that.set('menuOpen', false);
       });
     },

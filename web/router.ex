@@ -39,8 +39,6 @@ defmodule Exagg.Router do
 
     resources "/users", UserController
 
-    get "/", PageController, :index
-    get "/:a", PageController, :index
-    get "/:a/:b", PageController, :index
+    get "/*path", PageController, :index
   end
 end
