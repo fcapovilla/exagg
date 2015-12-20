@@ -2,7 +2,6 @@ defmodule Exagg.ItemController do
   use Exagg.Web, :controller
 
   alias Exagg.Item
-  alias Exagg.Feed
 
   plug :scrub_params, "data" when action in [:create, :update]
   plug Exagg.Plugs.TokenAuth

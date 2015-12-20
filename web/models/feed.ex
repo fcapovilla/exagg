@@ -11,7 +11,7 @@ defmodule Exagg.Feed do
     belongs_to :user, Exagg.User
     belongs_to :folder, Exagg.Folder
     belongs_to :favicon, Exagg.Favicon
-    has_many :items, Exagg.Item, on_delete: :fetch_and_delete
+    has_many :items, Exagg.Item
 
     timestamps
   end

@@ -18,8 +18,9 @@ defmodule Exagg.Web do
 
   def model do
     quote do
-      use Ecto.Model
+      use Ecto.Schema
 
+      import Ecto
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]
     end
@@ -30,7 +31,8 @@ defmodule Exagg.Web do
       use Phoenix.Controller
 
       alias Exagg.Repo
-      import Ecto.Model
+      import Ecto
+      import Ecto.Schema
       import Ecto.Query, only: [from: 1, from: 2]
 
       import Exagg.Router.Helpers
@@ -63,7 +65,8 @@ defmodule Exagg.Web do
       use Phoenix.Channel
 
       alias Exagg.Repo
-      import Ecto.Model
+      import Ecto
+      import Ecto.Schema
       import Ecto.Query, only: [from: 1, from: 2]
     end
   end

@@ -10,9 +10,9 @@ defmodule Exagg.Repo.Migrations.CreateFeed do
       add :sync_status, :text
       add :favicon, :binary
       add :position, :integer
-      add :user_id, references(:users)
-      add :folder_id, references(:folders)
-      add :favicon_id, references(:favicons)
+      add :user_id, references(:users, on_delete: :delete_all)
+      add :folder_id, references(:folders, on_delete: :delete_all)
+      add :favicon_id, references(:favicons, on_delete: :nilify_all)
 
       timestamps
     end

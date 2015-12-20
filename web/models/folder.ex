@@ -6,7 +6,7 @@ defmodule Exagg.Folder do
     field :open, :boolean, default: true
     field :position, :integer
     belongs_to :user, Exagg.User
-    has_many :feeds, Exagg.Feed, on_delete: :fetch_and_delete
+    has_many :feeds, Exagg.Feed
 
     timestamps
   end

@@ -11,8 +11,8 @@ defmodule Exagg.Repo.Migrations.CreateItem do
       add :favorite, :boolean, default: false
       add :date, :datetime
       add :orig_feed_title, :text
-      add :user_id, references(:users)
-      add :feed_id, references(:feeds)
+      add :user_id, references(:users, on_delete: :delete_all)
+      add :feed_id, references(:feeds, on_delete: :delete_all)
 
       timestamps
     end

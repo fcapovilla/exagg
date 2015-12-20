@@ -5,7 +5,7 @@ defmodule Exagg.Repo.Migrations.CreateMedia do
     create table(:medias) do
       add :type, :string
       add :url, :string
-      add :item_id, references(:items)
+      add :item_id, references(:items, on_delete: :delete_all)
 
       timestamps
     end

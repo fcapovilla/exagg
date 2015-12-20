@@ -20,7 +20,7 @@ defmodule Exagg.Repo do
   def order(query, conn = %Plug.Conn{}) do
     order(query, conn.params)
   end
-  def order(query, params) do
+  def order(query, _params) do
     from i in query, order_by: [desc: i.date]
   end
 

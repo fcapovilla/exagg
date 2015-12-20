@@ -12,7 +12,7 @@ defmodule Exagg.Item do
     field :orig_feed_title, :string
     belongs_to :user, Exagg.User
     belongs_to :feed, Exagg.Feed
-    has_many :medias, Exagg.Media, on_delete: :fetch_and_delete
+    has_many :medias, Exagg.Media
 
     timestamps
   end
@@ -29,10 +29,9 @@ defmodule Exagg.Item do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> truncate(:guid, 255)
   end
 
-  before_insert :truncate, [:guid, 255]
-  before_update :truncate, [:guid, 255]
   def truncate(changeset, field, size) do
     import Ecto.Changeset
 

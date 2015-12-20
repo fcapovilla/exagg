@@ -6,7 +6,7 @@ defmodule Exagg.Repo.Migrations.CreateFolder do
       add :title, :text
       add :open, :boolean, default: false
       add :position, :integer
-      add :user_id, references(:users)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps
     end
