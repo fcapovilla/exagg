@@ -23,6 +23,17 @@ export default {
     'title': 'Titre'
   },
 
+  'user': {
+    'username': 'Identifiant',
+    'password': 'Mot de passe',
+    'admin': 'Administrateur',
+    'actions': 'Actions',
+    'add': 'Ajouter un utilisateur',
+    'save': 'Sauvegarder les utilisateurs',
+    'undo': 'Annuler les changements',
+    'delete': 'Supprimer l\'utilisateur'
+  },
+
   'save': 'Sauvegarder',
   'addFeed': 'Abonnement',
   'logOut': 'Déconnexion',
@@ -33,5 +44,6 @@ export default {
   'loading': 'Chargement...',
   'settings': 'Configuration',
   'import_opml': 'Importation de fichier OPML',
-  'force_sync': 'Forcer la synchronisation des flux'
+  'force_sync': 'Forcer la synchronisation des flux',
+  'users': 'Utilisateurs'
 };

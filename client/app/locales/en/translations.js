@@ -23,6 +23,17 @@ export default {
     'title': 'Title'
   },
 
+  'user': {
+    'username': 'Username',
+    'password': 'Password',
+    'admin': 'Administrator',
+    'actions': 'Actions',
+    'add': 'Add user',
+    'save': 'Save users',
+    'undo': 'Undo changes',
+    'delete': 'Delete user'
+  },
+
   'save': 'Save',
   'addFeed': 'Subscribe',
   'logOut': 'Log out',
@@ -33,5 +44,6 @@ export default {
   'loading': 'Loading...',
   'settings': 'Settings',
   'import_opml': 'Import an OPML file',
-  'force_sync': 'Force feed synchronisation'
+  'force_sync': 'Force feed synchronisation',
+  'users': 'Users'
 };

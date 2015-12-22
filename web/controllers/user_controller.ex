@@ -5,55 +5,49 @@ defmodule Exagg.UserController do
 
   alias Exagg.User
 
-  plug :scrub_params, "user" when action in [:create, :update]
+  plug :scrub_params, "data" when action in [:create, :update]
+  plug Exagg.Plugs.TokenAuth
+  plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, _params) do
     users = Repo.all(User)
-    render(conn, "index.html", users: users)
+    render(conn, "index.json", users: users)
   end
 
-  def new(conn, _params) do
-    changeset = User.changeset(%User{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"data" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
     |> hash_password
 
     case Repo.insert(changeset) do
-      {:ok, _user} ->
+      {:ok, user} ->
         conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
+        |> put_status(:created)
+        |> put_resp_header("location", user_path(conn, :show, user))
+        |> render("show.json", user: user)
       {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Exagg.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    render(conn, "show.html", user: user)
+    render(conn, "show.json", user: user)
   end
 
-  def edit(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    changeset = User.changeset(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
-  end
-
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  def update(conn, %{"id" => id, "data" => user_params}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
     |> hash_password
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        conn
-        |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :show, user))
+        render(conn, "show.json", user: user)
       {:error, changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset)
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Exagg.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -64,9 +58,7 @@ defmodule Exagg.UserController do
     # it to always work (and if it does not, it will raise).
     Repo.delete!(user)
 
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
+    send_resp(conn, :no_content, "")
   end
 
   def login(conn, %{"username" => username, "password" => password}) do

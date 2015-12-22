@@ -1,0 +1,20 @@
+<form id="editUsersForm" {{action "saveUsers" on="submit"}}>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>{{t "user.username"}}</th>
+        <th>{{t "user.password"}}</th>
+        <th>{{t "user.admin"}}</th>
+        <th>{{t "user.actions"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each model as |user|}}
+        {{user-element model=user}}
+      {{/each}}
+    </tbody>
+  </table>
+  <button {{action "addUser"}}>{{t "user.add"}}</button>
+  <button {{action "save"}}>{{t "user.save"}}</button>
+  <button {{action "cancel"}}>{{t "user.undo"}}</button>
+</form>

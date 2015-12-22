@@ -23,8 +23,8 @@ defmodule Exagg.Router do
     resources "/feeds", FeedController do
       get "/items", ItemController, :index
     end
-    resources "/items", ItemController do
-    end
+    resources "/items", ItemController
+    resources "/users", UserController
 
     post "/opml_upload", SettingsController, :opml_upload
     get "/sync", SettingsController, :sync
@@ -36,8 +36,6 @@ defmodule Exagg.Router do
 
   scope "/", Exagg do
     pipe_through :browser # Use the default browser stack
-
-    resources "/users", UserController
 
     get "/*path", PageController, :index
   end
