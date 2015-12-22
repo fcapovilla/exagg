@@ -34,6 +34,14 @@ export default {
     'delete': 'Supprimer l\'utilisateur'
   },
 
+  'login': {
+    'title': 'Connexion',
+    'username': 'Identifiant',
+    'password': 'Mot de passe',
+    'connect': 'Connexion',
+    'error': 'Erreur'
+  },
+
   'save': 'Sauvegarder',
   'addFeed': 'Abonnement',
   'logOut': 'Déconnexion',

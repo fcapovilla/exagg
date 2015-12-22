@@ -1,11 +1,29 @@
 {{outlet}}
-<form {{action 'authenticate' on='submit'}}>
-  <label for="identification">Login</label>
-  {{input id='identification' placeholder='Enter Login' value=identification}}
-  <label for="password">Password</label>
-  {{input id='password' placeholder='Enter Password' type='password' value=password}}
-  <button type="submit">Login</button>
-  {{#if errorMessage}}
-    <p>{{errorMessage}}</p>
-  {{/if}}
-</form>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4 well">
+      <h2>
+        {{t "login.title"}}
+      </h2>
+      {{#if errorMessage}}
+        <div class="alert alert-danger">
+          <b>{{t "login.error"}}</b>
+          <p>{{errorMessage}}</p>
+        </div>
+      {{/if}}
+      <form {{action "authenticate" on="submit"}} class="form-horizontal">
+        <fieldset>
+          <div class="clearfix">
+            {{input placeholder=(t "login.username") value=identification class="form-control"}}
+          </div>
+          <div class="clearfix">
+            {{input placeholder=(t "login.password") type="password" value=password class="form-control"}}
+          </div>
+          <button aria-hidden="true" class="btn btn-primary pull-right" type="submit">
+            {{t "login.connect"}}
+          </button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

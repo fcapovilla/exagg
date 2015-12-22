@@ -3,6 +3,8 @@ import KeyboardShortcuts from 'ember-keyboard-shortcuts/mixins/route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
 export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
+  session: Ember.inject.service('session'),
+
   model() {
     return this.store.findAll('folder');
   },
@@ -65,6 +67,10 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
     openSettings() {
       this.transitionTo('settings');
+    },
+
+    logout() {
+      this.get('session').invalidate();
     }
   }
 

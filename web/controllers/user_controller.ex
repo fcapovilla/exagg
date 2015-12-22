@@ -6,7 +6,7 @@ defmodule Exagg.UserController do
   alias Exagg.User
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.TokenAuth
+  plug Exagg.Plugs.TokenAuth when not action in [:login]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, _params) do
@@ -68,6 +68,9 @@ defmodule Exagg.UserController do
     else
       send_resp(conn, 403, "Access denied")
     end
+  end
+  def login(conn, _params) do
+    send_resp(conn, 403, "Access denied")
   end
 
   defp hash_password(changeset) do

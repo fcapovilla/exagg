@@ -34,6 +34,14 @@ export default {
     'delete': 'Delete user'
   },
 
+  'login': {
+    'title': 'Login',
+    'username': 'Username',
+    'password': 'Password',
+    'connect': 'Connect',
+    'error': 'Error'
+  },
+
   'save': 'Save',
   'addFeed': 'Subscribe',
   'logOut': 'Log out',

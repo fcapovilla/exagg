@@ -9,12 +9,12 @@
 </td>
 <td>
   {{#unless model.isDeleted}}
-    <button {{action "deleteUser"}} title="{{t "user.delete"}}">
+    <button {{action "deleteUser"}} title={{t "user.delete"}}>
       <i class="fa fa-trash-o"></i>
     </button>
   {{/unless}}
   {{#unless model.isNew}}
-    <button {{action "undo"}} title="{{t "user.undo"}}">
+    <button {{action "undo"}} title={{t "user.undo"}}>
       <i class="fa fa-undo"></i>
     </button>
   {{/unless}}
