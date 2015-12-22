@@ -15,8 +15,9 @@ defmodule Exagg.UserController do
   end
 
   def create(conn, %{"data" => user_params}) do
-    changeset = User.changeset(%User{}, user_params)
-    |> hash_password
+    changeset =
+      User.changeset(%User{}, user_params)
+      |> hash_password
 
     case Repo.insert(changeset) do
       {:ok, user} ->
@@ -38,8 +39,9 @@ defmodule Exagg.UserController do
 
   def update(conn, %{"id" => id, "data" => user_params}) do
     user = Repo.get!(User, id)
-    changeset = User.changeset(user, user_params)
-    |> hash_password
+    changeset =
+      User.changeset(user, user_params)
+      |> hash_password
 
     case Repo.update(changeset) do
       {:ok, user} ->

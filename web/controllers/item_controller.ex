@@ -59,9 +59,10 @@ defmodule Exagg.ItemController do
   end
 
   def update(conn, %{"id" => id, "data" => item_params}) do
-    item = (from i in Item, left_join: f in assoc(i, :feed), preload: [feed: f])
-    |> Repo.filter(conn)
-    |> Repo.get!(id)
+    item =
+      (from i in Item, left_join: f in assoc(i, :feed), preload: [feed: f])
+      |> Repo.filter(conn)
+      |> Repo.get!(id)
 
     changeset = Item.changeset(item, item_params)
 

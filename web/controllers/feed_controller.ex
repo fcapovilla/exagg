@@ -24,8 +24,9 @@ defmodule Exagg.FeedController do
   end
 
   def create(conn, %{"data" => feed_params}) do
-    changeset = Feed.changeset(%Feed{user_id: conn.assigns[:user_id]}, feed_params)
-    |> fetch_favicon
+    changeset =
+      Feed.changeset(%Feed{user_id: conn.assigns[:user_id]}, feed_params)
+      |> fetch_favicon
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
@@ -51,8 +52,9 @@ defmodule Exagg.FeedController do
   def update(conn, %{"id" => id, "data" => feed_params}) do
     feed = Feed |> Repo.filter(conn) |> Repo.get!(id)
 
-    changeset = Feed.changeset(feed, feed_params)
-    |> fetch_favicon
+    changeset =
+      Feed.changeset(feed, feed_params)
+      |> fetch_favicon
 
     case Repo.update(changeset) do
       {:ok, feed} ->

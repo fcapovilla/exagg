@@ -47,6 +47,7 @@ defmodule Exagg.Mixfile do
      {:comeonin, "~> 1.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:exrm, "~> 0.19.9"},
+     {:credo, "~> 0.2", only: :dev},
      {:cowboy, "~> 1.0"}]
   end
 
