@@ -5,6 +5,26 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   session: Ember.inject.service('session'),
 
+  // Fetch current user data from the JWT session token and add it to the session.
+  beforeModel(transition) {
+    this._super(transition);
+
+    const token = this.get('session.data.authenticated.token');
+    const data = this.getTokenData(token);
+    this.get('session').set('data.user', data.user);
+  },
+
+  // Extract JSON data from a JWT token.
+  getTokenData(token) {
+    const tokenData = atob(token.split('.')[1]);
+
+    try {
+      return JSON.parse(tokenData);
+    } catch (e) {
+      return tokenData;
+    }
+  },
+
   model() {
     return this.store.findAll('folder');
   },
