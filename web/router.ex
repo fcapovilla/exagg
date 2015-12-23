@@ -10,7 +10,7 @@ defmodule Exagg.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json-api"]
+    plug :accepts, ["json-api", "json"]
   end
 
   scope "/api", Exagg do
@@ -29,7 +29,8 @@ defmodule Exagg.Router do
     post "/opml_upload", SettingsController, :opml_upload
     get "/sync", SettingsController, :sync
 
-    post "/login", UserController, :login
+    post "/token-auth", UserController, :token_auth
+    post "/token-refresh", UserController, :token_refresh
   end
 
   get "/favicons/:id", Exagg.FaviconController, :show

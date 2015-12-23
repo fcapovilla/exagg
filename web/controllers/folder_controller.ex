@@ -4,7 +4,7 @@ defmodule Exagg.FolderController do
   alias Exagg.Folder
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.TokenAuth
+  plug Exagg.Plugs.JWTAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, _params) do
@@ -19,7 +19,7 @@ defmodule Exagg.FolderController do
   end
 
   def create(conn, %{"data" => folder_params}) do
-    changeset = Folder.changeset(%Folder{user_id: conn.assigns[:user_id]}, folder_params)
+    changeset = Folder.changeset(%Folder{user_id: conn.assigns[:user]["id"]}, folder_params)
 
     case Repo.insert(changeset) do
       {:ok, folder} ->

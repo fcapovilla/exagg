@@ -4,7 +4,7 @@ defmodule Exagg.FeedController do
   alias Exagg.Feed
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.TokenAuth
+  plug Exagg.Plugs.JWTAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, %{"folder_id" => folder_id}) do
@@ -25,7 +25,7 @@ defmodule Exagg.FeedController do
 
   def create(conn, %{"data" => feed_params}) do
     changeset =
-      Feed.changeset(%Feed{user_id: conn.assigns[:user_id]}, feed_params)
+      Feed.changeset(%Feed{user_id: conn.assigns[:user]["id"]}, feed_params)
       |> fetch_favicon
 
     case Repo.insert(changeset) do

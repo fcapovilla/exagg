@@ -45,6 +45,7 @@ defmodule Exagg.Mixfile do
      {:inflex, "~> 1.5.0"},
      {:scrivener, "~> 1.0"},
      {:comeonin, "~> 1.6"},
+     {:joken, ">= 1.0.0"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:exrm, "~> 0.19.9"},
      {:credo, "~> 0.2", only: :dev},

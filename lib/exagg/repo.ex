@@ -25,7 +25,7 @@ defmodule Exagg.Repo do
   end
 
   def for_current_user(query, conn) do
-    user_id = conn.assigns[:user_id]
+    user_id = conn.assigns[:user]["id"]
     if user_id do
       from i in query, where: i.user_id == ^user_id
     else

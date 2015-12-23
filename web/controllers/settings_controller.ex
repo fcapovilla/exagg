@@ -1,7 +1,7 @@
 defmodule Exagg.SettingsController do
   use Exagg.Web, :controller
 
-  plug Exagg.Plugs.TokenAuth
+  plug Exagg.Plugs.JWTAuth
 
   def opml_upload(conn, %{"file" => file}) do
     case file.content_type do
@@ -18,7 +18,7 @@ defmodule Exagg.SettingsController do
     alias Exagg.Feed
     alias XmlNode, as: Xml
 
-    user_id = conn.assigns[:user_id]
+    user_id = conn.assigns[:user]["id"]
     doc = Xml.from_file file.path
     Enum.each(Xml.all(doc, "body/outline"), fn(node) ->
       case Xml.attr(node, "type") do

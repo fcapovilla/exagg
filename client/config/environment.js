@@ -22,10 +22,22 @@ module.exports = function(environment) {
       heightSensitive    : true,
       widthSensitive     : true,
       injectionFactories : ['view', 'component', 'controller']
-    },
-    'ember-simple-auth': {
-      authenticationRoute: 'login'
     }
+  };
+
+  ENV['ember-simple-auth-token'] = {
+    serverTokenEndpoint: '/api/token-auth/',
+    identificationField: 'username',
+    passwordField: 'password',
+    tokenPropertyName: 'token',
+    authorizationPrefix: 'Bearer ',
+    authorizationHeaderName: 'Authorization',
+    headers: {},
+    refreshAccessTokens: true,
+    serverTokenRefreshEndpoint: '/api/token-refresh/',
+    tokenExpireName: 'exp',
+    refreshLeeway: 300,
+    timeFactor: 1000
   };
 
   if (environment === 'development') {

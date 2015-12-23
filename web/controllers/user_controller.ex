@@ -6,7 +6,7 @@ defmodule Exagg.UserController do
   alias Exagg.User
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.TokenAuth when not action in [:login]
+  plug Exagg.Plugs.JWTAuth when not action in [:token_auth]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, _params) do
@@ -63,16 +63,45 @@ defmodule Exagg.UserController do
     send_resp(conn, :no_content, "")
   end
 
-  def login(conn, %{"username" => username, "password" => password}) do
+  def token_auth(conn, %{"username" => username, "password" => password}) do
+    import Joken
+
     user = Repo.get_by(User, username: username)
     if user && checkpw(password, user.hashed_password) do
-      render(conn, "user.json", %{token: Phoenix.Token.sign(conn, "user", user.id), user: user})
+      jwt =
+        %{user: %{id: user.id, username: user.username, admin: user.admin}}
+        |> token
+        |> with_signer(hs256(conn.secret_key_base))
+        |> with_exp
+        |> with_iat
+        |> sign
+        |> get_compact
+      render(conn, "user.json", %{token: jwt, user: user})
     else
       send_resp(conn, 403, "Access denied")
     end
   end
-  def login(conn, _params) do
+  def token_auth(conn, _params) do
     send_resp(conn, 403, "Access denied")
+  end
+
+  def token_refresh(conn, _params) do
+    import Joken
+
+    user = Repo.get(User, conn.assigns[:user]["id"])
+    if user do
+      jwt =
+        %{user: %{id: user.id, username: user.username, admin: user.admin}}
+        |> token
+        |> with_signer(hs256(conn.secret_key_base))
+        |> with_exp
+        |> with_iat
+        |> sign
+        |> get_compact
+      render(conn, "user.json", %{token: jwt, user: user})
+    else
+      send_resp(conn, 403, "Access denied")
+    end
   end
 
   defp hash_password(changeset) do

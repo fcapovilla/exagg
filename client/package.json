@@ -47,6 +47,7 @@
     "ember-moment": "4.1.0",
     "ember-page-title": "2.0.7",
     "ember-resize": "0.0.10",
-    "ember-simple-auth": "1.0.1"
+    "ember-simple-auth": "1.0.1",
+    "ember-simple-auth-token": "git+https://github.com/jpadilla/ember-simple-auth-token.git#53065aaf732f2664790c7a7cc38bfe5e0180f756"
   }
 }

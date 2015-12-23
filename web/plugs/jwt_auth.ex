@@ -1,10 +1,13 @@
-defmodule Exagg.Plugs.TokenAuth do
+defmodule Exagg.Plugs.JWTAuth do
   import Plug.Conn
+  import Joken
+
+  alias Exagg.User
 
   def init(_default) do
   end
 
-  # Prevent access without a valid Bearer token.
+  # Prevent access without a valid JWT Bearer token.
   def call(conn, _default) do
     auth = conn |> get_req_header("authorization")
     if Enum.empty? auth do
@@ -13,8 +16,9 @@ defmodule Exagg.Plugs.TokenAuth do
       [type, token] = hd(auth) |> String.split(" ")
 
       if type == "Bearer" do
-        case Phoenix.Token.verify(conn, "user", token, max_age: 1209600) do
-          {:ok, user_id} -> authorize(conn, user_id)
+        jwt = token |> token |> with_signer(hs256(conn.secret_key_base))
+        case verify!(jwt) do
+          {:ok, claims} -> authorize(conn, claims["user"])
           {:error, _} -> deny(conn)
         end
       else
@@ -23,9 +27,9 @@ defmodule Exagg.Plugs.TokenAuth do
     end
   end
 
-  # Access authorized, add the current user_id to the conn struct
-  defp authorize(conn, user_id) do
-    assign(conn, :user_id, user_id)
+  # Access authorized, add the current user data to the conn struct
+  defp authorize(conn, user) do
+    assign(conn, :user, user)
   end
 
   # Access denied, send an HTTP 403 response and do not continue

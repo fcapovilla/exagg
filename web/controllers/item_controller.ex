@@ -4,7 +4,7 @@ defmodule Exagg.ItemController do
   alias Exagg.Item
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.TokenAuth
+  plug Exagg.Plugs.JWTAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, %{"folder_id" => folder_id}) do
@@ -37,7 +37,7 @@ defmodule Exagg.ItemController do
   end
 
   def create(conn, %{"data" => item_params}) do
-    changeset = Item.changeset(%Item{user_id: conn.assigns[:user_id]}, item_params)
+    changeset = Item.changeset(%Item{user_id: conn.assigns[:user]["id"]}, item_params)
 
     case Repo.insert(changeset) do
       {:ok, item} ->
