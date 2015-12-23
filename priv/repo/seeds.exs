@@ -9,3 +9,5 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+Exagg.Repo.insert!(%Exagg.User{username: "admin", hashed_password: Comeonin.Bcrypt.hashpwsalt("admin"), admin: true})

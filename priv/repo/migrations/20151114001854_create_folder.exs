@@ -11,7 +11,7 @@ defmodule Exagg.Repo.Migrations.CreateFolder do
       timestamps
     end
     create index(:folders, [:user_id])
-    create unique_index(:folders, [:title])
+    create unique_index(:folders, [:title, :user_id])
 
   end
 end

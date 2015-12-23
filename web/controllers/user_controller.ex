@@ -7,7 +7,7 @@ defmodule Exagg.UserController do
 
   plug :scrub_params, "data" when action in [:create, :update]
   plug Exagg.Plugs.JWTAuth when not action in [:token_auth]
-  plug Exagg.Plugs.AdminOnly when not action in [:token_auth, :token_refresh]
+  plug Exagg.Plugs.AdminOnly when action in [:create, :update, :delete]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, _params) do
