@@ -52,6 +52,7 @@ export default {
   'loading': 'Loading...',
   'settings': 'Settings',
   'import_opml': 'Import an OPML file',
+  'import_favorites': 'Import a JSON favorites file',
   'force_sync': 'Force feed synchronisation',
   'users': 'Users'
 };

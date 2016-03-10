@@ -26,7 +26,8 @@ defmodule Exagg.Router do
     resources "/items", ItemController
     resources "/users", UserController
 
-    post "/opml_upload", SettingsController, :opml_upload
+    post "/opml/upload", SettingsController, :opml_upload
+    post "/favorites/upload", SettingsController, :favorites_upload
     get "/sync", SettingsController, :sync
 
     post "/token-auth", UserController, :token_auth

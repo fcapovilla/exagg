@@ -3,6 +3,82 @@ defmodule Exagg.SettingsController do
 
   plug Exagg.Plugs.JWTAuth
 
+  def favorites_upload(conn, %{"file" => file}) do
+    case file.content_type do
+      "application/json" ->
+        import_favorites(conn, file)
+        redirect conn, to: folder_path(conn, :index)
+      _ ->
+        json(conn, %{error: "Invalid JSON file."})
+    end
+  end
+
+  def import_favorites(conn, file) do
+    require Poison
+    require Timex
+    alias Exagg.Item
+    alias Exagg.Feed
+
+    json = File.read!(file.path) |> Poison.decode!
+    user_id = conn.assigns[:user]["id"]
+
+    Enum.each(json["items"], fn(data) ->
+      item = %Item{
+        user_id: user_id,
+        title: data["title"] || '...',
+        date: try do
+          Ecto.Time.cast!(data["published"])
+        rescue
+          _ -> Ecto.DateTime.utc
+        end,
+        favorite: true,
+        content: cond do
+          data["content"] -> data["content"]["content"]
+          data["summary"] -> data["summary"]["content"]
+        end,
+        url: cond do
+          data["canonical"] -> data["canonical"] |> List.first |> Map.get("href")
+          data["alternate"] -> data["alternate"] |> List.first |> Map.get("href")
+        end,
+      }
+
+      item = %{item | guid: item.url}
+
+      if data["categories"] do
+        item = Enum.find_value(data["categories"], fn(cat) ->
+          if cat =~ ~r/\/state\/com\.google\/read$/ do
+            %{item | read: true}
+          end
+        end)
+      end
+
+      # TODO: Add medias import
+      #if data["enclosure"] do
+      #  item.medias = Enum.map(data["enclosure"], fn(enclosure) ->
+      #    medias[enclosure["type"]] = enclosure["href"]
+      #  end)
+      #end
+
+      Repo.transaction fn ->
+        feed_url = data["origin"]["streamId"] |> String.slice(5..-1)
+        feed = Feed |> Repo.filter(conn) |> Ecto.Query.where([f], f.url == ^feed_url) |> Repo.one
+        if feed != nil do
+          existing = Repo.one(from i in Item, where: i.url == ^item.url and i.title == ^item.title)
+
+          if existing != nil do
+            Repo.update!(Item.changeset(existing, %{favorite: true}))
+          else
+            item = %{item | feed_id: feed.id}
+            Repo.insert!(item)
+          end
+        else
+          item = %{item | orig_feed_title: data["origin"]["title"]}
+          Repo.insert!(item)
+        end
+      end
+    end)
+  end
+
   def opml_upload(conn, %{"file" => file}) do
     case file.content_type do
       "text/x-opml+xml" ->

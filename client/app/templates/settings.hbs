@@ -2,7 +2,12 @@
 
 <div class="form-group">
   <label for="opmlFile">{{t "import_opml"}}</label>
-  {{file-upload url="/api/opml_upload" onUpload="onOpmlUpload"}}
+  {{file-upload url="/api/opml/upload" onUpload="onOpmlUpload"}}
+</div>
+
+<div class="form-group">
+  <label for="opmlFile">{{t "import_favorites"}}</label>
+  {{file-upload url="/api/favorites/upload" onUpload="onOpmlUpload"}}
 </div>
 
 <div class="form-inline">

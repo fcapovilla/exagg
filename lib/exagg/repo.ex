@@ -21,7 +21,7 @@ defmodule Exagg.Repo do
     order(query, conn.params)
   end
   def order(query, _params) do
-    from i in query, order_by: [desc: i.date]
+    from i in query, order_by: [desc: i.date, desc: i.id]
   end
 
   def for_current_user(query, conn) do
