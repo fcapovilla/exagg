@@ -31,8 +31,8 @@ defmodule Exagg.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.0.3"},
-     {:phoenix_ecto, "~> 1.1"},
+    [{:phoenix, "~> 1.1.4"},
+     {:phoenix_ecto, "~> 2.0"},
      {:postgrex, ">= 0.0.0"},
      {:feeder_ex, ">= 0.0.0"},
      {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
@@ -41,7 +41,7 @@ defmodule Exagg.Mixfile do
      {:pipe, ">= 0.0.0"},
      {:paratize, ">= 0.0.0"},
      {:quantum, ">= 1.6.0"},
-     {:phoenix_html, "~> 2.1"},
+     {:phoenix_html, "~> 2.3"},
      {:inflex, "~> 1.5.0"},
      {:scrivener, "~> 1.0"},
      {:comeonin, "~> 1.6"},
