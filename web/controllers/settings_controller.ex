@@ -27,7 +27,11 @@ defmodule Exagg.SettingsController do
         user_id: user_id,
         title: data["title"] || '...',
         date: try do
-          Ecto.Time.cast!(data["published"])
+          data["published"]
+          |> Integer.to_string
+          |> Timex.parse!("{s-epoch}")
+          |> Timex.format!("{RFC3339z}")
+          |> Ecto.DateTime.cast!
         rescue
           _ -> Ecto.DateTime.utc
         end,

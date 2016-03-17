@@ -84,9 +84,9 @@ defmodule Exagg.Syncer do
   defp parse_date(nil) do Ecto.DateTime.local end
   defp parse_date(date) do
     ecto_date = pipe_matching x, {:ok, x},
-      Timex.DateFormat.parse(date, guess_dateformat(date))
+      Timex.parse(date, guess_dateformat(date))
       |> fix_timezone
-      |> Timex.DateFormat.format("{RFC3339z}")
+      |> Timex.format("{RFC3339z}")
       |> Ecto.DateTime.cast
 
     case ecto_date do
