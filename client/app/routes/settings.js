@@ -19,6 +19,10 @@ export default Ember.Route.extend({
 
     onFavoritesUpload(data) {
       this.store.pushPayload(data);
+    },
+
+    onItemsUpload(data) {
+      this.store.pushPayload(data);
     }
   }
 });

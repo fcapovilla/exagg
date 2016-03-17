@@ -6,8 +6,13 @@
 </div>
 
 <div class="form-group">
-  <label for="opmlFile">{{t "import_favorites"}}</label>
+  <label for="favoritesFile">{{t "import_favorites"}}</label>
   {{file-upload url="/api/favorites/upload" onUpload="onOpmlUpload"}}
+</div>
+
+<div class="form-group">
+  <label for="itemsFile">{{t "import_items"}}</label>
+  {{file-upload url="/api/items/upload" onUpload="onItemsUpload"}}
 </div>
 
 <div class="form-inline">

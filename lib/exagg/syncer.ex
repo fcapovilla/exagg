@@ -33,7 +33,7 @@ defmodule Exagg.Syncer do
       }
 
       Repo.transaction fn ->
-        existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id)
+        existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
 
         if existing != nil do
           Repo.update!(Item.changeset(existing, Map.from_struct item))

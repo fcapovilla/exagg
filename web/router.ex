@@ -16,6 +16,11 @@ defmodule Exagg.Router do
   scope "/api", Exagg do
     pipe_through :api
 
+    post "/opml/upload", SettingsController, :opml_upload
+    post "/favorites/upload", SettingsController, :favorites_upload
+    post "/items/upload", SettingsController, :items_upload
+    get "/sync", SettingsController, :sync
+
     resources "/folders", FolderController do
       get "/feeds", FeedController, :index
       get "/items", ItemController, :index
@@ -25,10 +30,6 @@ defmodule Exagg.Router do
     end
     resources "/items", ItemController
     resources "/users", UserController
-
-    post "/opml/upload", SettingsController, :opml_upload
-    post "/favorites/upload", SettingsController, :favorites_upload
-    get "/sync", SettingsController, :sync
 
     post "/token-auth", UserController, :token_auth
     post "/token-refresh", UserController, :token_refresh
