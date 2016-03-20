@@ -23,8 +23,9 @@ defmodule Exagg.SettingsController do
     user_id = conn.assigns[:user]["id"]
 
     Enum.each(json["items"], fn(data) ->
-      item = %Item{
+      item = %{
         user_id: user_id,
+        feed_id: nil,
         title: data["title"] || '...',
         date: try do
           data["published"]
@@ -44,6 +45,9 @@ defmodule Exagg.SettingsController do
           data["canonical"] -> data["canonical"] |> List.first |> Map.get("href")
           data["alternate"] -> data["alternate"] |> List.first |> Map.get("href")
         end,
+        guid: nil,
+        read: false,
+        orig_feed_title: nil,
       }
 
       item = %{item | guid: item.url}
@@ -74,11 +78,11 @@ defmodule Exagg.SettingsController do
             Repo.update!(Item.changeset(existing, %{favorite: true}))
           else
             item = %{item | feed_id: feed.id}
-            Repo.insert!(item)
+            Repo.insert!(Item.changeset(%Item{}, item))
           end
         else
           item = %{item | orig_feed_title: data["origin"]["title"]}
-          Repo.insert!(item)
+          Repo.insert!(Item.changeset(%Item{}, item))
         end
       end
     end)
@@ -162,7 +166,7 @@ defmodule Exagg.SettingsController do
       if feed != nil do
         Enum.each(data["items"], fn(entry) ->
           # TODO: Add medias.
-          item = %Item{
+          item = %{
             title: entry["title"],
             url: entry["url"],
             guid: entry["guid"],
@@ -184,9 +188,9 @@ defmodule Exagg.SettingsController do
             existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
 
             if existing != nil do
-              Repo.update!(Item.changeset(existing, Map.from_struct item))
+              Repo.update!(Item.changeset(existing, item))
             else
-              Repo.insert!(item)
+              Repo.insert!(Item.changeset(%Item{}, item))
             end
           end
 

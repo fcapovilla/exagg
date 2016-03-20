@@ -4,7 +4,7 @@ import momentFormat from 'ember-moment/computeds/format';
 export default Ember.Component.extend({
   tagName: 'li',
 
-  formattedDate: momentFormat('model.date', 'DD/MM/YYYY hh:mm'),
+  formattedDate: momentFormat('model.date', 'DD/MM/YYYY HH:mm'),
 
   openChanged: Ember.observer('model.open', function() {
     if(this.model.get('open')) {

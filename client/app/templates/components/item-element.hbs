@@ -1,8 +1,10 @@
 <div {{action "toggleOpen"}} class="item-container {{if model.open "active"}}">
   <div class="item-labels">
-    <span class="item-feed-title label {{if model.read "label-default" "label-primary"}} hidden-small-phone">
+    {{#if model.feed.title}}
+      <span class="item-feed-title label {{if model.read "label-default" "label-primary"}} hidden-small-phone">
       {{model.feed.title}}
-    </span>
+      </span>
+    {{/if}}
     <span class="item-date label label-default hidden-phone">
       {{formattedDate}}
     </span>
@@ -11,9 +13,9 @@
     <i {{action "toggleFavorite" bubbles=false}} class="favoriteIcon fa fa-star{{unless model.favorite "-o"}}"></i>
     <i {{action "toggleRead" bubbles=false}} class="readUnreadIcon fa fa-circle{{if model.read "-o"}}"></i>
     {{#if model.read}}
-      {{model.title}}
+      {{{model.title}}}
     {{else}}
-      <b>{{model.title}}</b>
+      <b>{{{model.title}}}</b>
     {{/if}}
   </div>
 </div>
