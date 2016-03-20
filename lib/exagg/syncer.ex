@@ -12,7 +12,7 @@ defmodule Exagg.Syncer do
   import Paratize.Pool
 
   def sync_all do
-    Repo.all(Feed) |> parallel_each(&sync_feed(&1), timeout: 10000)
+    Repo.all(Feed) |> parallel_each(&sync_feed(&1), timeout: 20000)
     %{sync: "ok"}
   end
 
@@ -52,7 +52,7 @@ defmodule Exagg.Syncer do
   # Return an empty string on error.
   defp fetch_data(url) do
     try do
-      case HTTPotion.get(url) do
+      case HTTPotion.get(url, [follow_redirects: true, headers: ["User-Agent": "Exagg"]]) do
         %HTTPotion.Response{body: body} -> body
         _ ->
           Logger.error "Error fetching " <> url
