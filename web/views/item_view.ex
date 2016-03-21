@@ -50,7 +50,12 @@ defmodule Exagg.ItemView do
             type: "feeds",
             id: item.feed_id
           }
-        }
+        },
+        medias: %{
+          links: %{
+            related: "./medias"
+          }
+        },
       }
     }
   end

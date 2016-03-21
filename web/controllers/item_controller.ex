@@ -11,29 +11,31 @@ defmodule Exagg.ItemController do
     page =
       (from i in Item,
       left_join: f in assoc(i, :feed),
-      where: f.folder_id == ^folder_id)
+      where: f.folder_id == ^folder_id,
+      preload: [:medias])
       |> Repo.filter(conn)
       |> Repo.order(conn)
       |> Repo.paginate(conn.params)
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
+    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
   end
 
   def index(conn, %{"feed_id" => feed_id}) do
     page =
       (from i in Item,
-      where: i.feed_id == ^feed_id)
+      where: i.feed_id == ^feed_id,
+      preload: [:medias])
       |> Repo.filter(conn)
       |> Repo.order(conn)
       |> Repo.paginate(conn.params)
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
+    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
   end
 
   def index(conn, _params) do
-    page = Item |> Repo.filter(conn) |> Repo.order(conn) |> Repo.paginate(conn.params)
+    page = Item |> Ecto.Query.preload(:medias) |> Repo.filter(conn) |> Repo.order(conn) |> Repo.paginate(conn.params)
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages)
+    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
   end
 
   def create(conn, %{"data" => item_params}) do

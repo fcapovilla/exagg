@@ -24,5 +24,13 @@
     <a class="item-content-title" href="{{model.url}}" target="_blank">{{model.title}}</a>
     <br>
     {{{model.content}}}
+    {{#if model.medias}}
+      <br>
+      {{#each model.medias as |media|}}
+      <a class="btn btn-default" href="{{ media.url }}">
+          <i class="fa fa-download"></i> {{ media.type }}
+      </a>
+      {{/each}}
+    {{/if}}
   </div>
 {{/if}}

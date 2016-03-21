@@ -3,6 +3,7 @@ defmodule Exagg.Syncer do
 
   alias Exagg.Feed
   alias Exagg.Item
+  alias Exagg.Media
   alias Exagg.Repo
 
   import Ecto.Query, only: [from: 2]
@@ -32,7 +33,8 @@ defmodule Exagg.Syncer do
         guid: entry.id || entry.link
       }
 
-      Repo.transaction fn ->
+
+      {:ok, saved_item} = Repo.transaction fn ->
         existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
 
         if existing != nil do
@@ -41,6 +43,16 @@ defmodule Exagg.Syncer do
         else
           Repo.insert!(Item.changeset(%Item{}, item))
         end
+      end
+
+      Repo.delete_all(from m in Media, where: m.item_id == ^saved_item.id)
+
+      if entry.enclosure do
+        Repo.insert!(Media.changeset(%Media{}, %{
+          item_id: saved_item.id,
+          url: entry.enclosure.url,
+          type: entry.enclosure.type,
+        }))
       end
     end)
 
