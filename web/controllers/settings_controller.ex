@@ -1,6 +1,14 @@
 defmodule Exagg.SettingsController do
   use Exagg.Web, :controller
 
+  require Poison
+  require Timex
+
+  alias Exagg.Folder
+  alias Exagg.Item
+  alias Exagg.Feed
+  alias Exagg.Media
+
   plug Exagg.Plugs.JWTAuth
 
   def favorites_upload(conn, %{"file" => file}) do
@@ -14,11 +22,6 @@ defmodule Exagg.SettingsController do
   end
 
   def import_favorites(conn, file) do
-    require Poison
-    require Timex
-    alias Exagg.Item
-    alias Exagg.Feed
-
     json = File.read!(file.path) |> Poison.decode!
     user_id = conn.assigns[:user]["id"]
 
@@ -60,14 +63,7 @@ defmodule Exagg.SettingsController do
         end)
       end
 
-      # TODO: Add medias import
-      #if data["enclosure"] do
-      #  item.medias = Enum.map(data["enclosure"], fn(enclosure) ->
-      #    medias[enclosure["type"]] = enclosure["href"]
-      #  end)
-      #end
-
-      Repo.transaction fn ->
+      {:ok, saved_item} = Repo.transaction fn ->
         feed_url = data["origin"]["streamId"] |> String.slice(5..-1)
         feed = Feed |> Repo.filter(conn) |> Ecto.Query.where([f], f.url == ^feed_url) |> Repo.one
         if feed != nil do
@@ -85,6 +81,18 @@ defmodule Exagg.SettingsController do
           Repo.insert!(Item.changeset(%Item{}, item))
         end
       end
+
+      Repo.delete_all(from m in Media, where: m.item_id == ^saved_item.id)
+
+      if data["enclosure"] do
+        Enum.each(data["enclosure"], fn(enclosure) ->
+          Repo.insert!(Media.changeset(%Media{}, %{
+            item_id: saved_item.id,
+            url: enclosure["href"],
+            type: enclosure["type"],
+          }))
+        end)
+      end
     end)
   end
 
@@ -99,8 +107,6 @@ defmodule Exagg.SettingsController do
   end
 
   defp import_opml(conn, file) do
-    alias Exagg.Folder
-    alias Exagg.Feed
     alias XmlNode, as: Xml
 
     user_id = conn.assigns[:user]["id"]
@@ -151,10 +157,6 @@ defmodule Exagg.SettingsController do
   end
 
   defp import_items(conn, file) do
-    require Poison
-    require Timex
-    alias Exagg.Item
-    alias Exagg.Feed
     import Paratize.Pool
 
     json = File.read!(file.path) |> Poison.decode!
@@ -162,10 +164,9 @@ defmodule Exagg.SettingsController do
 
     parallel_each(json["feeds"], fn(data) ->
       feed_url = data["url"]
-      feed = Feed |> Repo.filter(conn) |> Ecto.Query.where([f], f.url == ^feed_url) |> Repo.one
+      feed = Feed |> Repo.filter(conn) |> Ecto.Query.where([f], f.url == ^feed_url) |> Ecto.Query.limit(1) |> Repo.one
       if feed != nil do
         Enum.each(data["items"], fn(entry) ->
-          # TODO: Add medias.
           item = %{
             title: entry["title"],
             url: entry["url"],
@@ -184,13 +185,33 @@ defmodule Exagg.SettingsController do
             feed_id: feed.id,
           }
 
-          Repo.transaction fn ->
+          {:ok, saved_item} = Repo.transaction fn ->
             existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
 
             if existing != nil do
               Repo.update!(Item.changeset(existing, item))
             else
               Repo.insert!(Item.changeset(%Item{}, item))
+            end
+          end
+
+          Repo.delete_all(from m in Media, where: m.item_id == ^saved_item.id)
+
+          if entry["attachment_url"] do
+            Repo.insert!(Media.changeset(%Media{}, %{
+              item_id: saved_item.id,
+              url: entry["attachment_url"],
+              type: "Download file",
+            }))
+          end
+
+          if entry["medias"] do
+            for {type, url} <- entry["medias"] do
+              Repo.insert!(Media.changeset(%Media{}, %{
+                item_id: saved_item.id,
+                url: url,
+                type: type,
+              }))
             end
           end
 
