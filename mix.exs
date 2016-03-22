@@ -17,10 +17,31 @@ defmodule Exagg.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Exagg, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex, :tzdata, :pipe, :quantum, :httpotion,
-                    :inflex, :scrivener, :paratize, :feeder_ex, :timex, :comeonin]]
+    [
+      mod: {Exagg, []},
+      applications: [
+        :phoenix,
+        :phoenix_html,
+        :cowboy,
+        :logger,
+        :phoenix_ecto,
+        :postgrex,
+        :tzdata,
+        :pipe,
+        :quantum,
+        :httpotion,
+        :inflex,
+        :scrivener,
+        :paratize,
+        :feeder_ex,
+        :feeder,
+        :timex,
+        :comeonin,
+        :joken,
+        :ibrowse,
+        :xmerl,
+      ]
+    ]
   end
 
   # Specifies which paths to compile per environment.
@@ -31,24 +52,26 @@ defmodule Exagg.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.1.4"},
-     {:phoenix_ecto, "~> 2.0"},
-     {:postgrex, ">= 0.0.0"},
-     {:feeder_ex, ">= 0.0.0"},
-     {:httpotion, "~> 2.2.0"},
-     {:timex, ">= 0.0.0"},
-     {:pipe, ">= 0.0.0"},
-     {:paratize, ">= 0.0.0"},
-     {:quantum, ">= 1.6.0"},
-     {:phoenix_html, "~> 2.3"},
-     {:inflex, "~> 1.5.0"},
-     {:scrivener, "~> 1.0"},
-     {:comeonin, "~> 1.6"},
-     {:joken, ">= 1.0.0"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:exrm, "~> 0.19.9"},
-     {:credo, "~> 0.2", only: :dev},
-     {:cowboy, "~> 1.0"}]
+    [
+      {:phoenix, "~> 1.1.4"},
+      {:phoenix_ecto, "~> 2.0"},
+      {:postgrex, ">= 0.0.0"},
+      {:feeder_ex, ">= 0.0.0"},
+      {:httpotion, "~> 2.2.0"},
+      {:timex, ">= 0.0.0"},
+      {:pipe, ">= 0.0.0"},
+      {:paratize, ">= 0.0.0"},
+      {:quantum, ">= 1.6.0"},
+      {:phoenix_html, "~> 2.3"},
+      {:inflex, "~> 1.5.0"},
+      {:scrivener, "~> 1.0"},
+      {:comeonin, "~> 1.6"},
+      {:joken, ">= 1.0.0"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:exrm, "~> 1.0.2"},
+      {:credo, "~> 0.2", only: :dev},
+      {:cowboy, "~> 1.0"},
+    ]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

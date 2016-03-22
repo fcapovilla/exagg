@@ -33,26 +33,22 @@ defmodule Exagg.Syncer do
         guid: entry.id || entry.link
       }
 
-
       {:ok, saved_item} = Repo.transaction fn ->
         existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
 
         if existing != nil do
-          changeset = Item.changeset(existing, item)
-          Repo.update!(changeset)
+          existing |> Item.changeset(item) |> Repo.update!
         else
-          Repo.insert!(Item.changeset(%Item{}, item))
+          %Item{} |> Item.changeset(item) |> Repo.insert!
         end
       end
 
       Repo.delete_all(from m in Media, where: m.item_id == ^saved_item.id)
 
       if entry.enclosure do
-        Repo.insert!(Media.changeset(%Media{}, %{
-          item_id: saved_item.id,
-          url: entry.enclosure.url,
-          type: entry.enclosure.type,
-        }))
+        %Media{}
+        |> Media.changeset(%{item_id: saved_item.id, url: entry.enclosure.url, type: entry.enclosure.type})
+        |> Repo.insert!
       end
     end)
 

@@ -26,6 +26,18 @@ defmodule Exagg.SettingsController do
     user_id = conn.assigns[:user]["id"]
 
     Enum.each(json["items"], fn(data) ->
+      url = cond do
+        data["canonical"] -> data["canonical"] |> List.first |> Map.get("href")
+        data["alternate"] -> data["alternate"] |> List.first |> Map.get("href")
+      end
+
+      read = false
+      if data["categories"] do
+        read = Enum.any?(data["categories"], fn(cat) ->
+          cat =~ ~r/\/state\/com\.google\/read$/
+        end)
+      end
+
       item = %{
         user_id: user_id,
         feed_id: nil,
@@ -44,24 +56,11 @@ defmodule Exagg.SettingsController do
           data["content"] -> data["content"]["content"]
           data["summary"] -> data["summary"]["content"]
         end,
-        url: cond do
-          data["canonical"] -> data["canonical"] |> List.first |> Map.get("href")
-          data["alternate"] -> data["alternate"] |> List.first |> Map.get("href")
-        end,
-        guid: nil,
-        read: false,
+        url: url,
+        guid: url,
+        read: read,
         orig_feed_title: nil,
       }
-
-      item = %{item | guid: item.url}
-
-      if data["categories"] do
-        item = Enum.find_value(data["categories"], fn(cat) ->
-          if cat =~ ~r/\/state\/com\.google\/read$/ do
-            %{item | read: true}
-          end
-        end)
-      end
 
       {:ok, saved_item} = Repo.transaction fn ->
         feed_url = data["origin"]["streamId"] |> String.slice(5..-1)
@@ -71,14 +70,14 @@ defmodule Exagg.SettingsController do
           existing = Repo.one(from i in Item, where: i.url == ^item.url and i.title == ^item.title and i.feed_id == ^item.feed_id)
 
           if existing != nil do
-            Repo.update!(Item.changeset(existing, %{favorite: true}))
+            existing |> Item.changeset(%{favorite: true}) |> Repo.update!
           else
             item = %{item | feed_id: feed.id}
-            Repo.insert!(Item.changeset(%Item{}, item))
+            %Item{} |> Item.changeset(item) |> Repo.insert!
           end
         else
           item = %{item | orig_feed_title: data["origin"]["title"]}
-          Repo.insert!(Item.changeset(%Item{}, item))
+          %Item{} |> Item.changeset(item) |> Repo.insert!
         end
       end
 
@@ -86,11 +85,9 @@ defmodule Exagg.SettingsController do
 
       if data["enclosure"] do
         Enum.each(data["enclosure"], fn(enclosure) ->
-          Repo.insert!(Media.changeset(%Media{}, %{
-            item_id: saved_item.id,
-            url: enclosure["href"],
-            type: enclosure["type"],
-          }))
+          %Media{}
+          |> Media.changeset(%{item_id: saved_item.id, url: enclosure["href"], type: enclosure["type"]})
+          |> Repo.insert!
         end)
       end
     end)
@@ -157,12 +154,10 @@ defmodule Exagg.SettingsController do
   end
 
   defp import_items(conn, file) do
-    import Paratize.Pool
-
     json = File.read!(file.path) |> Poison.decode!
     user_id = conn.assigns[:user]["id"]
 
-    parallel_each(json["feeds"], fn(data) ->
+    Enum.each(json["feeds"], fn(data) ->
       feed_url = data["url"]
       feed = Feed |> Repo.filter(conn) |> Ecto.Query.where([f], f.url == ^feed_url) |> Ecto.Query.limit(1) |> Repo.one
       if feed != nil do
@@ -189,36 +184,32 @@ defmodule Exagg.SettingsController do
             existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
 
             if existing != nil do
-              Repo.update!(Item.changeset(existing, item))
+              existing |> Item.changeset(item) |> Repo.update!
             else
-              Repo.insert!(Item.changeset(%Item{}, item))
+              %Item{} |> Item.changeset(item) |> Repo.insert!
             end
           end
 
           Repo.delete_all(from m in Media, where: m.item_id == ^saved_item.id)
 
           if entry["attachment_url"] do
-            Repo.insert!(Media.changeset(%Media{}, %{
-              item_id: saved_item.id,
-              url: entry["attachment_url"],
-              type: "Download file",
-            }))
+            %Media{}
+            |> Media.changeset(%{item_id: saved_item.id, url: entry["attachment_url"], type: "Download file"})
+            |> Repo.insert!
           end
 
           if entry["medias"] do
             for {type, url} <- entry["medias"] do
-              Repo.insert!(Media.changeset(%Media{}, %{
-                item_id: saved_item.id,
-                url: url,
-                type: type,
-              }))
+              %Media{}
+              |> Media.changeset(%{item_id: saved_item.id, url: url, type: type})
+              |> Repo.insert!
             end
           end
 
           Repo.update_unread_count(feed)
         end)
       end
-    end, timeout: 60000)
+    end)
   end
 
   def sync(conn, _params) do

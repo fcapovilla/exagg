@@ -36,7 +36,7 @@ defmodule Exagg.Repo do
   def update_unread_count(feed = %Exagg.Feed{}, changes \\ %{}) do
     transaction fn ->
       count = one(from i in Exagg.Item, where: i.feed_id == ^feed.id and i.read == false, select: count(i.id))
-      Exagg.Feed.changeset(feed, Dict.put(changes, :unread_count, count)) |> update!
+      feed |> Exagg.Feed.changeset(Dict.put(changes, :unread_count, count)) |> update!
     end
   end
 end
