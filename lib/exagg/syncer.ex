@@ -90,7 +90,7 @@ defmodule Exagg.Syncer do
 
   # Try to parse the date in parameter and return an Ecto.DateTime.
   # If the date cannot be parsed, return the current date.
-  defp parse_date(nil) do Ecto.DateTime.local end
+  defp parse_date(nil) do Ecto.DateTime.utc end
   defp parse_date(date) do
     ecto_date = pipe_matching x, {:ok, x},
       Timex.parse(date, guess_dateformat(date))
@@ -100,7 +100,7 @@ defmodule Exagg.Syncer do
 
     case ecto_date do
       {:ok, x} -> x
-      {:error, _} -> Ecto.DateTime.local
+      {:error, _} -> Ecto.DateTime.utc
     end
   end
 
