@@ -46,10 +46,7 @@ defmodule Exagg.ItemView do
       },
       relationships: %{
         feed: %{
-          data: %{
-            type: "feeds",
-            id: item.feed_id
-          }
+          data: if item.feed_id do %{type: "feeds", id: item.feed_id} end
         },
         medias: %{
           links: %{
