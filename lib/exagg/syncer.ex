@@ -21,39 +21,49 @@ defmodule Exagg.Syncer do
   def sync_feed(feed) do
     parsed_feed = fetch_data(feed.url) |> parse_feed
 
-    # Update feed items
-    Enum.each(parsed_feed.entries, fn entry ->
-      item = %{
+    items = Enum.map(parsed_feed.entries, fn(entry) ->
+      %{
         feed_id: feed.id,
         user_id: feed.user_id,
         title: entry.title || entry.link || entry.id,
         url: entry.link || entry.id,
         content: entry.summary,
         date: parse_date(entry.updated),
-        guid: entry.id || entry.link
-      }
-
-      {:ok, saved_item} = Repo.transaction fn ->
-        existing = Repo.one(from i in Item, where: i.guid == ^item.guid and i.user_id == ^item.user_id and i.feed_id == ^item.feed_id)
-
-        if existing != nil do
-          existing |> Item.changeset(item) |> Repo.update!
+        guid: entry.id || entry.link,
+        medias: if entry.enclosure do
+          [%Media{url: entry.enclosure.url, type: entry.enclosure.type}]
         else
-          %Item{} |> Item.changeset(item) |> Repo.insert!
+          []
         end
-      end
-
-      Repo.delete_all(from m in Media, where: m.item_id == ^saved_item.id)
-
-      if entry.enclosure do
-        %Media{}
-        |> Media.changeset(%{item_id: saved_item.id, url: entry.enclosure.url, type: entry.enclosure.type})
-        |> Repo.insert!
-      end
+      }
     end)
 
-    # Update feed data
-    Repo.update_unread_count(feed, %{title: if parsed_feed.title == "" do feed.title else parsed_feed.title end})
+    # Update feed items
+    {:ok, _} = Repo.transaction fn ->
+      existings = Repo.all(from i in Item, where: i.guid in ^Enum.map(items, &(&1.guid)) and i.user_id == ^feed.user_id and i.feed_id == ^feed.id)
+
+      changesets = Enum.map(items, fn(item) ->
+        existing = Enum.find(existings, &(&1.guid == item.guid))
+        if existing do
+          existing |> Item.changeset(item)
+        else
+          %Item{} |> Item.changeset(item)
+        end
+      end)
+
+      Repo.delete_all(from m in Media, where: m.item_id in ^Enum.map(existings, &(&1.id)))
+
+      Enum.each(changesets, fn(changeset) ->
+        item = Repo.insert_or_update!(changeset)
+
+        Enum.map(changeset.params["medias"], fn(media) ->
+          media |> Media.changeset(%{item_id: item.id}) |> Repo.insert!
+        end)
+      end)
+
+      # Update feed data
+      Repo.update_unread_count(feed, %{title: if parsed_feed.title == "" do feed.title else parsed_feed.title end})
+    end
   end
 
   # Fetch data from the URL in parameter.

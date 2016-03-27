@@ -45,7 +45,13 @@ defmodule Exagg.JSONItemImporter do
 
           Repo.delete_all(from m in Media, where: m.item_id in ^Enum.map(existings, &(&1.id)))
 
-          Enum.each(changesets, &Repo.insert_or_update!/1)
+          Enum.each(changesets, fn(changeset) ->
+            item = Repo.insert_or_update!(changeset)
+
+            Enum.map(changeset.params["medias"], fn(media) ->
+              media |> Media.changeset(%{item_id: item.id}) |> Repo.insert!
+            end)
+          end)
 
           Repo.update_unread_count(feed)
         end
@@ -62,7 +68,7 @@ defmodule Exagg.JSONItemImporter do
 
     if entry["medias"] do
       medias = medias ++ for {type, url} <- entry["medias"] do
-        [%Media{url: url, type: type}|medias]
+        %Media{url: url, type: type}
       end
     end
 
