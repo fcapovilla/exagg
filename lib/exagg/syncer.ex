@@ -13,13 +13,13 @@ defmodule Exagg.Syncer do
   import Paratize.Pool
 
   def sync_all do
-    Repo.all(Feed) |> parallel_each(&sync_feed(&1), timeout: 20000)
+    Feed |> Repo.all |> parallel_each(&sync_feed(&1), timeout: 20000)
     %{sync: "ok"}
   end
 
   # Update items for the feed in parameter.
   def sync_feed(feed) do
-    parsed_feed = fetch_data(feed.url) |> parse_feed
+    parsed_feed = feed.url |> fetch_data |> parse_feed
 
     items = Enum.map(parsed_feed.entries, fn(entry) ->
       %{
@@ -99,8 +99,8 @@ defmodule Exagg.Syncer do
   end
 
   # Try to parse the date in parameter and return an Ecto.DateTime.
-  # If the date cannot be parsed, return the current date.
-  defp parse_date(nil) do Ecto.DateTime.utc end
+  # If the date cannot be parsed, return nil.
+  defp parse_date(nil) do nil end
   defp parse_date(date) do
     ecto_date = pipe_matching x, {:ok, x},
       Timex.parse(date, guess_dateformat(date))
@@ -110,7 +110,7 @@ defmodule Exagg.Syncer do
 
     case ecto_date do
       {:ok, x} -> x
-      {:error, _} -> Ecto.DateTime.utc
+      {:error, _} -> nil
     end
   end
 

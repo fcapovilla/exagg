@@ -82,7 +82,7 @@ defmodule Exagg.JSONItemImporter do
       |> Timex.format!("{RFC3339z}")
       |> Ecto.DateTime.cast!
     rescue
-      _ -> Ecto.DateTime.utc
+      _ -> nil
     end
   end
 end

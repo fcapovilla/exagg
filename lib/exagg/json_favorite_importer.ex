@@ -37,7 +37,7 @@ defmodule Exagg.JSONFavoriteImporter do
           |> Timex.format!("{RFC3339z}")
           |> Ecto.DateTime.cast!
         rescue
-          _ -> Ecto.DateTime.utc
+          _ -> nil
         end,
         favorite: true,
         content: cond do

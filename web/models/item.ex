@@ -30,14 +30,43 @@ defmodule Exagg.Item do
     model
     |> cast(params, @required_fields, @optional_fields)
     |> truncate(:guid, 255)
+    |> ignore_single_change(:date)
+    |> ignore_nil_change(:date)
+    |> default(:date, Ecto.DateTime.utc)
   end
 
+  # Truncate the field to "size" characters
   def truncate(changeset, field, size) do
-    import Ecto.Changeset
-
     value = get_field(changeset, field)
     if String.length(value) > size do
       put_change(changeset, field, String.slice(value, 1..size))
+    else
+      changeset
+    end
+  end
+
+  # Ignore changes to nil for the specified field
+  def ignore_nil_change(changeset, field) do
+    if is_nil(get_change(changeset, field, :empty)) do
+      delete_change(changeset, field)
+    else
+      changeset
+    end
+  end
+
+  # Ignore changeset if only the specified field changed
+  def ignore_single_change(changeset, field) do
+    if Map.keys(changeset.changes) == [field] do
+      delete_change(changeset, field)
+    else
+      changeset
+    end
+  end
+
+  # Force a default value for the field
+  def default(changeset, field, value) do
+    if is_nil(get_field(changeset, field)) do
+      put_change(changeset, field, value)
     else
       changeset
     end
