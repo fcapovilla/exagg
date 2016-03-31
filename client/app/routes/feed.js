@@ -3,11 +3,16 @@ import InfinityRoute from 'ember-infinity/mixins/route';
 
 export default Ember.Route.extend(InfinityRoute, {
   perPageParam: "page_size",
+  filters: Ember.inject.service('item-filters'),
+
+  filterUpdate: Ember.observer('filters.read', function() {
+    this.refresh();
+  }),
 
   model(params) {
     return Ember.RSVP.hash({
       feed: this.store.peekRecord('feed', params.feed_id),
-      items: this.infinityModel('item', {perPage: 20, startingPage: 1, feed_id: params.feed_id})
+      items: this.infinityModel('item', {perPage: 20, startingPage: 1, feed_id: params.feed_id}, {"filter[read]": "filters.read"})
     });
   },
 

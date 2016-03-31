@@ -4,6 +4,7 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   session: Ember.inject.service('session'),
+  filters: Ember.inject.service('item-filters'),
 
   // Fetch current user data from the JWT session token and add it to the session.
   beforeModel(transition) {
@@ -27,6 +28,11 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
   model() {
     return this.store.findAll('folder');
+  },
+
+  setupController(controller, model) {
+    this._super(controller, model);
+    this.get('controller').set('filters', this.get('filters'));
   },
 
   keyboardShortcuts: {
@@ -83,6 +89,10 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
     addFeed() {
       this.transitionTo('feed.new');
+    },
+
+    toggleReadVisibility() {
+      this.get('filters').toggleReadVisibility();
     },
 
     openSettings() {

@@ -44,6 +44,7 @@ export default {
 
   'save': 'Sauvegarder',
   'addFeed': 'Abonnement',
+  'toggleReadVisibility': 'Afficher/Cacher les items lus',
   'logOut': 'Déconnexion',
   'next': 'Suivant',
   'previous': 'Précédent',

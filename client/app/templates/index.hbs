@@ -8,6 +8,13 @@
         <button {{action "addFeed"}} class="btn btn-default" title="{{t "addFeed"}}">
           <i class="fa fa-plus"></i>
         </button>
+        <button {{action "toggleReadVisibility"}} class="btn btn-default hidden-xs" title="{{t "toggleReadVisibility"}}">
+          {{#if filters.showRead}}
+            <i class="fa fa-eye"></i>
+          {{else}}
+            <i class="fa fa-eye-slash"></i>
+          {{/if}}
+        </button>
         <button {{action "openSettings"}} class="btn btn-default hidden-xs" title="{{t "settings"}}">
           <i class="fa fa-cog"></i>
         </button>

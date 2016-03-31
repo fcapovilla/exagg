@@ -44,6 +44,7 @@ export default {
 
   'save': 'Save',
   'addFeed': 'Subscribe',
+  'toggleReadVisibility': 'Show/Hide read items',
   'logOut': 'Log out',
   'next': 'Next',
   'previous': 'Previous',

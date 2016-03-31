@@ -11,7 +11,9 @@ defmodule Exagg.Repo do
     case params["filter"] do
       nil -> query
       filters ->
-        Enum.reduce(filters, query, fn {col, val}, query ->
+        filters
+        |> Enum.reject(fn {col, val} -> val == "" end)
+        |> Enum.reduce(query, fn {col, val}, query ->
           from i in query, where: field(i, ^String.to_atom(col)) == ^val
         end)
     end
