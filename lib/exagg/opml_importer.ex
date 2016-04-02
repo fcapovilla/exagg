@@ -41,5 +41,11 @@ defmodule Exagg.OPMLImporter do
           end)
       end
     end)
+
+    # Set folder and feed positions
+    Repo.update_ordering(Folder, %{id: -1, position: 9999, user_id: user_id}, :user_id)
+    Folder |> Repo.filter(conn) |> Repo.all |> Enum.each(fn folder ->
+      Repo.update_ordering(Feed, %{id: -1, position: 9999, folder_id: folder.id}, :folder_id)
+    end)
   end
 end
