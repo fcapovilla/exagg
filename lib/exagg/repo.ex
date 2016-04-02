@@ -53,4 +53,29 @@ defmodule Exagg.Repo do
       feed |> Exagg.Feed.changeset(Dict.put(changes, :unread_count, count)) |> update!
     end
   end
+
+  def update_position(type, object, scope, sort_column \\ :position) do
+    transaction fn ->
+      list =
+        from(i in type,
+        where: field(i, ^scope) == ^Map.get(object, scope),
+        where: i.id != ^object.id,
+        order_by: field(i, ^sort_column))
+        |> all
+
+      {changesets, _} = Enum.reduce(list, {[], 1}, fn val, {acc, pos} ->
+        acc = acc ++ [if(pos < object.position) do
+          val |> type.changeset(%{position: pos})
+        else
+          val |> type.changeset(%{position: pos+1})
+        end]
+        {acc, pos+1}
+      end)
+
+      Enum.map(changesets, fn(changeset) ->
+        {:ok, model} = update(changeset)
+        model
+      end)
+    end
+  end
 end

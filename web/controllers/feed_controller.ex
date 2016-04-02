@@ -26,11 +26,12 @@ defmodule Exagg.FeedController do
 
   def create(conn, %{"data" => feed_params}) do
     changeset =
-      Feed.changeset(%Feed{user_id: conn.assigns[:user]["id"]}, feed_params)
+      Feed.changeset(%Feed{user_id: conn.assigns[:user]["id"], position: 9999}, feed_params)
       |> fetch_favicon
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
+        Repo.update_position(Feed, feed, :folder_id)
         {:ok, feed} = Exagg.Syncer.sync_feed(feed)
 
         conn
@@ -59,6 +60,7 @@ defmodule Exagg.FeedController do
 
     case Repo.update(changeset) do
       {:ok, feed} ->
+        {:ok, feeds} = Repo.update_position(Feed, feed, :folder_id)
         render(conn, "show.json", feed: feed)
       {:error, changeset} ->
         conn
@@ -78,7 +80,7 @@ defmodule Exagg.FeedController do
   end
 
   defp fetch_favicon(changeset) do
-    case Exagg.FaviconFetcher.fetch(Ecto.Changeset.get_change(changeset, :url)) do
+    case Exagg.FaviconFetcher.fetch(Ecto.Changeset.get_field(changeset, :url)) do
       {:ok, favicon} -> Ecto.Changeset.put_change(changeset, :favicon_id, favicon.id)
       {:error, _} -> changeset
     end
