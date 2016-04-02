@@ -61,7 +61,7 @@ defmodule Exagg.FeedController do
     case Repo.update(changeset) do
       {:ok, feed} ->
         {:ok, feeds} = Repo.update_position(Feed, feed, :folder_id)
-        render(conn, "show.json", feed: feed)
+        render(conn, "show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

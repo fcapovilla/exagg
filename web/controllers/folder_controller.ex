@@ -52,7 +52,7 @@ defmodule Exagg.FolderController do
     case Repo.update(changeset) do
       {:ok, folder} ->
         {:ok, folders} = Repo.update_position(Folder, folder, :user_id)
-        render(conn, "show.json", folder: folder)
+        render(conn, "show.json", folder: folder, sideload: [{folders, Exagg.FolderView, "folder.json"}])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

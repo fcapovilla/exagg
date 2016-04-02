@@ -7,9 +7,9 @@ defmodule Exagg.ItemView do
     |> Map.merge(render("index.json", Map.delete(params, :total_pages)))
   end
 
-  def render("index.json", %{items: items, sideload: sideload}) do
-    %{data: render_many(items, Exagg.ItemView, "item.json", %{sideload: sideload}),
-      included: sideload_relations([], items, sideload)
+  def render("index.json", %{items: items, sideload: sideloads}) do
+    %{data: render_many(items, Exagg.ItemView, "item.json", %{sideload: sideloads}),
+      included: sideload_relations([], items, sideloads)
     }
   end
 
@@ -17,9 +17,9 @@ defmodule Exagg.ItemView do
     %{data: render_many(items, Exagg.ItemView, "item.json")}
   end
 
-  def render("show.json", %{item: item, sideload: sideload}) do
-    %{data: render_one(item, Exagg.ItemView, "item.json", %{sideload: sideload}),
-      included: sideload_relations([], [item], sideload)
+  def render("show.json", %{item: item, sideload: sideloads}) do
+    %{data: render_one(item, Exagg.ItemView, "item.json", %{sideload: sideloads}),
+      included: sideload_relations([], [item], sideloads)
     }
   end
 
@@ -27,9 +27,9 @@ defmodule Exagg.ItemView do
     %{data: render_one(item, Exagg.ItemView, "item.json")}
   end
 
-  def render("item.json", %{item: item, sideload: sideload}) do
+  def render("item.json", %{item: item, sideload: sideloads}) do
     render("item.json", %{item: item})
-    |> insert_relationships(item, sideload)
+    |> insert_relationships(item, sideloads)
   end
   def render("item.json", %{item: item}) do
     %{type: "items",
