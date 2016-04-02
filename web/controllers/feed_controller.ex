@@ -26,7 +26,7 @@ defmodule Exagg.FeedController do
 
   def create(conn, %{"data" => feed_params}) do
     changeset =
-      Feed.changeset(%Feed{user_id: conn.assigns[:user]["id"], position: 9999}, feed_params)
+      Feed.changeset(%Feed{user_id: conn.assigns[:user]["id"], position: 1}, feed_params)
       |> fetch_favicon
 
     case Repo.insert(changeset) do

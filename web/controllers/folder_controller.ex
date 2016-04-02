@@ -21,7 +21,7 @@ defmodule Exagg.FolderController do
   end
 
   def create(conn, %{"data" => folder_params}) do
-    changeset = Folder.changeset(%Folder{user_id: conn.assigns[:user]["id"]}, folder_params)
+    changeset = Folder.changeset(%Folder{user_id: conn.assigns[:user]["id"], position: 1}, folder_params)
 
     case Repo.insert(changeset) do
       {:ok, folder} ->
