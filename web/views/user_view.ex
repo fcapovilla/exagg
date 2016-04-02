@@ -1,25 +1,15 @@
 defmodule Exagg.UserView do
   use Exagg.Web, :view
+  use JaSerializer.PhoenixView
 
-  def render("index.json", %{users: users}) do
-    %{data: render_many(users, Exagg.UserView, "user.json")}
-  end
+  location "/users/:id"
+  attributes [:username, :admin, :password]
 
-  def render("show.json", %{user: user}) do
-    %{data: render_one(user, Exagg.UserView, "user.json")}
+  def password(_struct, _conn) do
+    "********"
   end
 
   def render("user.json", %{token: token, user: _user}) do
     %{token: token}
-  end
-  def render("user.json", %{user: user}) do
-    %{type: "users",
-      id: user.id,
-      attributes: %{
-        username: user.username,
-        password: "********",
-        admin: user.admin
-      }
-    }
   end
 end

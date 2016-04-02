@@ -15,13 +15,13 @@ defmodule Exagg.FeedController do
       |> Repo.sort(conn)
       |> Repo.all
 
-    render(conn, "index.json", feeds: feeds)
+    render(conn, "index.json", data: feeds)
   end
 
   def index(conn, _params) do
     feeds = Feed |> Repo.filter(conn) |> Repo.all
 
-    render(conn, "index.json", feeds: feeds)
+    render(conn, "index.json", data: feeds)
   end
 
   def create(conn, %{"data" => feed_params}) do
@@ -37,7 +37,7 @@ defmodule Exagg.FeedController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", feed_path(conn, :show, feed))
-        |> render("show.json", feed: feed)
+        |> render("show.json", data: feed)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -48,7 +48,7 @@ defmodule Exagg.FeedController do
   def show(conn, %{"id" => id}) do
     feed = Feed |> Repo.filter(conn) |> Repo.get!(id)
 
-    render(conn, "show.json", feed: feed)
+    render(conn, "show.json", data: feed)
   end
 
   def update(conn, %{"id" => id, "data" => feed_params}) do
@@ -61,7 +61,7 @@ defmodule Exagg.FeedController do
     case Repo.update(changeset) do
       {:ok, feed} ->
         {:ok, feeds} = Repo.update_position(Feed, feed, :folder_id)
-        render(conn, "show.json", feed: feed)
+        render(conn, "show.json", data: feed)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

@@ -12,7 +12,7 @@ defmodule Exagg.UserController do
 
   def index(conn, _params) do
     users = Repo.all(User)
-    render(conn, "index.json", users: users)
+    render(conn, "index.json", data: users)
   end
 
   def create(conn, %{"data" => user_params}) do
@@ -25,7 +25,7 @@ defmodule Exagg.UserController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
-        |> render("show.json", user: user)
+        |> render("show.json", data: user)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -35,7 +35,7 @@ defmodule Exagg.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    render(conn, "show.json", user: user)
+    render(conn, "show.json", data: user)
   end
 
   def update(conn, %{"id" => id, "data" => user_params}) do
@@ -46,7 +46,7 @@ defmodule Exagg.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        render(conn, "show.json", user: user)
+        render(conn, "show.json", data: user)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

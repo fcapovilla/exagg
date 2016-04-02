@@ -58,6 +58,7 @@ defmodule Exagg.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:feeder_ex, ">= 0.0.0"},
       {:httpotion, "~> 2.2.0"},
+      {:ja_serializer, "~> 0.8.1"},
       {:timex, ">= 0.0.0"},
       {:pipe, ">= 0.0.0"},
       {:paratize, ">= 0.0.0"},

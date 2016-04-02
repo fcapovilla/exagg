@@ -1,48 +1,27 @@
 defmodule Exagg.FolderView do
   use Exagg.Web, :view
+  use JaSerializer.PhoenixView
 
-  def render("index.json", %{folders: folders, sideload: sideload}) do
-    %{data: render_many(folders, Exagg.FolderView, "folder.json", %{sideload: sideload}),
-      included: sideload_relations([], folders, sideload)
-    }
-  end
-  def render("index.json", %{folders: folders}) do
-    %{data: render_many(folders, Exagg.FolderView, "folder.json")}
-  end
+  location "/folders/:id"
+  attributes [:title, :open, :position]
 
-  def render("show.json", %{folder: folder, sideload: sideload}) do
-    %{data: render_one(folder, Exagg.FolderView, "folder.json", %{sideload: sideload}),
-      included: sideload_relations([], [folder], sideload)
-    }
-  end
-  def render("show.json", %{folder: folder}) do
-    %{data: render_one(folder, Exagg.FolderView, "folder.json")}
-  end
+  has_many :items,
+    #serializer: Exagg.ItemView,
+    links: [
+      related: "./items"
+    ]
 
-  def render("folder.json", %{folder: folder, sideload: sideload}) do
-    render("folder.json", %{folder: folder})
-    |> insert_relationships(folder, sideload)
-  end
-  def render("folder.json", %{folder: folder}) do
-    %{type: "folders",
-      id: folder.id,
-      attributes: %{
-        title: folder.title,
-        open: folder.open,
-        position: folder.position,
-      },
-      relationships: %{
-        feeds: %{
-          links: %{
-            related: "./feeds"
-          }
-        },
-        items: %{
-          links: %{
-            related: "./items"
-          }
-        }
-      }
-    }
+  has_many :feeds,
+    serializer: Exagg.FeedView,
+    include: true
+
+  def feeds(struct, conn) do
+    case struct.feeds do
+      %Ecto.Association.NotLoaded{} ->
+        struct
+        |> Ecto.assoc(:feeds)
+        |> Repo.all
+      other -> other
+    end
   end
 end

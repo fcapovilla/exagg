@@ -24,6 +24,7 @@
   "ibrowse": {:hex, :ibrowse, "4.2.2"},
   "idna": {:hex, :idna, "1.2.0"},
   "inflex": {:hex, :inflex, "1.5.0"},
+  "ja_serializer": {:hex, :ja_serializer, "0.8.1"},
   "joken": {:hex, :joken, "1.1.0"},
   "jose": {:hex, :jose, "1.7.3"},
   "metrics": {:hex, :metrics, "1.0.1"},

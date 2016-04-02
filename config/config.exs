@@ -28,6 +28,10 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
+# Set encoder for JSON-API
+config :phoenix, :format_encoders,
+  "json-api": Poison
+
 # Add support for JSON-API mimetype
 config :plug, :mimes, %{
   "application/vnd.api+json" => ["json-api"]

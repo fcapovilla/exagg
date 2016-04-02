@@ -17,7 +17,7 @@ defmodule Exagg.FolderController do
       |> Repo.sort(conn)
       |> Repo.all
 
-    render(conn, "index.json", folders: folders, sideload: [:feeds])
+    render(conn, "index.json", data: folders)
   end
 
   def create(conn, %{"data" => folder_params}) do
@@ -30,7 +30,7 @@ defmodule Exagg.FolderController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", folder_path(conn, :show, folder))
-        |> render("show.json", folder: folder)
+        |> render("show.json", data: folder)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -41,7 +41,7 @@ defmodule Exagg.FolderController do
   def show(conn, %{"id" => id}) do
     folder = Folder |> Repo.filter(conn) |> Repo.get!(id)
 
-    render(conn, "show.json", folder: folder)
+    render(conn, "show.json", data: folder)
   end
 
   def update(conn, %{"id" => id, "data" => folder_params}) do
@@ -52,7 +52,7 @@ defmodule Exagg.FolderController do
     case Repo.update(changeset) do
       {:ok, folder} ->
         {:ok, folders} = Repo.update_position(Folder, folder, :user_id)
-        render(conn, "show.json", folder: folder)
+        render(conn, "show.json", data: folder)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

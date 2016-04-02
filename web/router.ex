@@ -11,6 +11,8 @@ defmodule Exagg.Router do
 
   pipeline :api do
     plug :accepts, ["json-api", "json"]
+    #plug JaSerializer.ContentTypeNegotiation
+    plug JaSerializer.Deserializer
   end
 
   scope "/api", Exagg do

@@ -17,7 +17,7 @@ defmodule Exagg.ItemController do
       |> Repo.sort(conn)
       |> Repo.paginate(conn.params)
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
+    render(conn, "index.json", data: page.entries, opts: [meta: %{total_pages: page.total_pages}])
   end
 
   def index(conn, %{"feed_id" => feed_id}) do
@@ -29,13 +29,13 @@ defmodule Exagg.ItemController do
       |> Repo.sort(conn)
       |> Repo.paginate(conn.params)
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
+    render(conn, "index.json", data: page.entries, opts: [meta: %{total_pages: page.total_pages}])
   end
 
   def index(conn, _params) do
     page = Item |> Ecto.Query.preload(:medias) |> Repo.filter(conn) |> Repo.sort(conn) |> Repo.paginate(conn.params)
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
+    render(conn, "index.json", data: page.entries, opts: [meta: %{total_pages: page.total_pages}])
   end
 
   def create(conn, %{"data" => item_params}) do
@@ -46,7 +46,7 @@ defmodule Exagg.ItemController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", item_path(conn, :show, item))
-        |> render("show.json", item: item)
+        |> render("show.json", data: item)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -73,7 +73,7 @@ defmodule Exagg.ItemController do
         {:ok, feed} = Repo.update_unread_count(item.feed)
         item = %{item | feed: feed}
 
-        render(conn, "show.json", item: item, sideload: [:feed])
+        render(conn, "show.json", data: item, sideload: [:feed])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
