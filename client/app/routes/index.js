@@ -6,6 +6,9 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   session: Ember.inject.service('session'),
   filters: Ember.inject.service('item-filters'),
 
+  folderSorting: ['position'],
+  sortedFolders: Ember.computed.sort('currentModel', 'folderSorting'),
+
   // Fetch current user data from the JWT session token and add it to the session.
   beforeModel(transition) {
     this._super(transition);
@@ -27,7 +30,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   },
 
   model() {
-    return this.store.findAll('folder');
+    return this.store.query('folder', {sort: 'position'});
   },
 
   setupController(controller, model) {
@@ -42,7 +45,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
   flatList: function() {
     var flatlist = ['items', 'favorites'];
-    this.currentModel.forEach(function(folder) {
+    this.get('sortedFolders').forEach(function(folder) {
       flatlist.push(folder);
       if(folder.get('open')) {
         folder.get('feeds').forEach(function(feed) {
@@ -51,7 +54,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
       }
     });
     return flatlist;
-  }.property('currentModel.@each.open', 'currentModel.@each.feeds'),
+  }.property('sortedFolders.@each.open', 'sortedFolders.@each.feeds'),
 
   actions: {
     previousFeed() {

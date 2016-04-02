@@ -1,4 +1,7 @@
-<div {{action "selectFolder"}} class="folder-title {{if active "active"}}">
+{{#draggable-object content=model}}
+{{#draggable-object-target action="objectDropped" dragOverAction="dragOver" dragOutAction="dragOut"}}
+
+<div {{action "selectFolder"}} class="folder-title {{if active "active"}} {{if dragOver "drag-hovered"}}">
   {{#if model.unreadCount}}
     <div class="folder-badge">
       <span class="badge badge-primary">{{model.unreadCount}}</span>
@@ -26,6 +29,10 @@
     <a {{action "deleteFolder"}} class="btn btn-default" title="{{t "folder.delete"}}"><i class="fa fa-trash-o"></i></a>
   </div>
 {{/if}}
+
+{{/draggable-object-target}}
+{{/draggable-object}}
+
 {{#if model.open}}
   <ul class="list-unstyled">
     {{yield}}

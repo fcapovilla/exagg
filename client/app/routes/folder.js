@@ -12,7 +12,7 @@ export default Ember.Route.extend(InfinityRoute, {
   model(params) {
     return Ember.RSVP.hash({
       folder: this.store.peekRecord('folder', params.folder_id),
-      items: this.infinityModel('item', {perPage: 20, startingPage: 1, folder_id: params.folder_id}, {"filter[read]": "filters.read"})
+      items: this.infinityModel('item', {perPage: 20, startingPage: 1, folder_id: params.folder_id, sort: "-date,id"}, {"filter[read]": "filters.read"})
     });
   },
 

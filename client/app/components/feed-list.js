@@ -2,6 +2,9 @@ import Ember from 'ember';
 import ResizeAware from 'ember-resize/mixins/resize-aware';
 
 export default Ember.Component.extend(ResizeAware, {
+  folderSorting: ['position'],
+  sortedFolders: Ember.computed.sort('model', 'folderSorting'),
+
   debouncedDidResize() {
     var feedlist = this.$('.feed-list');
     feedlist.css('height', Ember.$(window).height() - feedlist.position().top);

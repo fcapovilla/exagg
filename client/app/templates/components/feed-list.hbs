@@ -22,9 +22,9 @@
         </div>
       </div>
     </li>
-    {{#each model as |folder|}}
+    {{#each sortedFolders as |folder|}}
       {{#folder-element model=folder onEdit=(action "editModel") onSelect=(action "selectModel") selectedElement=selectedElement}}
-        {{#each folder.feeds as |feed|}}
+        {{#each folder.sortedFeeds as |feed|}}
           {{feed-element model=feed onEdit=(action "editModel") onSelect=(action "selectModel") selectedElement=selectedElement}}
         {{/each}}
       {{/folder-element}}

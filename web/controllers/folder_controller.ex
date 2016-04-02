@@ -2,17 +2,19 @@ defmodule Exagg.FolderController do
   use Exagg.Web, :controller
 
   alias Exagg.Folder
+  alias Exagg.Feed
 
   plug :scrub_params, "data" when action in [:create, :update]
   plug Exagg.Plugs.JWTAuth
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, _params) do
+    feed_query = from f in Feed, order_by: f.position
     folders =
       (from f in Folder,
-      left_join: fd in assoc(f, :feeds),
-      preload: [feeds: fd])
+      preload: [feeds: ^feed_query])
       |> Repo.filter(conn)
+      |> Repo.sort(conn)
       |> Repo.all
 
     render(conn, "index.json", folders: folders, sideload: [:feeds])

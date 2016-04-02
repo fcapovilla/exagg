@@ -1,4 +1,7 @@
-<div {{action "selectFeed"}} class="feed-title {{if active "active"}}">
+{{#draggable-object content=model}}
+{{#draggable-object-target action="objectDropped" dragOverAction="dragOver" dragOutAction="dragOut"}}
+
+<div {{action "selectFeed"}} class="feed-title {{if active "active"}} {{if dragOver "drag-hovered"}}">
   {{#if model.unreadCount}}
     <div class="feed-badge">
       <span class="badge badge-primary">{{model.unreadCount}}</span>
@@ -27,3 +30,6 @@
     <a {{action "deleteFeed"}} class="btn btn-default" title="{{t "feed.delete"}}"><i class="fa fa-trash-o"></i></a>
   </div>
 {{/if}}
+
+{{/draggable-object-target}}
+{{/draggable-object}}

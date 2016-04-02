@@ -4,6 +4,7 @@ export default Ember.Component.extend({
   tagName: 'li',
 
   menuOpen: false,
+  dragOver: false,
 
   active: Ember.computed('selectedElement', function() {
     return this.get('selectedElement') === this.model;
@@ -42,6 +43,27 @@ export default Ember.Component.extend({
       if(confirm('Delete folder "' + this.model.get("title") + '"?')) {
         this.model.destroyRecord();
       }
+    },
+
+    dragOver() {
+      this.set('dragOver', true);
+    },
+
+    dragOut() {
+      this.set('dragOver', false);
+    },
+
+    objectDropped(object) {
+      switch(object.get('constructor.modelName')) {
+        case 'folder':
+          object.set('position', this.model.get('position')+1);
+          break;
+        case 'feed':
+          object.set('position', 1);
+          object.set('folder', this.model);
+          break;
+      }
+      object.save();
     }
   }
 });

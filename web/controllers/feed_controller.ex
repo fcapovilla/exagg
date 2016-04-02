@@ -12,6 +12,7 @@ defmodule Exagg.FeedController do
       (from f in Feed,
       where: f.folder_id == ^folder_id)
       |> Repo.filter(conn)
+      |> Repo.sort(conn)
       |> Repo.all
 
     render(conn, "index.json", feeds: feeds)

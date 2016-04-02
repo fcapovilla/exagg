@@ -14,7 +14,7 @@ defmodule Exagg.ItemController do
       where: f.folder_id == ^folder_id,
       preload: [:medias])
       |> Repo.filter(conn)
-      |> Repo.order(conn)
+      |> Repo.sort(conn)
       |> Repo.paginate(conn.params)
 
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
@@ -26,14 +26,14 @@ defmodule Exagg.ItemController do
       where: i.feed_id == ^feed_id,
       preload: [:medias])
       |> Repo.filter(conn)
-      |> Repo.order(conn)
+      |> Repo.sort(conn)
       |> Repo.paginate(conn.params)
 
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
   end
 
   def index(conn, _params) do
-    page = Item |> Ecto.Query.preload(:medias) |> Repo.filter(conn) |> Repo.order(conn) |> Repo.paginate(conn.params)
+    page = Item |> Ecto.Query.preload(:medias) |> Repo.filter(conn) |> Repo.sort(conn) |> Repo.paginate(conn.params)
 
     render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
   end

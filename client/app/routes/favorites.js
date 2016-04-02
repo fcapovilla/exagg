@@ -10,7 +10,7 @@ export default Ember.Route.extend(InfinityRoute, {
   }),
 
   model() {
-    return this.infinityModel('item', {perPage: 20, startingPage: 1, filter: {favorite: true}}, {"filter[read]": "filters.read"});
+    return this.infinityModel('item', {perPage: 20, startingPage: 1, filter: {favorite: true}, sort: "-date,id"}, {"filter[read]": "filters.read"});
   },
 
   setupController(controller, model) {

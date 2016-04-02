@@ -8,7 +8,6 @@ defmodule Exagg.Repo.Migrations.CreateFeed do
       add :last_sync, :datetime
       add :unread_count, :integer
       add :sync_status, :text
-      add :favicon, :binary
       add :position, :integer
       add :user_id, references(:users, on_delete: :delete_all)
       add :folder_id, references(:folders, on_delete: :delete_all)

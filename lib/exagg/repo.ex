@@ -2,7 +2,7 @@ defmodule Exagg.Repo do
   use Ecto.Repo, otp_app: :exagg
   use Scrivener, page_size: 20
 
-  import Ecto.Query, only: [from: 1, from: 2]
+  import Ecto.Query, only: [from: 1, from: 2, order_by: 2]
 
   def filter(query, conn = %Plug.Conn{}) do
     query |> filter(conn.params) |> for_current_user(conn)
@@ -12,18 +12,30 @@ defmodule Exagg.Repo do
       nil -> query
       filters ->
         filters
-        |> Enum.reject(fn {col, val} -> val == "" end)
+        |> Enum.reject(fn {_col, val} -> val == "" end)
         |> Enum.reduce(query, fn {col, val}, query ->
           from i in query, where: field(i, ^String.to_atom(col)) == ^val
         end)
     end
   end
 
-  def order(query, conn = %Plug.Conn{}) do
-    order(query, conn.params)
+  def sort(query, conn = %Plug.Conn{}) do
+    sort(query, conn.params)
   end
-  def order(query, _params) do
-    from i in query, order_by: [desc: i.date, desc: i.id]
+  def sort(query, params) do
+    case params["sort"] do
+      nil -> query
+      sort ->
+        sort
+        |> String.split(",")
+        |> Enum.reduce(query, fn val, query ->
+          if String.at(val, 0) == "-" do
+            query |> order_by(desc: ^String.to_atom(String.slice(val, 1..-1)))
+          else
+            query |> order_by(asc: ^String.to_atom(val))
+          end
+        end)
+    end
   end
 
   def for_current_user(query, conn) do

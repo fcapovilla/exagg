@@ -12,5 +12,8 @@ export default DS.Model.extend({
     return this.get('feeds').reduce(function(acc, feed) {
       return acc + feed.get('unreadCount');
     }, 0);
-  })
+  }),
+
+  feedSorting: ['position'],
+  sortedFeeds: Ember.computed.sort('feeds', 'feedSorting')
 });
