@@ -31,7 +31,7 @@ defmodule Exagg.FeedController do
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
-        Repo.update_position(Feed, feed, :folder_id)
+        Repo.update_position(Feed, changeset, :folder_id)
         {:ok, feed} = Exagg.Syncer.sync_feed(feed)
 
         conn
@@ -60,7 +60,7 @@ defmodule Exagg.FeedController do
 
     case Repo.update(changeset) do
       {:ok, feed} ->
-        {:ok, feeds} = Repo.update_position(Feed, feed, :folder_id)
+        {:ok, feeds} = Repo.update_position(Feed, changeset, :folder_id)
         render(conn, "show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}])
       {:error, changeset} ->
         conn

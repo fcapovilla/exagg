@@ -71,7 +71,13 @@ export default Ember.Component.extend({
           object.set('position', this.model.get('folder.position')+1);
           break;
         case 'feed':
-          object.set('position', this.model.get('position')+1);
+          var new_position = this.model.get('position')+1;
+          if(object.get('folder.id') === this.model.get('folder.id')) {
+            if(object.get('position') <= this.model.get('position')) {
+              new_position--;
+            }
+          }
+          object.set('position', new_position);
           object.set('folder', this.model.get('folder'));
           break;
       }

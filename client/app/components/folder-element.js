@@ -56,7 +56,11 @@ export default Ember.Component.extend({
     objectDropped(object) {
       switch(object.get('constructor.modelName')) {
         case 'folder':
-          object.set('position', this.model.get('position')+1);
+          var new_position = this.model.get('position')+1;
+          if(object.get('position') <= this.model.get('position')) {
+            new_position--;
+          }
+          object.set('position', new_position);
           break;
         case 'feed':
           object.set('position', 1);

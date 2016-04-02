@@ -54,20 +54,38 @@ defmodule Exagg.Repo do
     end
   end
 
-  def update_position(type, object, scope, sort_column \\ :position) do
+  def update_position(type, data, scope, sort_column \\ :position)
+  def update_position(type, changeset = %Ecto.Changeset{}, scope, sort_column) do
+    import Ecto.Changeset
+
+    # Detect scope change
+    if Map.has_key?(changeset.changes, scope) do
+      data = %{changeset.model|sort_column => 9999}
+      {:ok, prev_scope_models} = update_position(type, data, scope, sort_column)
+
+      data = %{data|sort_column => get_field(changeset, sort_column), scope => get_field(changeset, scope)}
+      {:ok, new_scope_models} = update_position(type, data, scope, sort_column)
+
+      {:ok, prev_scope_models ++ new_scope_models}
+    else
+      data = %{changeset.model|sort_column => get_field(changeset, sort_column)}
+      update_position(type, data, scope, sort_column)
+    end
+  end
+  def update_position(type, data, scope, sort_column) do
     transaction fn ->
       list =
         from(i in type,
-        where: field(i, ^scope) == ^Map.get(object, scope),
-        where: i.id != ^object.id,
+        where: field(i, ^scope) == ^Map.get(data, scope),
+        where: i.id != ^data.id,
         order_by: field(i, ^sort_column))
         |> all
 
       {changesets, _} = Enum.reduce(list, {[], 1}, fn val, {acc, pos} ->
-        acc = acc ++ [if(pos < object.position) do
-          val |> type.changeset(%{position: pos})
+        acc = acc ++ [if(pos < Map.get(data, sort_column)) do
+          val |> type.changeset(%{sort_column => pos})
         else
-          val |> type.changeset(%{position: pos+1})
+          val |> type.changeset(%{sort_column => pos+1})
         end]
         {acc, pos+1}
       end)
