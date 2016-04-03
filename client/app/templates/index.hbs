@@ -8,33 +8,35 @@
         <button {{action "addFeed"}} class="btn btn-default" title="{{t "addFeed"}}">
           <i class="fa fa-plus"></i>
         </button>
-        <button {{action "toggleReadVisibility"}} class="btn btn-default hidden-xs" title="{{t "toggleReadVisibility"}}">
+        <button {{action "toggleReadVisibility"}} class="btn btn-default" title="{{t "toggleReadVisibility"}}">
           {{#if filters.showRead}}
             <i class="fa fa-eye"></i>
           {{else}}
             <i class="fa fa-eye-slash"></i>
           {{/if}}
         </button>
-        <button {{action "openSettings"}} class="btn btn-default hidden-xs" title="{{t "settings"}}">
+        <button {{action "openSettings"}} class="btn btn-default" title="{{t "settings"}}">
           <i class="fa fa-cog"></i>
         </button>
-        <button {{action "logout"}} class="btn btn-default hidden-xs" title="{{t "logOut"}}">
+        <button {{action "logout"}} class="btn btn-default" title="{{t "logOut"}}">
           <i class="fa fa-sign-out"></i>
         </button>
       </div>
-      <div class="btn-group mobile-item-buttons">
-        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobilePrevItem" title="{{t "next"}}">
+      <div class="btn-group mobile-item-buttons visible-xs {{unless onItemList "invisible"}}">
+        <button {{action "nextItem"}} class="btn btn-default mobile-item-button" title="{{t "next"}}">
           <i class="fa fa-arrow-circle-o-up"></i>
         </button>
-        <button class="btn btn-default mobile-item-button visible-xs invisible" id="mobileNextItem" title="{{t "previous"}}">
+        <button {{action "previousItem"}} class="btn btn-default mobile-item-button" title="{{t "previous"}}">
           <i class="fa fa-arrow-circle-o-down"></i>
         </button>
       </div>
     </div>
   </div>
   <div class="dragbar hidden-xs"></div>
-  {{feed-list model=model selectedElement=selectedElement onSelect="selectFeed" onEdit="editFeed"}}
+  <div class="{{unless onIndex "hidden-xs"}}">
+    {{feed-list model=model selectedElement=selectedElement onSelect="selectFeed" onEdit="editFeed"}}
+  </div>
 </div>
-<div class="content">
+<div class="content {{if onIndex "hidden-xs"}}">
   {{outlet}}
 </div>

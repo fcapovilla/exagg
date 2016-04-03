@@ -110,7 +110,15 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
     refreshData() {
       this.refresh();
-    }
+    },
+
+    nextItem() {
+      //TODO
+    },
+
+    previousItem() {
+      //TODO
+    },
   }
 
 });
