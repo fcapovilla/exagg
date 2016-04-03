@@ -41,6 +41,8 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   keyboardShortcuts: {
     'h' : 'previousFeed',
     'l' : 'nextFeed',
+    'i' : 'toggleReadVisibility',
+    'r' : 'refreshData',
   },
 
   flatList: function() {
@@ -104,6 +106,10 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
     logout() {
       this.get('session').invalidate();
+    },
+
+    refreshData() {
+      this.refresh();
     }
   }
 
