@@ -17,3 +17,12 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: http://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+## Exrm releases
+
+  * Run the "build.sh" script.
+  * Copy the "rel/exagg" folder to your server
+  * Run the following commands to run migrations and start the server
+
+        PORT=8000 exagg/bin/exagg command Elixir.Release.Tasks migrate
+        PORT=8000 exagg/bin/exagg start
