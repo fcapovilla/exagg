@@ -20,8 +20,8 @@ defmodule Exagg.Plugs.JsonApiToEcto do
         conn.params[key]["attributes"]
     end
 
-    if conn.params[key]["id"] do
-      new_data = new_data |> Map.put("id", String.to_integer(conn.params[key]["id"]))
+    new_data = if conn.params[key]["id"] do
+      Map.put(new_data, "id", String.to_integer(conn.params[key]["id"]))
     end
 
     put_in(conn.params[key], new_data)

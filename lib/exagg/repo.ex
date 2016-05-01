@@ -14,7 +14,7 @@ defmodule Exagg.Repo do
         filters
         |> Enum.reject(fn {_col, val} -> val == "" end)
         |> Enum.reduce(query, fn {col, val}, query ->
-          from i in query, where: field(i, ^String.to_atom(col)) == ^val
+          from i in query, where: field(i, ^String.to_existing_atom(col)) == ^val
         end)
     end
   end
@@ -30,9 +30,9 @@ defmodule Exagg.Repo do
         |> String.split(",")
         |> Enum.reduce(query, fn val, query ->
           if String.at(val, 0) == "-" do
-            query |> order_by(desc: ^String.to_atom(String.slice(val, 1..-1)))
+            query |> order_by(desc: ^String.to_existing_atom(String.slice(val, 1..-1)))
           else
-            query |> order_by(asc: ^String.to_atom(val))
+            query |> order_by(asc: ^String.to_existing_atom(val))
           end
         end)
     end
