@@ -6,7 +6,7 @@ export default Ember.Service.extend(Ember.Evented, {
   socket: null,
 
   setup: function() {
-    this.socket = new Socket("ws://localhost:4000/socket");
+    this.socket = new Socket("/socket");
     this.socket.connect();
   }.on('init'),
 

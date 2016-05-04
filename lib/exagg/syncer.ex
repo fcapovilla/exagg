@@ -17,7 +17,7 @@ defmodule Exagg.Syncer do
     Feed |> Repo.all |> parallel_each(&sync_feed(&1), timeout: 20000)
 
     # TODO: Send new item data to channel for every feed with new items.
-    Endpoint.broadcast('items:stream', 'new:items', %{})
+    Endpoint.broadcast("items:stream", "new:items", %{})
 
     %{sync: "ok"}
   end
