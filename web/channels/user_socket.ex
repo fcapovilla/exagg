@@ -2,7 +2,7 @@ defmodule Exagg.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "rooms:*", Exagg.RoomChannel
+  channel "items:stream", Exagg.ItemChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

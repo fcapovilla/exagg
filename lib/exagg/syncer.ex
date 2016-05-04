@@ -5,6 +5,7 @@ defmodule Exagg.Syncer do
   alias Exagg.Item
   alias Exagg.Media
   alias Exagg.Repo
+  alias Exagg.Endpoint
 
   import Ecto.Query, only: [from: 2]
 
@@ -14,6 +15,10 @@ defmodule Exagg.Syncer do
 
   def sync_all do
     Feed |> Repo.all |> parallel_each(&sync_feed(&1), timeout: 20000)
+
+    # TODO: Send new item data to channel for every feed with new items.
+    Endpoint.broadcast('items:stream', 'new:items', %{})
+
     %{sync: "ok"}
   end
 

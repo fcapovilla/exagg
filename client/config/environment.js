@@ -22,6 +22,9 @@ module.exports = function(environment) {
       heightSensitive    : true,
       widthSensitive     : true,
       injectionFactories : ['view', 'component', 'controller']
+    },
+    contentSecurityPolicy: {
+      'connect-src': "'self' ws://localhost:4000",
     }
   };
 

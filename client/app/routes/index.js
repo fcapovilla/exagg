@@ -5,17 +5,24 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   session: Ember.inject.service('session'),
   filters: Ember.inject.service('item-filters'),
+  phoenix: Ember.inject.service('phoenix'),
 
   folderSorting: ['position'],
   sortedFolders: Ember.computed.sort('currentModel', 'folderSorting'),
 
   // Fetch current user data from the JWT session token and add it to the session.
+  // Also connect to phoenix channels using the JWT token.
   beforeModel(transition) {
     this._super(transition);
 
     const token = this.get('session.data.authenticated.token');
+
     const data = this.getTokenData(token);
     this.get('session').set('data.user', data.user);
+
+    if(!this.get('phoenix.socket').isConnected()) {
+      this.get('phoenix').connect(token).on('newItems', this, 'refresh');
+    }
   },
 
   // Extract JSON data from a JWT token.
