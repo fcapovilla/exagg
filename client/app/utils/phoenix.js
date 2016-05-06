@@ -1,3 +1,5 @@
+// jshint ignore: start
+
 // Phoenix Channels JavaScript client
 //
 // ## Socket Connection
