@@ -8,34 +8,42 @@ defmodule Exagg.ItemController do
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
   def index(conn, %{"folder_id" => folder_id}) do
-    page =
+    items =
       (from i in Item,
-      left_join: f in assoc(i, :feed),
+      join: f in assoc(i, :feed),
       where: f.folder_id == ^folder_id,
       preload: [:medias])
       |> Repo.filter(conn)
       |> Repo.sort(conn)
-      |> Repo.paginate(conn.params)
+      |> Repo.paginate(conn)
+      |> Repo.all
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
+    render(conn, "index.json", items: items, sideload: [:medias])
   end
 
   def index(conn, %{"feed_id" => feed_id}) do
-    page =
+    items =
       (from i in Item,
       where: i.feed_id == ^feed_id,
       preload: [:medias])
       |> Repo.filter(conn)
       |> Repo.sort(conn)
-      |> Repo.paginate(conn.params)
+      |> Repo.paginate(conn)
+      |> Repo.all
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
+    render(conn, "index.json", items: items, sideload: [:medias])
   end
 
   def index(conn, _params) do
-    page = Item |> Ecto.Query.preload(:medias) |> Repo.filter(conn) |> Repo.sort(conn) |> Repo.paginate(conn.params)
+    items =
+      Item
+      |> Ecto.Query.preload(:medias)
+      |> Repo.filter(conn)
+      |> Repo.sort(conn)
+      |> Repo.paginate(conn)
+      |> Repo.all
 
-    render(conn, "index.json", items: page.entries, total_pages: page.total_pages, sideload: [:medias])
+    render(conn, "index.json", items: items, sideload: [:medias])
   end
 
   def create(conn, %{"data" => item_params}) do

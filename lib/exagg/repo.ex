@@ -1,8 +1,7 @@
 defmodule Exagg.Repo do
   use Ecto.Repo, otp_app: :exagg
-  use Scrivener, page_size: 20
 
-  import Ecto.Query, only: [from: 1, from: 2, order_by: 2]
+  import Ecto.Query, only: [from: 1, from: 2, order_by: 2, limit: 2, offset: 2]
 
   def filter(query, conn = %Plug.Conn{}) do
     query |> filter(conn.params) |> for_current_user(conn)
@@ -36,6 +35,16 @@ defmodule Exagg.Repo do
           end
         end)
     end
+  end
+
+  def paginate(query, conn = %Plug.Conn{}) do
+    paginate(query, conn.params)
+  end
+  def paginate(query, params) do
+    offset = String.to_integer(params["page_size"]) * String.to_integer(params["page"])
+    limit = String.to_integer(params["page_size"])
+
+    query |> limit(^limit) |> offset(^offset)
   end
 
   def for_current_user(query, conn) do

@@ -31,7 +31,6 @@ defmodule Exagg.Mixfile do
         :quantum,
         :httpotion,
         :inflex,
-        :scrivener,
         :paratize,
         :feeder_ex,
         :feeder,
@@ -53,8 +52,9 @@ defmodule Exagg.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.1.4"},
-      {:phoenix_ecto, "~> 2.0"},
+      {:poison, "~> 2.0"},
+      {:phoenix, ">= 1.2.0-rc"},
+      {:phoenix_ecto, ">= 3.0.0-rc"},
       {:postgrex, ">= 0.0.0"},
       {:feeder_ex, ">= 0.0.0"},
       {:httpotion, "~> 2.0"},
@@ -64,7 +64,6 @@ defmodule Exagg.Mixfile do
       {:quantum, "~> 1.0"},
       {:phoenix_html, "~> 2.0"},
       {:inflex, "~> 1.0"},
-      {:scrivener, "~> 1.0"},
       {:comeonin, "~> 1.0"},
       {:joken, "~> 1.0"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
