@@ -1,7 +1,7 @@
-defmodule Exagg.ItemChannel do
+defmodule Exagg.JsonApiChannel do
   use Exagg.Web, :channel
 
-  def join("items:stream", payload, socket) do
+  def join("jsonapi:stream", payload, socket) do
     if authorized?(payload) do
       {:ok, socket}
     else

@@ -1,12 +1,12 @@
-defmodule Exagg.ItemChannelTest do
+defmodule Exagg.JsonApiChannelTest do
   use Exagg.ChannelCase
 
-  alias Exagg.ItemChannel
+  alias Exagg.JsonApiChannel
 
   setup do
     {:ok, _, socket} =
       socket("user_id", %{some: :assign})
-      |> subscribe_and_join(ItemChannel, "items:lobby")
+      |> subscribe_and_join(JsonApiChannel, "jsonapi:stream")
 
     {:ok, socket: socket}
   end
@@ -16,7 +16,7 @@ defmodule Exagg.ItemChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  test "shout broadcasts to items:lobby", %{socket: socket} do
+  test "shout broadcasts to jsonapi:stream", %{socket: socket} do
     push socket, "shout", %{"hello" => "all"}
     assert_broadcast "shout", %{"hello" => "all"}
   end

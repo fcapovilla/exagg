@@ -21,7 +21,10 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     this.get('session').set('data.user', data.user);
 
     if(!this.get('phoenix.socket').isConnected()) {
-      this.get('phoenix').connect(token).on('newItems', this, 'refresh');
+      var that = this;
+      this.get('phoenix').connect(token).on('newData', function(data) {
+        that.store.pushPayload(data);
+      });
     }
   },
 

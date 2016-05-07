@@ -69,7 +69,7 @@ defmodule Exagg.Repo do
 
     # Detect scope change
     if Map.has_key?(changeset.changes, scope) do
-      data = %{changeset.model|sort_column => 9999}
+      data = %{changeset.data|sort_column => 9999}
       {:ok, prev_scope_models} = update_ordering(type, data, scope, sort_column)
 
       data = %{data|sort_column => get_field(changeset, sort_column), scope => get_field(changeset, scope)}
@@ -77,7 +77,7 @@ defmodule Exagg.Repo do
 
       {:ok, prev_scope_models ++ new_scope_models}
     else
-      data = %{changeset.model|sort_column => get_field(changeset, sort_column)}
+      data = %{changeset.data|sort_column => get_field(changeset, sort_column)}
       update_ordering(type, data, scope, sort_column)
     end
   end

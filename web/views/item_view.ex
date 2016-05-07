@@ -6,17 +6,20 @@ defmodule Exagg.ItemView do
       included: sideload_relations([], items, sideloads)
     }
   end
-
   def render("index.json", %{items: items}) do
     %{data: render_many(items, Exagg.ItemView, "item.json")}
   end
 
+  def render("show.json", options = %{broadcast: broadcast}) do
+    data = render("show.json", Map.delete(options, :broadcast))
+    Exagg.Endpoint.broadcast(elem(broadcast, 0), elem(broadcast, 1), data)
+    data
+  end
   def render("show.json", %{item: item, sideload: sideloads}) do
     %{data: render_one(item, Exagg.ItemView, "item.json", %{sideload: sideloads}),
       included: sideload_relations([], [item], sideloads)
     }
   end
-
   def render("show.json", %{item: item}) do
     %{data: render_one(item, Exagg.ItemView, "item.json")}
   end

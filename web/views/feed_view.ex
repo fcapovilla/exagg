@@ -10,6 +10,11 @@ defmodule Exagg.FeedView do
     %{data: render_many(feeds, Exagg.FeedView, "feed.json")}
   end
 
+  def render("show.json", options = %{broadcast: broadcast}) do
+    data = render("show.json", Map.delete(options, :broadcast))
+    Exagg.Endpoint.broadcast(elem(broadcast, 0), elem(broadcast, 1), data)
+    data
+  end
   def render("show.json", %{feed: feed, sideload: sideloads}) do
     %{data: render_one(feed, Exagg.FeedView, "feed.json", %{sideload: sideloads}),
       included: sideload_relations([], [feed], sideloads)

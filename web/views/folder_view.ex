@@ -10,6 +10,11 @@ defmodule Exagg.FolderView do
     %{data: render_many(folders, Exagg.FolderView, "folder.json")}
   end
 
+  def render("show.json", options = %{broadcast: broadcast}) do
+    data = render("show.json", Map.delete(options, :broadcast))
+    Exagg.Endpoint.broadcast(elem(broadcast, 0), elem(broadcast, 1), data)
+    data
+  end
   def render("show.json", %{folder: folder, sideload: sideloads}) do
     %{data: render_one(folder, Exagg.FolderView, "folder.json", %{sideload: sideloads}),
       included: sideload_relations([], [folder], sideloads)
