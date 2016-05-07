@@ -41,7 +41,7 @@ defmodule Exagg.Repo do
     paginate(query, conn.params)
   end
   def paginate(query, params) do
-    offset = String.to_integer(params["page_size"]) * String.to_integer(params["page"])
+    offset = String.to_integer(params["page_size"]) * (String.to_integer(params["page"])-1)
     limit = String.to_integer(params["page_size"])
 
     query |> limit(^limit) |> offset(^offset)

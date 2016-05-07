@@ -22,6 +22,7 @@ defmodule Exagg.Mixfile do
       applications: [
         :phoenix,
         :phoenix_html,
+        :phoenix_pubsub,
         :cowboy,
         :logger,
         :phoenix_ecto,
