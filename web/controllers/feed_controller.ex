@@ -76,6 +76,8 @@ defmodule Exagg.FeedController do
     # it to always work (and if it does not, it will raise).
     Repo.delete!(feed)
 
+    Exagg.Endpoint.broadcast("jsonapi:stream", "delete", %{type: "feed", id: id})
+
     send_resp(conn, :no_content, "")
   end
 

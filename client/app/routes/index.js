@@ -24,6 +24,12 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
       var that = this;
       this.get('phoenix').connect(token).on('new', function(data) {
         that.store.pushPayload(data);
+      }).on('delete', function(data) {
+        console.log(data);
+        var record = that.store.peekRecord(data.type, data.id);
+        if(record) {
+          that.store.unloadRecord(record);
+        }
       });
     }
   },

@@ -67,6 +67,8 @@ defmodule Exagg.FolderController do
     # it to always work (and if it does not, it will raise).
     Repo.delete!(folder)
 
+    Exagg.Endpoint.broadcast("jsonapi:stream", "delete", %{type: "folder", id: id})
+
     send_resp(conn, :no_content, "")
   end
 end

@@ -96,6 +96,8 @@ defmodule Exagg.ItemController do
     # it to always work (and if it does not, it will raise).
     Repo.delete!(item)
 
+    Exagg.Endpoint.broadcast("jsonapi:stream", "delete", %{type: "item", id: id})
+
     send_resp(conn, :no_content, "")
   end
 end

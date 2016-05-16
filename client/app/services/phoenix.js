@@ -20,6 +20,9 @@ export default Ember.Service.extend(Ember.Evented, {
     chan.on("new", function(data) {
       that.trigger('new', data);
     });
+    chan.on("delete", function(data) {
+      that.trigger('delete', data);
+    });
 
     return this;
   }
