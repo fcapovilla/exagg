@@ -17,14 +17,8 @@ export default Ember.Service.extend(Ember.Evented, {
     });
 
     let that = this;
-    chan.on("new:items", function(data) {
-      that.trigger('newData', data);
-    });
-    chan.on("new:folders", function(data) {
-      that.trigger('newData', data);
-    });
-    chan.on("new:feeds", function(data) {
-      that.trigger('newData', data);
+    chan.on("new", function(data) {
+      that.trigger('new', data);
     });
 
     return this;

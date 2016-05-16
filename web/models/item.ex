@@ -12,7 +12,7 @@ defmodule Exagg.Item do
     field :orig_feed_title, :string
     belongs_to :user, Exagg.User
     belongs_to :feed, Exagg.Feed
-    has_many :medias, Exagg.Media
+    has_many :medias, Exagg.Media, on_replace: :delete
 
     timestamps
   end
@@ -29,10 +29,20 @@ defmodule Exagg.Item do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> cast_optional_assoc(params, :medias)
     |> truncate(:guid, 255)
     |> ignore_single_change(:date)
     |> ignore_nil_change(:date)
     |> default(:date, Ecto.DateTime.utc)
+  end
+
+  # Cast association only if it was provided in params
+  def cast_optional_assoc(changeset, params, assoc, opts \\ []) do
+    if params[assoc] do
+      cast_assoc(changeset, assoc, opts)
+    else
+      changeset
+    end
   end
 
   # Truncate the field to "size" characters

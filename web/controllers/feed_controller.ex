@@ -31,13 +31,13 @@ defmodule Exagg.FeedController do
 
     case Repo.insert(changeset) do
       {:ok, feed} ->
-        Repo.update_ordering(Feed, changeset, :folder_id)
+        {:ok, feeds} = Repo.update_ordering(Feed, feed, :folder_id)
         {:ok, feed} = Exagg.Syncer.sync_feed(feed)
 
         conn
         |> put_status(:created)
         |> put_resp_header("location", feed_path(conn, :show, feed))
-        |> render("show.json", feed: feed, broadcast: {"jsonapi:stream", "new:feeds"})
+        |> render("show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -60,8 +60,8 @@ defmodule Exagg.FeedController do
 
     case Repo.update(changeset) do
       {:ok, feed} ->
-        {:ok, feeds} = Repo.update_ordering(Feed, changeset, :folder_id)
-        render(conn, "show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new:feeds"})
+        {:ok, feeds} = Repo.update_ordering(Feed, feed, :folder_id)
+        render(conn, "show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

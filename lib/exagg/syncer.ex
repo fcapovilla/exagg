@@ -15,9 +15,6 @@ defmodule Exagg.Syncer do
   def sync_all do
     Feed |> Repo.all |> parallel_each(&sync_feed(&1), timeout: 20000)
 
-    # TODO: Send new item data to channel for every feed with new items.
-    Exagg.Endpoint.broadcast("jsonapi:stream", "new:items", %{})
-
     %{sync: "ok"}
   end
 
@@ -35,7 +32,7 @@ defmodule Exagg.Syncer do
         date: parse_date(entry.updated),
         guid: entry.id || entry.link,
         medias: if entry.enclosure do
-          [%Media{url: entry.enclosure.url, type: entry.enclosure.type}]
+          [%{url: entry.enclosure.url, type: entry.enclosure.type}]
         else
           []
         end
@@ -43,30 +40,29 @@ defmodule Exagg.Syncer do
     end)
 
     # Update feed items
-    {:ok, _} = Repo.transaction fn ->
-      existings = Repo.all(from i in Item, where: i.guid in ^Enum.map(items, &(&1.guid)) and i.user_id == ^feed.user_id and i.feed_id == ^feed.id)
+    Repo.transaction fn ->
+      existings = Repo.all(from i in Item, where: i.guid in ^Enum.map(items, &(&1.guid)) and i.user_id == ^feed.user_id and i.feed_id == ^feed.id, preload: [:medias])
 
-      changesets = Enum.map(items, fn(item) ->
+      updated_items = Enum.map(items, fn(item) ->
         existing = Enum.find(existings, &(&1.guid == item.guid))
         if existing do
-          existing |> Item.changeset(item)
+          existing |> Item.changeset(item) |> Repo.update!
         else
-          %Item{} |> Item.changeset(item)
+          %Item{} |> Item.changeset(item) |> Repo.insert!
         end
       end)
 
-      Repo.delete_all(from m in Media, where: m.item_id in ^Enum.map(existings, &(&1.id)))
-
-      Enum.each(changesets, fn(changeset) ->
-        item = Repo.insert_or_update!(changeset)
-
-        Enum.map(changeset.params["medias"], fn(media) ->
-          media |> Media.changeset(%{item_id: item.id}) |> Repo.insert!
-        end)
-      end)
-
       # Update feed data
-      Repo.update_unread_count(feed, %{title: if parsed_feed.title == "" do feed.title else parsed_feed.title end})
+      {:ok, updated_feed} = Repo.update_unread_count(feed, %{title: if parsed_feed.title == "" do feed.title else parsed_feed.title end})
+
+      # Broadcast changes
+      Exagg.FeedView.render("show.json", %{
+        feed: updated_feed,
+        sideload: [{updated_items, Exagg.ItemView, "item.json"}],
+        broadcast: {"jsonapi:stream", "new"}
+      })
+
+      updated_feed
     end
   end
 

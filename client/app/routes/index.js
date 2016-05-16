@@ -22,7 +22,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
     if(!this.get('phoenix.socket').isConnected()) {
       var that = this;
-      this.get('phoenix').connect(token).on('newData', function(data) {
+      this.get('phoenix').connect(token).on('new', function(data) {
         that.store.pushPayload(data);
       });
     }

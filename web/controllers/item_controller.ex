@@ -54,7 +54,7 @@ defmodule Exagg.ItemController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", item_path(conn, :show, item))
-        |> render("show.json", item: item, broadcast: {"jsonapi:stream", "new:items"})
+        |> render("show.json", item: item, broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -81,7 +81,7 @@ defmodule Exagg.ItemController do
         {:ok, feed} = Repo.update_unread_count(item.feed)
         item = %{item | feed: feed}
 
-        render(conn, "show.json", item: item, sideload: [:feed], broadcast: {"jsonapi:stream", "new:items"})
+        render(conn, "show.json", item: item, sideload: [:feed], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

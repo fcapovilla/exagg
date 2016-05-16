@@ -6,7 +6,6 @@ defmodule Exagg.JSONItemImporter do
 
   alias Exagg.Repo
   alias Exagg.Item
-  alias Exagg.Media
   alias Exagg.Feed
 
   def import(file, conn) do
@@ -32,28 +31,28 @@ defmodule Exagg.JSONItemImporter do
         end)
 
         {:ok, _} = Repo.transaction fn ->
-          existings = Repo.all(from i in Item, where: i.guid in ^Enum.map(items, &(&1.guid)) and i.user_id == ^user_id and i.feed_id == ^feed.id)
+          existings = Repo.all(from i in Item, where: i.guid in ^Enum.map(items, &(&1.guid)) and i.user_id == ^user_id and i.feed_id == ^feed.id, preload: [:medias])
 
-          changesets = Enum.map(items, fn(item) ->
+          updated_items = Enum.map(items, fn(item) ->
             existing = Enum.find(existings, &(&1.guid == item.guid))
             if existing do
-              existing |> Item.changeset(item)
+              existing |> Item.changeset(item) |> Repo.update!
             else
-              %Item{} |> Item.changeset(item)
+              %Item{} |> Item.changeset(item) |> Repo.insert!
             end
           end)
 
-          Repo.delete_all(from m in Media, where: m.item_id in ^Enum.map(existings, &(&1.id)))
+          # Update feed data
+          {:ok, updated_feed} = Repo.update_unread_count(feed)
 
-          Enum.each(changesets, fn(changeset) ->
-            item = Repo.insert_or_update!(changeset)
+          # Broadcast changes
+          Exagg.FeedView.render("show.json", %{
+            feed: updated_feed,
+            sideload: [{updated_items, Exagg.ItemView, "item.json"}],
+            broadcast: {"jsonapi:stream", "new"}
+          })
 
-            Enum.map(changeset.params["medias"], fn(media) ->
-              media |> Media.changeset(%{item_id: item.id}) |> Repo.insert!
-            end)
-          end)
-
-          Repo.update_unread_count(feed)
+          updated_feed
         end
       end
     end)
@@ -63,12 +62,12 @@ defmodule Exagg.JSONItemImporter do
     medias = []
 
     if entry["attachment_url"] do
-      medias = [%Media{url: entry["attachment_url"], type: "Download file"}|medias]
+      medias = [%{url: entry["attachment_url"], type: "Download file"}|medias]
     end
 
     if entry["medias"] do
       medias = medias ++ for {type, url} <- entry["medias"] do
-        %Media{url: url, type: type}
+        %{url: url, type: type}
       end
     end
 

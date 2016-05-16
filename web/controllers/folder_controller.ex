@@ -25,12 +25,12 @@ defmodule Exagg.FolderController do
 
     case Repo.insert(changeset) do
       {:ok, folder} ->
-        Repo.update_ordering(Folder, changeset, :user_id)
+        {:ok, folders} = Repo.update_ordering(Folder, folder, :user_id)
 
         conn
         |> put_status(:created)
         |> put_resp_header("location", folder_path(conn, :show, folder))
-        |> render("show.json", folder: folder, broadcast: {"jsonapi:stream", "new:folders"})
+        |> render("show.json", folder: folder, sideload: [{folders, Exagg.FolderView, "folder.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -51,8 +51,8 @@ defmodule Exagg.FolderController do
 
     case Repo.update(changeset) do
       {:ok, folder} ->
-        {:ok, folders} = Repo.update_ordering(Folder, changeset, :user_id)
-        render(conn, "show.json", folder: folder, sideload: [{folders, Exagg.FolderView, "folder.json"}], broadcast: {"jsonapi:stream", "new:folders"})
+        {:ok, folders} = Repo.update_ordering(Folder, folder, :user_id)
+        render(conn, "show.json", folder: folder, sideload: [{folders, Exagg.FolderView, "folder.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

@@ -6,6 +6,7 @@ defmodule Exagg.Plugs.JsonApiToEcto do
   end
 
   # Convert JSON-API data into parameters usable by Ecto.
+  # TODO: do "-" to "_" conversion in attribute names
   def call(conn, key) do
     new_data = case conn.params[key] do
       %{"relationships" => relationships} ->
@@ -22,6 +23,8 @@ defmodule Exagg.Plugs.JsonApiToEcto do
 
     new_data = if conn.params[key]["id"] do
       Map.put(new_data, "id", String.to_integer(conn.params[key]["id"]))
+    else
+      new_data
     end
 
     put_in(conn.params[key], new_data)
