@@ -79,9 +79,8 @@ defmodule Exagg.ItemController do
     case Repo.update(changeset) do
       {:ok, item} ->
         {:ok, feed} = Repo.update_unread_count(item.feed)
-        item = %{item | feed: feed}
 
-        render(conn, "show.json", item: item, sideload: [:feed], broadcast: {"jsonapi:stream", "new"})
+        render(conn, "show.json", item: item, sideload: [{[feed], Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
