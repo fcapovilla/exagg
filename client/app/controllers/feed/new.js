@@ -12,7 +12,8 @@ export default Ember.Controller.extend({
         // Create folder if it doesn't exist.
         if(!folder) {
           folder = that.store.createRecord('folder', {
-            title: that.get('folderTitle')
+            title: that.get('folderTitle'),
+            position: 1
           });
         }
 

@@ -23,9 +23,11 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     if(!this.get('phoenix.socket').isConnected()) {
       var that = this;
       this.get('phoenix').connect(token).on('new', function(data) {
-        that.store.pushPayload(data);
+        // Run next loop to prevent race conditions.
+        Ember.run.next(function() {
+          that.store.pushPayload(data);
+        });
       }).on('delete', function(data) {
-        console.log(data);
         var record = that.store.peekRecord(data.type, data.id);
         if(record) {
           that.store.unloadRecord(record);

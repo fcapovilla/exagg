@@ -61,6 +61,8 @@ defmodule Exagg.FeedController do
     case Repo.update(changeset) do
       {:ok, feed} ->
         {:ok, feeds} = Repo.update_ordering(Feed, feed, :folder_id)
+        feed = Enum.find(feeds, fn(x) -> x.id == feed.id end) || feed
+
         render(conn, "show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn

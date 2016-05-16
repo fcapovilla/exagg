@@ -86,6 +86,7 @@ defmodule Exagg.UserController do
     send_resp(conn, 403, "Access denied")
   end
 
+  # TODO: Add grace period for token refresh
   def token_refresh(conn, _params) do
     import Joken
 

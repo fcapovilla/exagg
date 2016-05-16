@@ -26,6 +26,7 @@ defmodule Exagg.FolderController do
     case Repo.insert(changeset) do
       {:ok, folder} ->
         {:ok, folders} = Repo.update_ordering(Folder, folder, :user_id)
+        folder = Enum.find(folders, fn(x) -> x.id == folder.id end) || folder
 
         conn
         |> put_status(:created)
@@ -52,6 +53,8 @@ defmodule Exagg.FolderController do
     case Repo.update(changeset) do
       {:ok, folder} ->
         {:ok, folders} = Repo.update_ordering(Folder, folder, :user_id)
+        folder = Enum.find(folders, fn(x) -> x.id == folder.id end) || folder
+
         render(conn, "show.json", folder: folder, sideload: [{folders, Exagg.FolderView, "folder.json"}], broadcast: {"jsonapi:stream", "new"})
       {:error, changeset} ->
         conn
