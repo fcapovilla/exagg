@@ -6,7 +6,8 @@ defmodule Exagg.UserController do
   alias Exagg.User
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.JWTAuth when not action in [:token_auth]
+  plug Exagg.Plugs.JWTAuth when not action in [:token_auth, :token_refresh]
+  plug Exagg.Plugs.JWTAuth, %{grace: 24*60*60} when action in [:token_refresh]
   plug Exagg.Plugs.AdminOnly when action in [:create, :update, :delete]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
@@ -86,7 +87,6 @@ defmodule Exagg.UserController do
     send_resp(conn, 403, "Access denied")
   end
 
-  # TODO: Add grace period for token refresh
   def token_refresh(conn, _params) do
     import Joken
 

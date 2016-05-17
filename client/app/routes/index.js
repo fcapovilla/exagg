@@ -25,7 +25,6 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
       this.get('phoenix').connect(token).on('new', function(data) {
         // Run later to prevent race conditions.
         Ember.run.later(that, function() {
-          console.log(data);
           this.store.pushPayload(data);
         }, 100);
       }).on('delete', function(data) {
