@@ -23,10 +23,11 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     if(!this.get('phoenix.socket').isConnected()) {
       var that = this;
       this.get('phoenix').connect(token).on('new', function(data) {
-        // Run next loop to prevent race conditions.
-        Ember.run.next(function() {
-          that.store.pushPayload(data);
-        });
+        // Run later to prevent race conditions.
+        Ember.run.later(that, function() {
+          console.log(data);
+          this.store.pushPayload(data);
+        }, 100);
       }).on('delete', function(data) {
         var record = that.store.peekRecord(data.type, data.id);
         if(record) {
@@ -48,7 +49,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   },
 
   model() {
-    return this.store.query('folder', {sort: 'position'});
+    return this.store.findAll('folder');
   },
 
   setupController(controller, model) {
