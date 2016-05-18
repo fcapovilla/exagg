@@ -54,7 +54,10 @@ defmodule Exagg.ItemController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", item_path(conn, :show, item))
-        |> render("show.json", item: item, broadcast: {"jsonapi:stream", "new"})
+        |> render("show.json", %{
+             item: item,
+             broadcast: {"jsonapi:stream:" <> to_string(item.user_id), "new"}
+           })
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -80,7 +83,11 @@ defmodule Exagg.ItemController do
       {:ok, item} ->
         {:ok, feed} = Repo.update_unread_count(item.feed)
 
-        render(conn, "show.json", item: item, sideload: [{[feed], Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
+        render(conn, "show.json", %{
+          item: item,
+          sideload: [{[feed], Exagg.FeedView, "feed.json"}],
+          broadcast: {"jsonapi:stream:" <> to_string(item.user_id), "new"}
+        })
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -95,7 +102,7 @@ defmodule Exagg.ItemController do
     # it to always work (and if it does not, it will raise).
     Repo.delete!(item)
 
-    Exagg.Endpoint.broadcast("jsonapi:stream", "delete", %{type: "item", id: id})
+    Exagg.Endpoint.broadcast("jsonapi:stream:" <> to_string(item.user_id), "delete", %{type: "item", id: id})
 
     send_resp(conn, :no_content, "")
   end

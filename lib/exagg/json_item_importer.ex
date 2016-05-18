@@ -49,7 +49,7 @@ defmodule Exagg.JSONItemImporter do
           Exagg.FeedView.render("show.json", %{
             feed: updated_feed,
             sideload: [{updated_items, Exagg.ItemView, "item.json"}],
-            broadcast: {"jsonapi:stream", "new"}
+            broadcast: {"jsonapi:stream:" <> to_string(updated_feed.user_id), "new"}
           })
 
           updated_feed

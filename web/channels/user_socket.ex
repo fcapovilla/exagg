@@ -2,7 +2,7 @@ defmodule Exagg.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "jsonapi:stream", Exagg.JsonApiChannel
+  channel "jsonapi:stream:*", Exagg.JsonApiChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

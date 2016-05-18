@@ -22,7 +22,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
     if(!this.get('phoenix.socket').isConnected()) {
       var that = this;
-      this.get('phoenix').connect(token).on('new', function(data) {
+      this.get('phoenix').connect(data.user.id, token).on('new', function(data) {
         // Run later to prevent race conditions.
         Ember.run.later(that, function() {
           this.store.pushPayload(data);

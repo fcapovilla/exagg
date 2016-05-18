@@ -1,8 +1,8 @@
 defmodule Exagg.JsonApiChannel do
   use Exagg.Web, :channel
 
-  def join("jsonapi:stream", payload, socket) do
-    if authorized?(payload) do
+  def join("jsonapi:stream:" <> user_id, payload, socket) do
+    if authorized?(String.to_integer(user_id), payload) do
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -17,14 +17,14 @@ defmodule Exagg.JsonApiChannel do
     {:noreply, socket}
   end
 
-  defp authorized?(payload) do
+  defp authorized?(user_id, payload) do
     import Joken
 
     secret = Application.get_env(:exagg, Exagg.Endpoint)[:secret_key_base]
     jwt = payload["token"] |> token |> with_signer(hs256(secret))
 
     case verify!(jwt) do
-      {:ok, claims} -> true
+      {:ok, claims} -> claims["user"]["id"] == user_id
       {:error, _} -> false
     end
   end

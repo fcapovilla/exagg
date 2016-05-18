@@ -6,7 +6,7 @@ defmodule Exagg.JsonApiChannelTest do
   setup do
     {:ok, _, socket} =
       socket("user_id", %{some: :assign})
-      |> subscribe_and_join(JsonApiChannel, "jsonapi:stream")
+      |> subscribe_and_join(JsonApiChannel, "jsonapi:stream:*")
 
     {:ok, socket: socket}
   end
@@ -16,7 +16,7 @@ defmodule Exagg.JsonApiChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  test "shout broadcasts to jsonapi:stream", %{socket: socket} do
+  test "shout broadcasts to jsonapi:stream:*", %{socket: socket} do
     push socket, "shout", %{"hello" => "all"}
     assert_broadcast "shout", %{"hello" => "all"}
   end

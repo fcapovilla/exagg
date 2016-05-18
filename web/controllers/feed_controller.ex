@@ -37,7 +37,11 @@ defmodule Exagg.FeedController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", feed_path(conn, :show, feed))
-        |> render("show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
+        |> render("show.json", %{
+             feed: feed,
+             sideload: [{feeds, Exagg.FeedView, "feed.json"}],
+             broadcast: {"jsonapi:stream:" <> to_string(feed.user_id), "new"}
+           })
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -63,7 +67,11 @@ defmodule Exagg.FeedController do
         {:ok, feeds} = Repo.update_ordering(Feed, feed, :folder_id)
         feed = Enum.find(feeds, fn(x) -> x.id == feed.id end) || feed
 
-        render(conn, "show.json", feed: feed, sideload: [{feeds, Exagg.FeedView, "feed.json"}], broadcast: {"jsonapi:stream", "new"})
+        render(conn, "show.json", %{
+          feed: feed,
+          sideload: [{feeds, Exagg.FeedView, "feed.json"}],
+          broadcast: {"jsonapi:stream:" <> to_string(feed.user_id), "new"}
+        })
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -78,7 +86,7 @@ defmodule Exagg.FeedController do
     # it to always work (and if it does not, it will raise).
     Repo.delete!(feed)
 
-    Exagg.Endpoint.broadcast("jsonapi:stream", "delete", %{type: "feed", id: id})
+    Exagg.Endpoint.broadcast("jsonapi:stream:" <> to_string(feed.user_id), "delete", %{type: "feed", id: id})
 
     send_resp(conn, :no_content, "")
   end

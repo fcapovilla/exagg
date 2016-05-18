@@ -10,10 +10,10 @@ export default Ember.Service.extend(Ember.Evented, {
     this.socket.connect();
   }.on('init'),
 
-  connect(token) {
-    let chan = this.socket.channel("jsonapi:stream", {token: token});
+  connect(user_id, token) {
+    let chan = this.socket.channel("jsonapi:stream:" + user_id, {token: token});
     chan.join().receive("ok", () => {
-      console.log("Connected to jsonapi:stream!");
+      console.log("Connected to jsonapi:stream:*!");
     });
 
     let that = this;
