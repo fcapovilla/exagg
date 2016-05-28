@@ -9,6 +9,6 @@ export default Ember.Route.extend({
 
   setupController(controller, feed) {
     this._super(controller, feed);
-    this.set('filters.selectedElement', feed);
+    this.get('filters').selectModel(feed);
   }
 });

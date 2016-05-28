@@ -51,8 +51,8 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
     this.onResize();
   },
 
-  didRender() {
-    // Redo scroll event on render to check if we need to load more data.
+  didUpdate() {
+    // Redo scroll event on update to check if we need to load more data.
     this.onScrollThrottled();
   },
 

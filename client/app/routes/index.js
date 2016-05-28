@@ -76,6 +76,20 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     return flatlist;
   }.property('sortedFolders.@each.open', 'sortedFolders.@each.feeds'),
 
+  loadMore() {
+    var that = this;
+    if(this.get('filters.page') !== null) {
+      this.store.query('item', this.get('filters').generateQueryData()).then(function(newItems) {
+        if(newItems.content.length === 0) {
+          that.set('filters.page', null);
+        }
+        else {
+          that.incrementProperty('filters.page');
+        }
+      });
+    }
+  },
+
   actions: {
     previousFeed() {
       var selected = this.get('filters.selectedElement');
@@ -137,18 +151,8 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     },
 
     loadMore() {
-      var that = this;
-      if(this.get('filters.page') !== null) {
-        this.store.query('item', this.get('filters').generateQueryData()).then(function(newItems) {
-          if(newItems.content.length === 0) {
-            that.set('filters.page', null);
-          }
-          else {
-            that.incrementProperty('filters.page');
-          }
-        });
-      }
-    }
+      Ember.run.throttle(this, this.loadMore, 50);
+    },
   }
 
 });

@@ -19,6 +19,7 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     this._super(controller, model.items);
     this.get('filters').selectModel(model.feed);
+    this.send('loadMore');
   },
 
   renderTemplate(controller, model) {
