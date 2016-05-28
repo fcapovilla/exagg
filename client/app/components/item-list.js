@@ -21,8 +21,9 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   itemsSorting: ['date:desc'],
   sortedItems: Ember.computed.sort('filteredItems', 'itemsSorting'),
 
-  modelChange: Ember.observer('model', function() {
+  filterChange: Ember.observer('filters.selectedElement', function() {
     this.send('selectItem', null);
+    this.onScrollThrottled();
   }),
 
   onResize() {
@@ -38,7 +39,7 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
 		}
 	},
   onScrollThrottled() {
-    Ember.run.throttle(this, this.onScroll, 50);
+    Ember.run.throttle(this, this.onScroll, 100, false);
   },
 
   didInsertElement() {
@@ -51,7 +52,7 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
     this.onResize();
   },
 
-  didUpdate() {
+  didRender() {
     // Redo scroll event on update to check if we need to load more data.
     this.onScrollThrottled();
   },
