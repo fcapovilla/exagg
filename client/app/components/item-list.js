@@ -3,28 +3,63 @@ import ResizeAware from 'ember-resize/mixins/resize-aware';
 import KeyboardShortcuts from 'ember-keyboard-shortcuts/mixins/component';
 
 export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
+  filters: Ember.inject.service('item-filters'),
+
   selectedItem: null,
+  _resizeListener: null,
+  _scrollListener: null,
 
   keyboardShortcuts: {
     'j' : 'nextItem',
     'k' : 'previousItem',
   },
 
-  itemsSorting: ['date:desc'],
-  sortedItems: Ember.computed.sort('model', 'itemsSorting'),
+  filteredItems: Ember.computed.filter('model', function(item) {
+    return this.get('filters').filterItem(item);
+  }),
 
-  /*
-  debouncedDidResize() {
-    var itemlist = Ember.$('#item-list');
-    itemlist.css('height', Ember.$(window).height() - itemlist.position().top);
-  },
-  */
+  itemsSorting: ['date:desc'],
+  sortedItems: Ember.computed.sort('filteredItems', 'itemsSorting'),
 
   modelChange: Ember.observer('model', function() {
     this.send('selectItem', null);
   }),
 
-  willDestroy() {
+  onResize() {
+    var itemlist = Ember.$('#item-list');
+    var w = Ember.$(window);
+    itemlist.css('height', w.height() - itemlist.position().top);
+  },
+
+	onScroll() {
+		var elem = Ember.$('#item-list').eq(0);
+		if(elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight()+200) {
+			this.sendAction('onLoadMore');
+		}
+	},
+  onScrollDebounced() {
+    Ember.run.debounce(this, this.onScroll, 100);
+  },
+
+  didInsertElement() {
+    this._resizeListener = Ember.run.bind(this, this.onResize);
+    Ember.$(window).bind('resize', this._resizeListener);
+
+    this._scrollListener = Ember.run.bind(this, this.onScrollDebounced);
+    Ember.$('#item-list').bind('scroll', this._scrollListener);
+
+    this.onResize();
+  },
+
+  didRender() {
+    // Redo scroll event on render to check if we need to load more data.
+    this.onScrollDebounced();
+  },
+
+  willRemoveElement() {
+    Ember.$(window).unbind('resize', this._resizeListener);
+    Ember.$('#item-list').unbind('scroll', this._scrollListener);
+
     this.send('selectItem', null);
   },
 
@@ -63,9 +98,5 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
         this.send('selectItem', item);
       }
     },
-
-    infinityLoad() {
-      this.sendAction('infinityLoad');
-    }
   }
 });

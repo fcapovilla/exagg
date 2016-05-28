@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  filters: Ember.inject.service('item-filters'),
+
   tagName: 'li',
   classNames: ['feed'],
 
@@ -8,8 +10,8 @@ export default Ember.Component.extend({
   validFavicon: true,
   dragOver: false,
 
-  active: Ember.computed('selectedElement', function() {
-    return this.get('selectedElement') === this.model;
+  active: Ember.computed('filters.selectedElement', function() {
+    return this.get('filters.selectedElement') === this.model;
   }),
 
   didInsertElement: function(){

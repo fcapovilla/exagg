@@ -23,9 +23,9 @@
       </div>
     </li>
     {{#each sortedFolders as |folder|}}
-      {{#folder-element model=folder onEdit=(action "editModel") onSelect=(action "selectModel") selectedElement=selectedElement}}
+      {{#folder-element model=folder onEdit=(action "editModel") onSelect=(action "selectModel")}}
         {{#each folder.sortedFeeds as |feed|}}
-          {{feed-element model=feed onEdit=(action "editModel") onSelect=(action "selectModel") selectedElement=selectedElement}}
+          {{feed-element model=feed onEdit=(action "editModel") onSelect=(action "selectModel")}}
         {{/each}}
       {{/folder-element}}
     {{/each}}

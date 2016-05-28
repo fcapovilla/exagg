@@ -78,7 +78,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
 
   actions: {
     previousFeed() {
-      var selected = this.controller.get('selectedElement');
+      var selected = this.get('filters.selectedElement');
       var flatlist = this.get('flatList');
       var nextElement = flatlist[flatlist.indexOf(selected)-1];
       if(nextElement) {
@@ -87,7 +87,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     },
 
     nextFeed() {
-      var selected = this.controller.get('selectedElement');
+      var selected = this.get('filters.selectedElement');
       var flatlist = this.get('flatList');
       var nextElement = flatlist[flatlist.indexOf(selected)+1];
       if(nextElement) {
@@ -96,8 +96,6 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     },
 
     selectFeed(model) {
-      this.controller.set('selectedElement', model);
-
       if(typeof model === 'string') {
         this.transitionTo(model);
       }
@@ -137,6 +135,20 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     previousItem() {
       //TODO
     },
+
+    loadMore() {
+      var that = this;
+      if(this.get('filters.page') !== null) {
+        this.store.query('item', this.get('filters').generateQueryData()).then(function(newItems) {
+          if(newItems.content.length === 0) {
+            that.set('filters.page', null);
+          }
+          else {
+            that.incrementProperty('filters.page');
+          }
+        });
+      }
+    }
   }
 
 });

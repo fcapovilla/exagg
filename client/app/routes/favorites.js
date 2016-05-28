@@ -1,9 +1,6 @@
 import Ember from 'ember';
-import InfinityRoute from 'ember-infinity/mixins/route';
 
-export default Ember.Route.extend(InfinityRoute, {
-  perPageParam: "page_size",
-  _canLoadMore: true,
+export default Ember.Route.extend({
   filters: Ember.inject.service('item-filters'),
 
   filterUpdate: Ember.observer('filters.read', function() {
@@ -11,20 +8,17 @@ export default Ember.Route.extend(InfinityRoute, {
   }),
 
   model() {
-    return this.infinityModel('item', {perPage: 20, startingPage: 1, filter: {favorite: true}, sort: "-date,id"}, {"filter[read]": "filters.read"});
-  },
+    this.store.unloadAll('item');
 
-  afterInfinityModel(items) {
-    var loadedAny = items.get('length') > 0;
-    this.set('_canLoadMore', loadedAny);
+    return this.store.peekAll('item');
   },
 
   setupController(controller, model) {
     this._super(controller, model);
-    this.controllerFor('index').set('selectedElement', 'favorites');
+    this.get('filters').selectModel('favorites');
   },
 
-  renderTemplate: function(controller, model) {
+  renderTemplate(controller, model) {
     this.render('item-list', {
       model: model
     });

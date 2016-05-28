@@ -1,29 +1,36 @@
 import Ember from 'ember';
-import ResizeAware from 'ember-resize/mixins/resize-aware';
 
-export default Ember.Component.extend(ResizeAware, {
+export default Ember.Component.extend({
+  filters: Ember.inject.service('item-filters'),
+
+  _resizeListener: null,
+
   folderSorting: ['position'],
   sortedFolders: Ember.computed.sort('model', 'folderSorting'),
 
-  debouncedDidResize() {
-    var feedlist = this.$('.feed-list');
-    feedlist.css('height', Ember.$(window).height() - feedlist.position().top);
+  onResize() {
+    var feedlist = Ember.$('.feed-list');
+    var w = Ember.$(window);
+    feedlist.css('height', w.height() - feedlist.position().top);
   },
 
-  init() {
-    this._super();
+  didInsertElement() {
+    this._resizeListener = Ember.run.bind(this, this.onResize);
+    Ember.$(window).bind('resize', this._resizeListener);
 
-    Ember.run.scheduleOnce('afterRender', this, function() {
-      this.get('resizeService').trigger('debouncedDidResize');
-    });
+    this.onResize();
   },
 
-  favoritesSelected: Ember.computed('selectedElement', function() {
-    return this.get('selectedElement') === 'favorites';
+  willRemoveElement() {
+    Ember.$(window).unbind('resize', this._resizeListener);
+  },
+
+  favoritesSelected: Ember.computed('filters.selectedElement', function() {
+    return this.get('filters.selectedElement') === 'favorites';
   }),
 
-  itemsSelected: Ember.computed('selectedElement', function() {
-    return this.get('selectedElement') === 'items';
+  itemsSelected: Ember.computed('filters.selectedElement', function() {
+    return this.get('filters.selectedElement') === 'items';
   }),
 
   totalUnreadCount: Ember.computed('model.@each.unreadCount', function() {
