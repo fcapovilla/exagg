@@ -37,15 +37,15 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
 			this.sendAction('onLoadMore');
 		}
 	},
-  onScrollDebounced() {
-    Ember.run.debounce(this, this.onScroll, 100);
+  onScrollThrottled() {
+    Ember.run.throttle(this, this.onScroll, 50);
   },
 
   didInsertElement() {
     this._resizeListener = Ember.run.bind(this, this.onResize);
     Ember.$(window).bind('resize', this._resizeListener);
 
-    this._scrollListener = Ember.run.bind(this, this.onScrollDebounced);
+    this._scrollListener = Ember.run.bind(this, this.onScrollThrottled);
     Ember.$('#item-list').bind('scroll', this._scrollListener);
 
     this.onResize();
@@ -53,7 +53,7 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
 
   didRender() {
     // Redo scroll event on render to check if we need to load more data.
-    this.onScrollDebounced();
+    this.onScrollThrottled();
   },
 
   willRemoveElement() {
