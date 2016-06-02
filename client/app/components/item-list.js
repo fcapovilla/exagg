@@ -10,9 +10,9 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   _scrollListener: null,
 
   keyboardShortcuts: {
-    'j' : 'nextItem',
-    'k' : 'previousItem',
-    'n' : 'displayCurrentItem',
+    'j' : {action: 'nextItem', global: false},
+    'k' : {action: 'previousItem', global: false},
+    'n' : {action: 'displayCurrentItem', global: false},
   },
 
   filteredItems: Ember.computed.filter('model', function(item) {

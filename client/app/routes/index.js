@@ -57,10 +57,10 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   },
 
   keyboardShortcuts: {
-    'h' : 'previousFeed',
-    'l' : 'nextFeed',
-    'i' : 'toggleReadVisibility',
-    'r' : 'refreshData',
+    'h' : {action: 'previousFeed', global: false},
+    'l' : {action: 'nextFeed', global: false},
+    'i' : {action: 'toggleReadVisibility', global: false},
+    'r' : {action: 'refreshData', global: false},
   },
 
   flatList: function() {
