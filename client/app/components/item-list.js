@@ -23,7 +23,6 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
 
   filterChange: Ember.observer('filters.selectedElement', function() {
     this.send('selectItem', null);
-    this.onScrollThrottled();
   }),
 
   onResize() {

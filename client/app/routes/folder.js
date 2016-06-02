@@ -1,45 +1,24 @@
 import Ember from 'ember';
+import PaginatedItems from '../mixins/paginated-items';
 
-export default Ember.Route.extend({
-  filters: Ember.inject.service('item-filters'),
-
-  _allLoaded: false,
-
-  filterUpdate: Ember.observer('filters.read', function() {
-    this.refresh();
-  }),
-
+export default Ember.Route.extend(PaginatedItems, {
   model(params) {
-    this.store.unloadAll('item');
-    this.set('_allLoaded', false);
+    var folder = this.store.peekRecord('folder', params.folder_id);
+    this.get('filters').selectModel(folder);
 
     return Ember.RSVP.hash({
-      folder: this.store.peekRecord('folder', params.folder_id),
-      items: this.store.peekAll('item')
+      items: this.store.peekAll('item'),
+      first_page: this.loadMore()
     });
   },
 
-  setupController(controller, model) {
-    this._super(controller, model.items);
-    this.get('filters').selectModel(model.folder);
-  },
-
-  renderTemplate(controller, model) {
-    this.render('item-list', {
-      model: model.items
-    });
+  renderTemplate() {
+    this.render('item-list');
   },
 
   actions: {
     loadMore() {
-      if(!this.get('_allLoaded')) {
-        this.store.query('item', this.get('filters').generateQueryData()).then(Ember.run.bind(this, function(newItems) {
-          if(newItems.content.length === 0) {
-            this.set('_allLoaded', true);
-          }
-        }));
-        this.incrementProperty('filters.page');
-      }
+      this.loadMore();
     }
   }
 });

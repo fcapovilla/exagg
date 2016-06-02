@@ -66,8 +66,11 @@ export default Ember.Service.extend({
     return query;
   },
 
-
   filterItem(item) {
+    if(this.get('read') === false && item.get('read') && !item.get('open')) {
+      return false;
+    }
+
     if(this.get('favorite') === true && !item.get('favorite')) {
       return false;
     }
