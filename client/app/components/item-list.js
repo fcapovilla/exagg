@@ -12,6 +12,7 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   keyboardShortcuts: {
     'j' : 'nextItem',
     'k' : 'previousItem',
+    'n' : 'displayCurrentItem',
   },
 
   filteredItems: Ember.computed.filter('model', function(item) {
@@ -97,6 +98,10 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
       if(item) {
         this.send('selectItem', item);
       }
+    },
+
+    displayCurrentItem() {
+      window.open(this.get('selectedItem.url'), '_blank');
     },
   }
 });
