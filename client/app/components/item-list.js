@@ -4,10 +4,9 @@ import KeyboardShortcuts from 'ember-keyboard-shortcuts/mixins/component';
 
 export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   filters: Ember.inject.service('item-filters'),
+  events: Ember.inject.service('events'),
 
   selectedItem: null,
-  _resizeListener: null,
-  _scrollListener: null,
 
   keyboardShortcuts: {
     'j' : {action: 'nextItem', global: false},
@@ -15,11 +14,22 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
     'n' : {action: 'displayCurrentItem', global: false},
   },
 
+  _resizeListener: null,
+  _scrollListener: null,
+
+  _nextItemHandler() {
+    this.send('nextItem');
+  },
+
+  _previousItemHandler() {
+    this.send('previousItem');
+  },
+
   filteredItems: Ember.computed.filter('model', function(item) {
     return this.get('filters').filterItem(item);
   }),
 
-  itemsSorting: ['date:desc'],
+  itemsSorting: ['date:desc', 'id:asc'],
   sortedItems: Ember.computed.sort('filteredItems', 'itemsSorting'),
 
   filterChange: Ember.observer('filters.selectedElement', function() {
@@ -49,6 +59,10 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
     this._scrollListener = Ember.run.bind(this, this.onScrollThrottled);
     Ember.$('#item-list').bind('scroll', this._scrollListener);
 
+    this.get('events')
+      .on('nextItem', this, this._nextItemHandler)
+      .on('previousItem', this, this._previousItemHandler);
+
     this.onResize();
   },
 
@@ -60,6 +74,10 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   willRemoveElement() {
     Ember.$(window).unbind('resize', this._resizeListener);
     Ember.$('#item-list').unbind('scroll', this._scrollListener);
+
+    this.get('events')
+      .off('nextItem', this, this._nextItemHandler)
+      .off('previousItem', this, this._previousItemHandler);
 
     this.send('selectItem', null);
   },
@@ -101,7 +119,9 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
     },
 
     displayCurrentItem() {
-      window.open(this.get('selectedItem.url'), '_blank');
+      if(this.get('selectedItem')) {
+        window.open(this.get('selectedItem.url'), '_blank');
+      }
     },
   }
 });

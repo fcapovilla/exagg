@@ -6,6 +6,7 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
   session: Ember.inject.service('session'),
   filters: Ember.inject.service('item-filters'),
   phoenix: Ember.inject.service('phoenix'),
+  events: Ember.inject.service('events'),
 
   folderSorting: ['position'],
   sortedFolders: Ember.computed.sort('currentModel', 'folderSorting'),
@@ -129,11 +130,11 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     },
 
     nextItem() {
-      //TODO
+      this.get('events').trigger('previousItem');
     },
 
     previousItem() {
-      //TODO
+      this.get('events').trigger('nextItem');
     },
   }
 
