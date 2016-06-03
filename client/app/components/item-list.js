@@ -43,8 +43,8 @@ export default Ember.Component.extend(ResizeAware, KeyboardShortcuts, {
   },
 
 	onScroll() {
-		var elem = Ember.$('#item-list').eq(0);
-		if(elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight()+200) {
+		var elem = Ember.$('#item-list');
+		if(elem.length && elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight()+200) {
 			this.sendAction('onLoadMore');
 		}
 	},
