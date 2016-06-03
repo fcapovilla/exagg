@@ -1,13 +1,13 @@
 defmodule Exagg.Plugs.JWTAuth do
   import Plug.Conn
 
-  alias Exagg.User
   alias Exagg.JWT
 
-  def init(options), do: options
+  def init(_default) do
+  end
 
   # Prevent access without a valid JWT Bearer token.
-  def call(conn, options) do
+  def call(conn, _options) do
     auth = conn |> get_req_header("authorization")
     if Enum.empty? auth do
       deny(conn)
