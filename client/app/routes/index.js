@@ -130,11 +130,11 @@ export default Ember.Route.extend(KeyboardShortcuts, AuthenticatedRouteMixin, {
     },
 
     nextItem() {
-      this.get('events').trigger('previousItem');
+      this.get('events').trigger('nextItem');
     },
 
     previousItem() {
-      this.get('events').trigger('nextItem');
+      this.get('events').trigger('previousItem');
     },
   }
 
