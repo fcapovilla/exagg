@@ -1,10 +1,9 @@
 defmodule Exagg.JWT do
   import Joken
 
-  def validate!(token, conn = %Plug.Conn{}) do
-    validate!(token, conn.secret_key_base)
-  end
-  def validate!(token, secret) do
+  def validate!(token) do
+    secret = Application.get_env(:exagg, Exagg.Endpoint)[:secret_key_base]
+
     token
     |> token()
     |> with_signer(hs256(secret))
@@ -14,10 +13,9 @@ defmodule Exagg.JWT do
     |> verify!
   end
 
-  def generate_token(user, conn = %Plug.Conn{}) do
-    generate_token(user, conn.secret_key_base)
-  end
-  def generate_token(user, secret) do
+  def generate_token(user) do
+    secret = Application.get_env(:exagg, Exagg.Endpoint)[:secret_key_base]
+
     %{user: %{id: user.id, username: user.username, admin: user.admin}}
     |> token()
     |> with_signer(hs256(secret))

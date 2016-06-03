@@ -20,9 +20,7 @@ defmodule Exagg.JsonApiChannel do
   end
 
   defp authorized?(user_id, payload) do
-    secret = Application.get_env(:exagg, Exagg.Endpoint)[:secret_key_base]
-
-    case JWT.validate!(payload["token"], secret) do
+    case JWT.validate!(payload["token"]) do
       {:ok, claims} -> claims["user"]["id"] == user_id
       {:error, _} -> false
     end

@@ -68,7 +68,7 @@ defmodule Exagg.UserController do
   def token_auth(conn, %{"username" => username, "password" => password}) do
     user = Repo.get_by(User, username: username)
     if user && checkpw(password, user.hashed_password) do
-      render(conn, "user.json", %{token: JWT.generate_token(user, conn), user: user})
+      render(conn, "user.json", %{token: JWT.generate_token(user), user: user})
     else
       deny(conn)
     end
@@ -76,11 +76,11 @@ defmodule Exagg.UserController do
   def token_auth(conn, _params), do: deny(conn)
 
   def token_refresh(conn, %{"token" => token}) do
-    case JWT.validate!(token, conn) do
+    case JWT.validate!(token) do
       {:ok, claims} ->
         user = Repo.get(User, claims["user"]["id"])
         if user do
-          render(conn, "user.json", %{token: JWT.generate_token(user, conn), user: user})
+          render(conn, "user.json", %{token: JWT.generate_token(user), user: user})
         else
           deny(conn)
         end

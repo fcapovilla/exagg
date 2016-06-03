@@ -15,7 +15,7 @@ defmodule Exagg.Plugs.JWTAuth do
       [type, token] = hd(auth) |> String.split(" ")
 
       if type == "Bearer" do
-        case JWT.validate!(token, conn) do
+        case JWT.validate!(token) do
           {:ok, claims} -> authorize(conn, claims["user"])
           {:error, _} -> deny(conn)
         end
