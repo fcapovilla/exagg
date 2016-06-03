@@ -1,8 +1,8 @@
 defmodule Exagg.Plugs.JWTAuth do
   import Plug.Conn
-  import Joken
 
   alias Exagg.User
+  alias Exagg.JWT
 
   def init(options), do: options
 
@@ -15,15 +15,7 @@ defmodule Exagg.Plugs.JWTAuth do
       [type, token] = hd(auth) |> String.split(" ")
 
       if type == "Bearer" do
-        jwt =
-          token
-          |> token()
-          |> with_signer(hs256(conn.secret_key_base))
-          |> with_validation("iat", &(&1 <= current_time))
-          |> with_validation("nbf", &(&1 < current_time))
-          |> with_validation("exp", &(&1 > current_time))
-
-        case verify!(jwt) do
+        case JWT.validate!(token, conn) do
           {:ok, claims} -> authorize(conn, claims["user"])
           {:error, _} -> deny(conn)
         end

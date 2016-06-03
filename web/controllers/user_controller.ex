@@ -4,6 +4,7 @@ defmodule Exagg.UserController do
   import Comeonin.Bcrypt, only: [hashpwsalt: 1, checkpw: 2]
 
   alias Exagg.User
+  alias Exagg.JWT
 
   plug :scrub_params, "data" when action in [:create, :update]
   plug Exagg.Plugs.JWTAuth when not action in [:token_auth, :token_refresh]
@@ -67,8 +68,7 @@ defmodule Exagg.UserController do
   def token_auth(conn, %{"username" => username, "password" => password}) do
     user = Repo.get_by(User, username: username)
     if user && checkpw(password, user.hashed_password) do
-      jwt = generate_jwt(conn, user)
-      render(conn, "user.json", %{token: jwt, user: user})
+      render(conn, "user.json", %{token: JWT.generate_token(user, conn), user: user})
     else
       deny(conn)
     end
@@ -76,23 +76,11 @@ defmodule Exagg.UserController do
   def token_auth(conn, _params), do: deny(conn)
 
   def token_refresh(conn, %{"token" => token}) do
-    import Joken
-
-    result =
-      token
-      |> token()
-      |> with_signer(hs256(conn.secret_key_base))
-      |> with_validation("iat", &(&1 <= current_time))
-      |> with_validation("nbf", &(&1 < current_time))
-      |> with_validation("exp", &(&1 > current_time))
-      |> verify!
-
-    case result do
+    case JWT.validate!(token, conn) do
       {:ok, claims} ->
         user = Repo.get(User, claims["user"]["id"])
         if user do
-          jwt = generate_jwt(conn, user)
-          render(conn, "user.json", %{token: jwt, user: user})
+          render(conn, "user.json", %{token: JWT.generate_token(user, conn), user: user})
         else
           deny(conn)
         end
@@ -100,19 +88,6 @@ defmodule Exagg.UserController do
     end
   end
   def token_refresh(conn, _params), do: deny(conn)
-
-  defp generate_jwt(conn, user) do
-    import Joken
-
-    %{user: %{id: user.id, username: user.username, admin: user.admin}}
-    |> token
-    |> with_signer(hs256(conn.secret_key_base))
-    |> with_exp
-    |> with_iat
-    |> with_nbf
-    |> sign
-    |> get_compact
-  end
 
   defp deny(conn) do
     send_resp(conn, 403, ~s({"error":"Access denied"}))
