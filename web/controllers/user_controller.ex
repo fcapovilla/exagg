@@ -7,7 +7,6 @@ defmodule Exagg.UserController do
 
   plug :scrub_params, "data" when action in [:create, :update]
   plug Exagg.Plugs.JWTAuth when not action in [:token_auth, :token_refresh]
-  plug Exagg.Plugs.JWTAuth, %{grace: 24*60*60} when action in [:token_refresh]
   plug Exagg.Plugs.AdminOnly when action in [:create, :update, :delete]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
@@ -66,44 +65,57 @@ defmodule Exagg.UserController do
   end
 
   def token_auth(conn, %{"username" => username, "password" => password}) do
-    import Joken
-
     user = Repo.get_by(User, username: username)
     if user && checkpw(password, user.hashed_password) do
-      jwt =
-        %{user: %{id: user.id, username: user.username, admin: user.admin}}
-        |> token
-        |> with_signer(hs256(conn.secret_key_base))
-        |> with_exp
-        |> with_iat
-        |> sign
-        |> get_compact
+      jwt = generate_jwt(conn, user)
       render(conn, "user.json", %{token: jwt, user: user})
     else
-      send_resp(conn, 403, "Access denied")
+      deny(conn)
     end
   end
-  def token_auth(conn, _params) do
-    send_resp(conn, 403, "Access denied")
-  end
+  def token_auth(conn, _params), do: deny(conn)
 
-  def token_refresh(conn, _params) do
+  def token_refresh(conn, %{"token" => token}) do
     import Joken
 
-    user = Repo.get(User, conn.assigns[:user]["id"])
-    if user do
-      jwt =
-        %{user: %{id: user.id, username: user.username, admin: user.admin}}
-        |> token
-        |> with_signer(hs256(conn.secret_key_base))
-        |> with_exp
-        |> with_iat
-        |> sign
-        |> get_compact
-      render(conn, "user.json", %{token: jwt, user: user})
-    else
-      send_resp(conn, 403, "Access denied")
+    result =
+      token
+      |> token()
+      |> with_signer(hs256(conn.secret_key_base))
+      |> with_validation("iat", &(&1 <= current_time))
+      |> with_validation("nbf", &(&1 < current_time))
+      |> with_validation("exp", &(&1 > current_time))
+      |> verify!
+
+    case result do
+      {:ok, claims} ->
+        user = Repo.get(User, claims["user"]["id"])
+        if user do
+          jwt = generate_jwt(conn, user)
+          render(conn, "user.json", %{token: jwt, user: user})
+        else
+          deny(conn)
+        end
+      {:error, _} -> deny(conn)
     end
+  end
+  def token_refresh(conn, _params), do: deny(conn)
+
+  defp generate_jwt(conn, user) do
+    import Joken
+
+    %{user: %{id: user.id, username: user.username, admin: user.admin}}
+    |> token
+    |> with_signer(hs256(conn.secret_key_base))
+    |> with_exp
+    |> with_iat
+    |> with_nbf
+    |> sign
+    |> get_compact
+  end
+
+  defp deny(conn) do
+    send_resp(conn, 403, ~s({"error":"Access denied"}))
   end
 
   defp hash_password(changeset) do
