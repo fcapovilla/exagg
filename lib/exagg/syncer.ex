@@ -6,14 +6,17 @@ defmodule Exagg.Syncer do
   alias Exagg.Media
   alias Exagg.Repo
 
-  import Ecto.Query, only: [from: 2]
+  import Ecto.Query
 
   use Timex
   import Pipe
   import Paratize.Pool
 
   def sync_all do
-    Feed |> Repo.all |> parallel_each(&sync_feed(&1), timeout: 20000)
+    Feed
+    |> where([f], datetime_add(f.last_sync, f.update_frequency, "minute") < ^Ecto.DateTime.utc)
+    |> Repo.all
+    |> parallel_each(&sync_feed(&1), timeout: 20000)
 
     %{sync: "ok"}
   end
@@ -53,7 +56,10 @@ defmodule Exagg.Syncer do
       end)
 
       # Update feed data
-      {:ok, updated_feed} = Repo.update_unread_count(feed, %{title: if parsed_feed.title == "" do feed.title else parsed_feed.title end})
+      {:ok, updated_feed} = Repo.update_unread_count(feed, %{
+        title: if parsed_feed.title == "" do feed.title else parsed_feed.title end,
+        last_sync: Ecto.DateTime.utc
+      })
 
       # Broadcast changes
       Exagg.FeedView.render("show.json", %{

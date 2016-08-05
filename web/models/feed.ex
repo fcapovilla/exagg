@@ -5,6 +5,8 @@ defmodule Exagg.Feed do
     field :title, :string
     field :url, :string
     field :last_sync, Ecto.DateTime
+    field :update_frequency, :integer
+    field :auto_frequency, :boolean
     field :unread_count, :integer
     field :sync_status, :string
     field :position, :integer
@@ -17,7 +19,7 @@ defmodule Exagg.Feed do
   end
 
   @required_fields ~w(url)
-  @optional_fields ~w(title sync_status position last_sync unread_count folder_id user_id favicon_id)
+  @optional_fields ~w(title sync_status position last_sync update_frequency auto_frequency unread_count folder_id user_id favicon_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

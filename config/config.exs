@@ -14,6 +14,8 @@ config :exagg, Exagg.Endpoint,
   pubsub: [name: Exagg.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :exagg, ecto_repos: [Exagg.Repo]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

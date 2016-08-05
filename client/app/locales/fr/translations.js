@@ -7,6 +7,8 @@ export default {
     'url': 'URL',
     'folder': 'Dossier',
     'reset': 'Réinitialiser le flux',
+    'updateFrequency': 'Fréquence de mise à jour (en minutes)',
+    'autoFrequency': 'Ajustement automatique de la fréquence de mise à jour',
     'pshb': {
       'hub': 'Hub',
       'topic': 'Sujet',

@@ -5,6 +5,14 @@
     {{input type="text" class="form-control" id="feedUrl" value=model.url}}
     <label for="feedFolder">{{t "feed.folder"}}</label>
     {{input type="text" class="form-control" id="feedFolder" value=folderTitle}}
+    <label for="updateFrequency">{{t "feed.updateFrequency"}}</label>
+    {{input type="text" class="form-control" id="updateFrequency" value=model.updateFrequency}}
+    <div class="checkbox">
+      <label for="autoFrequency">
+        {{input type="checkbox" id="autoFrequency" checked=model.autoFrequency}}
+        {{t "feed.autoFrequency"}}
+      </label>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="submit" id="saveFeedButton" class="btn btn-primary">

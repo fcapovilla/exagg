@@ -35,6 +35,8 @@ defmodule Exagg.FeedView do
         title: feed.title,
         url: feed.url,
         "last-sync": feed.last_sync,
+        "update-frequency": feed.update_frequency,
+        "auto-frequency": feed.auto_frequency,
         "unread-count": feed.unread_count,
         "sync-status": feed.sync_status,
         "favicon-id": feed.favicon_id,

@@ -7,6 +7,8 @@ export default {
     'url': 'URL',
     'folder': 'Folder',
     'reset': 'Reset feed',
+    'updateFrequency': 'Update frequency (in minutes)',
+    'autoFrequency': 'Adjust update frequency automatically',
     'pshb': {
       'hub': 'Hub',
       'topic': 'Topic',
