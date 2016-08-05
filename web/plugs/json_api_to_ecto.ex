@@ -6,7 +6,6 @@ defmodule Exagg.Plugs.JsonApiToEcto do
   end
 
   # Convert JSON-API data into parameters usable by Ecto.
-  # TODO: do "-" to "_" conversion in attribute names
   def call(conn, key) do
     new_data = case conn.params[key] do
       %{"relationships" => relationships} ->
@@ -26,6 +25,12 @@ defmodule Exagg.Plugs.JsonApiToEcto do
     else
       new_data
     end
+
+    new_data =
+      Enum.map(new_data, fn {key, value} ->
+        {String.replace(key, "-", "_"), value}
+      end)
+      |> Enum.into(%{})
 
     put_in(conn.params[key], new_data)
   end

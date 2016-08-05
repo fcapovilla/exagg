@@ -8,8 +8,8 @@ export default Ember.Controller.extend({
   actions: {
     saveFeed() {
       var that = this;
-      this.store.queryRecord('folder', {filter: {title: this.get('folderTitle')}}).then(function(folders) {
-        var folder = folders[0];
+      this.store.query('folder', {filter: {title: this.get('folderTitle')}}).then(function(folders) {
+        var folder = folders.get('firstObject');
 
         // Create folder if it doesn't exist.
         if(!folder) {
