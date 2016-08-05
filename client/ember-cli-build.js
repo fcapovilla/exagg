@@ -32,5 +32,3 @@ module.exports = function(defaults) {
 
   return mergeTrees([app.toTree(), fontTree]);
 };
-
-
