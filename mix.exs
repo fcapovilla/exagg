@@ -40,6 +40,7 @@ defmodule Exagg.Mixfile do
         :joken,
         :ibrowse,
         :xmerl,
+        :timex,
       ]
     ]
   end
@@ -71,6 +72,7 @@ defmodule Exagg.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:credo, "~> 0.4", only: :dev},
       {:cowboy, "~> 1.0"},
+      {:exrm, "~> 1.0"},
     ]
   end
 
