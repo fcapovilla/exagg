@@ -19,6 +19,18 @@
         {{t "feed.reset"}}
       </label>
     </div>
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td>{{t "feed.lastSync"}}</td>
+          <td>{{model.lastSync}}</td>
+        </tr>
+        <tr>
+          <td>{{t "feed.syncStatus"}}</td>
+          <td>{{model.syncStatus}}</td>
+        </tr>
+      </tbody>
+    </table>
     {{#if model.pshb}}
       <div class="feedPSHBInfos">
         <table class="table table-bordered">

@@ -9,6 +9,8 @@ export default {
     'reset': 'Reset feed',
     'updateFrequency': 'Update frequency (in minutes)',
     'autoFrequency': 'Adjust update frequency automatically',
+    'lastSync': 'Last synchronisation',
+    'syncStatus': 'Last synchronisation status',
     'pshb': {
       'hub': 'Hub',
       'topic': 'Topic',

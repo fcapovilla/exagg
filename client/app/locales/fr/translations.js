@@ -9,6 +9,8 @@ export default {
     'reset': 'Réinitialiser le flux',
     'updateFrequency': 'Fréquence de mise à jour (en minutes)',
     'autoFrequency': 'Ajustement automatique de la fréquence de mise à jour',
+    'lastSync': 'Dernière synchronisation',
+    'syncStatus': 'Dernier statut de synchronisation',
     'pshb': {
       'hub': 'Hub',
       'topic': 'Sujet',
