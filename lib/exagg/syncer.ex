@@ -3,7 +3,6 @@ defmodule Exagg.Syncer do
 
   alias Exagg.Feed
   alias Exagg.Item
-  alias Exagg.Media
   alias Exagg.Repo
 
   import Ecto.Query
@@ -23,8 +22,41 @@ defmodule Exagg.Syncer do
 
   # Update items for the feed in parameter.
   def sync_feed(feed) do
-    parsed_feed = feed.url |> fetch_data |> parse_feed
+    with {:ok, data} <- fetch_data(feed.url),
+         {:ok, parsed_feed} <- parse_feed(data) do
+      update_feed(feed, parsed_feed)
+    else
+      {:error, code} ->
+        # Try to get a string representation of the error
+        code = case code do
+          str when is_bitstring(str) -> str
+          %{message: message} -> message
+          %{__struct__: code} -> to_string(code)
+          _ -> "Unknown error"
+        end
 
+        Logger.error "Error syncing " <> feed.url <> " : " <> code
+        feed |> Feed.changeset(%{sync_status: code}) |> Repo.update!
+    end
+  end
+
+  # TODO
+  def recalculate_sync_frequencies do
+    Feed
+    |> where(auto_frequency: true)
+    |> Repo.all
+    |> Enum.each(fn(feed) ->
+      latest =
+        Item
+        |> where(feed_id: ^feed.id)
+        |> order_by(desc: :date)
+        |> limit(5)
+        |> Repo.all
+    end)
+  end
+
+  # Update items for the feed in parameter using the parsed_feed.
+  defp update_feed(feed, parsed_feed) do
     items = Enum.map(parsed_feed.entries, fn(entry) ->
       %{
         feed_id: feed.id,
@@ -58,7 +90,8 @@ defmodule Exagg.Syncer do
       # Update feed data
       {:ok, updated_feed} = Repo.update_unread_count(feed, %{
         title: if parsed_feed.title == "" do feed.title else parsed_feed.title end,
-        last_sync: Ecto.DateTime.utc
+        last_sync: Ecto.DateTime.utc,
+        sync_status: ""
       })
 
       # Broadcast changes
@@ -73,34 +106,28 @@ defmodule Exagg.Syncer do
   end
 
   # Fetch data from the URL in parameter.
-  # Return an empty string on error.
   defp fetch_data(url) do
     try do
       case HTTPotion.get(url, [follow_redirects: true, headers: ["User-Agent": "Exagg"]]) do
-        %HTTPotion.Response{body: body} -> body
-        _ ->
-          Logger.error "Error fetching " <> url
-          ""
+        %HTTPotion.Response{body: body} -> {:ok, body}
+        %HTTPotion.ErrorResponse{message: message} -> {:error, message}
       end
     rescue
-      _ ->
-        Logger.error "Error fetching " <> url
-        ""
+      ex -> {:error, ex}
     end
   end
 
   # Parse XML feed data.
-  # Returns an empty list of entries on error.
   defp parse_feed(xml) do
     try do
        case FeederEx.parse(xml) do
-          {:ok, feed, _} -> feed
-          {:error, _} -> %{entries: [], title: ""}
+          {:ok, feed, _} -> {:ok, feed}
+          {:error, code} -> {:error, code}
        end
     rescue
-      _ -> %{entries: [], title: ""}
+      ex -> {:error, ex}
     catch
-      _ -> %{entries: [], title: ""}
+      ex -> {:error, ex}
     end
   end
 
