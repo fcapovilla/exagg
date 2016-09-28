@@ -29,24 +29,31 @@ defmodule Exagg.Item do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> cast_optional_assoc(params, :medias)
+    |> cast_medias(params)
     |> truncate(:guid, 255)
     |> ignore_single_change(:date)
     |> ignore_nil_change(:date)
     |> default(:date, Ecto.DateTime.utc)
   end
 
-  # Cast association only if it was provided in params
-  def cast_optional_assoc(changeset, params, assoc, opts \\ []) do
-    if params[assoc] do
-      cast_assoc(changeset, assoc, opts)
+  # Cast medias only if the medias param was provided and if medias changed
+  defp cast_medias(changeset, params) do
+    if params[:medias] do
+      # Detect changes
+      old = changeset.data.medias |> Enum.map(&(Map.take(&1, [:type, :url])))
+      new = params.medias |> Enum.map(&(Map.take(&1, [:type, :url])))
+      if old != new do
+        cast_assoc(changeset, :medias, [])
+      else
+        changeset
+      end
     else
       changeset
     end
   end
 
   # Truncate the field to "size" characters
-  def truncate(changeset, field, size) do
+  defp truncate(changeset, field, size) do
     value = get_field(changeset, field)
     if String.length(value) > size do
       put_change(changeset, field, String.slice(value, 1..size))
@@ -56,7 +63,7 @@ defmodule Exagg.Item do
   end
 
   # Ignore changes to nil for the specified field
-  def ignore_nil_change(changeset, field) do
+  defp ignore_nil_change(changeset, field) do
     if is_nil(get_change(changeset, field, :empty)) do
       delete_change(changeset, field)
     else
@@ -65,7 +72,7 @@ defmodule Exagg.Item do
   end
 
   # Ignore changeset if only the specified field changed
-  def ignore_single_change(changeset, field) do
+  defp ignore_single_change(changeset, field) do
     if Map.keys(changeset.changes) == [field] do
       delete_change(changeset, field)
     else
@@ -74,7 +81,7 @@ defmodule Exagg.Item do
   end
 
   # Force a default value for the field
-  def default(changeset, field, value) do
+  defp default(changeset, field, value) do
     if is_nil(get_field(changeset, field)) do
       put_change(changeset, field, value)
     else

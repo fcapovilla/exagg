@@ -23,7 +23,8 @@ defmodule Exagg.Syncer do
   # Update items for the feed in parameter.
   def sync_feed(feed) do
     with {:ok, data} <- fetch_data(feed.url),
-         {:ok, parsed_feed} <- parse_feed(data) do
+         {:ok, parsed_feed} <- parse_feed(data)
+    do
       update_feed(feed, parsed_feed)
     else
       {:error, code} ->
@@ -81,27 +82,37 @@ defmodule Exagg.Syncer do
       updated_items = Enum.map(items, fn(item) ->
         existing = Enum.find(existings, &(&1.guid == item.guid))
         if existing do
-          existing |> Item.changeset(item) |> Repo.update!
+          changeset = existing |> Item.changeset(item)
+          if changeset.changes != %{} do
+            Repo.update!(changeset)
+          else
+            false
+          end
         else
           %Item{} |> Item.changeset(item) |> Repo.insert!
         end
       end)
+      |> Enum.filter(&(&1))
 
-      # Update feed data
-      {:ok, updated_feed} = Repo.update_unread_count(feed, %{
-        title: if parsed_feed.title == "" do feed.title else parsed_feed.title end,
-        last_sync: Ecto.DateTime.utc,
-        sync_status: ""
-      })
+      if updated_items != [] do
+        # Update feed data
+        {:ok, updated_feed} = Repo.update_unread_count(feed, %{
+          title: if parsed_feed.title == "" do feed.title else parsed_feed.title end,
+          last_sync: Ecto.DateTime.utc,
+          sync_status: ""
+        })
 
-      # Broadcast changes
-      Exagg.FeedView.render("show.json", %{
-        feed: updated_feed,
-        sideload: [{updated_items, Exagg.ItemView, "item.json"}],
-        broadcast: {"jsonapi:stream:" <> to_string(updated_feed.user_id), "new"}
-      })
+        # Broadcast changes
+        Exagg.FeedView.render("show.json", %{
+          feed: updated_feed,
+          sideload: [{updated_items, Exagg.ItemView, "item.json"}],
+          broadcast: {"jsonapi:stream:" <> to_string(updated_feed.user_id), "new"}
+        })
 
-      updated_feed
+        updated_feed
+      else
+        feed
+      end
     end
   end
 
