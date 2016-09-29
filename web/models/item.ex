@@ -40,10 +40,10 @@ defmodule Exagg.Item do
   defp cast_medias(changeset, params) do
     if params[:medias] do
       # Detect changes
-      case changeset.data.medias do
+      case get_field(changeset, :medias) do
         %Ecto.Association.NotLoaded{} -> cast_assoc(changeset, :medias, [])
         _ ->
-          old = changeset.data.medias |> Enum.map(&Map.take(&1, [:type, :url]))
+          old = get_field(changeset, :medias) |> Enum.map(&Map.take(&1, [:type, :url]))
           new = params.medias |> Enum.map(&Map.take(&1, [:type, :url]))
           if old != new do
             cast_assoc(changeset, :medias, [])
