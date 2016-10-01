@@ -41,18 +41,29 @@ defmodule Exagg.Syncer do
     end
   end
 
-  # TODO
+  # Recalculate the sync frequency of all feeds using automatic frequency calculation
+  # The frequency goes from one every 30 minutes (30) to once every week (10080)
   def recalculate_sync_frequencies do
     Feed
     |> where(auto_frequency: true)
     |> Repo.all
     |> Enum.each(fn(feed) ->
-      latest =
-        Item
-        |> where(feed_id: ^feed.id)
-        |> order_by(desc: :date)
-        |> limit(5)
-        |> Repo.all
+      Repo.transaction fn ->
+        month_count =
+          Item
+          |> select([i], count(i.id))
+          |> where(feed_id: ^feed.id)
+          |> where([i], i.date > ago(30, "day"))
+          |> Repo.one
+
+        frequency = if month_count < 360 do
+          round(30/(month_count+1)*6*60)
+        else
+          30
+        end
+
+        feed |> Feed.changeset(%{update_frequency: frequency}) |> Repo.update!
+      end
     end)
   end
 
@@ -94,13 +105,15 @@ defmodule Exagg.Syncer do
       end)
       |> Enum.filter(&(&1))
 
+      feed_changes = %{
+        title: if parsed_feed.title == "" do feed.title else parsed_feed.title end,
+        last_sync: Ecto.DateTime.utc,
+        sync_status: ""
+      }
+
       if updated_items != [] do
         # Update feed data
-        {:ok, updated_feed} = Repo.update_unread_count(feed, %{
-          title: if parsed_feed.title == "" do feed.title else parsed_feed.title end,
-          last_sync: Ecto.DateTime.utc,
-          sync_status: ""
-        })
+        {:ok, updated_feed} = Repo.update_unread_count(feed, feed_changes)
 
         # Broadcast changes
         Exagg.FeedView.render("show.json", %{
@@ -111,7 +124,7 @@ defmodule Exagg.Syncer do
 
         updated_feed
       else
-        feed
+        feed |> Feed.changeset(feed_changes) |> Repo.update!
       end
     end
   end
