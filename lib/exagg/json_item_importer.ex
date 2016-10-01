@@ -1,5 +1,5 @@
 defmodule Exagg.JSONItemImporter do
-  import Ecto.Query, only: [from: 1, from: 2]
+  import Ecto.Query, only: [from: 2]
 
   require Poison
   require Timex
@@ -59,19 +59,20 @@ defmodule Exagg.JSONItemImporter do
   end
 
   defp find_medias(entry) do
-    medias = []
-
-    if entry["attachment_url"] do
-      medias = [%{url: entry["attachment_url"], type: "Download file"}|medias]
-    end
+    medias =
+      if entry["attachment_url"] do
+        [%{url: entry["attachment_url"], type: "Download file"}]
+      else
+        []
+      end
 
     if entry["medias"] do
-      medias = medias ++ for {type, url} <- entry["medias"] do
+      medias ++ for {type, url} <- entry["medias"] do
         %{url: url, type: type}
       end
+    else
+      medias
     end
-
-    medias
   end
 
   defp parse_date(date) do

@@ -1,5 +1,5 @@
 defmodule Exagg.JSONFavoriteImporter do
-  import Ecto.Query, only: [from: 1, from: 2]
+  import Ecto.Query, only: [from: 2]
 
   require Poison
   require Timex
@@ -19,12 +19,14 @@ defmodule Exagg.JSONFavoriteImporter do
         data["alternate"] -> data["alternate"] |> List.first |> Map.get("href")
       end
 
-      read = false
-      if data["categories"] do
-        read = Enum.any?(data["categories"], fn(cat) ->
-          cat =~ ~r/\/state\/com\.google\/read$/
-        end)
-      end
+      read =
+        if data["categories"] do
+          read = Enum.any?(data["categories"], fn(cat) ->
+            cat =~ ~r/\/state\/com\.google\/read$/
+          end)
+        else
+          false
+        end
 
       item = %{
         user_id: user_id,

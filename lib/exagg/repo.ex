@@ -1,7 +1,7 @@
 defmodule Exagg.Repo do
   use Ecto.Repo, otp_app: :exagg
 
-  import Ecto.Query, only: [from: 1, from: 2, order_by: 2, limit: 2, offset: 2]
+  import Ecto.Query, only: [from: 2, order_by: 2, limit: 2, offset: 2]
 
   def filter(query, conn = %Plug.Conn{}) do
     query |> filter(conn.params) |> for_current_user(conn)

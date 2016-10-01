@@ -23,11 +23,11 @@ defmodule Exagg.JsonApiViewHelper do
   def insert_relationships(data, model, sideloads) do
     Enum.reduce(sideloads, data, fn sideload, acc ->
       case sideload do
-        {submodels, view_module, file} -> acc
         col when is_atom(col) ->
           submodels = List.wrap(Map.get(model, col))
           relation_data = %{data: Enum.map(submodels, fn m -> %{type: Atom.to_string(col), id: m.id} end)}
           acc.relationships[col] |> update_in(&Map.merge(&1, relation_data))
+        _ -> acc
       end
     end)
   end

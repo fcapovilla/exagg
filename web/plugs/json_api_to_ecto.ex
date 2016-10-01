@@ -1,5 +1,4 @@
 defmodule Exagg.Plugs.JsonApiToEcto do
-  import Plug.Conn
 
   def init(key) do
     key
@@ -8,7 +7,7 @@ defmodule Exagg.Plugs.JsonApiToEcto do
   # Convert JSON-API data into parameters usable by Ecto.
   def call(conn, key) do
     new_data = case conn.params[key] do
-      %{"relationships" => relationships} ->
+      %{"relationships" => _} ->
         Enum.reduce(conn.params[key]["relationships"], %{}, fn {name, value}, acc ->
           case value["data"] do
             %{"id" => id} -> Map.put(acc, name <> "_id", String.to_integer(id))

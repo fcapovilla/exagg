@@ -36,21 +36,24 @@ defmodule Exagg.FaviconFetcher do
       _ -> nil
     end
 
-    if data == nil and not(url =~ ~r/www/) do
-      data = try do
-        # Try the url with a "www"
-        url = Regex.replace(~r/^(https?:\/\/)[^.\/]+(\.[^.\/]+(\.[^.\/]+)+\/.*)$/, url, "\\1www\\2")
-        case HTTPotion.get(url) do
-          %HTTPotion.Response{body: body, headers: headers} ->
-            if headers[:"Content-Type"] =~ ~r/^image\/.*icon$/ do
-              Base.encode64(body)
-            end
+    data =
+      if data == nil and not(url =~ ~r/www/) do
+        try do
+          # Try the url with a "www"
+          url = Regex.replace(~r/^(https?:\/\/)[^.\/]+(\.[^.\/]+(\.[^.\/]+)+\/.*)$/, url, "\\1www\\2")
+          case HTTPotion.get(url) do
+            %HTTPotion.Response{body: body, headers: headers} ->
+              if headers[:"Content-Type"] =~ ~r/^image\/.*icon$/ do
+                Base.encode64(body)
+              end
+            _ -> nil
+          end
+        rescue
           _ -> nil
         end
-      rescue
-        _ -> nil
+      else
+        data
       end
-    end
 
     case data do
       nil -> {:error, "Error fetching " <> url}
