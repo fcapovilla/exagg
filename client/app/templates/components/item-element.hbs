@@ -6,16 +6,16 @@
       </span>
     {{/if}}
     <span class="item-date label label-default hidden-phone">
-      {{formattedDate}}
+      {{moment-format model.date "DD/MM/YYYY HH:mm"}}
     </span>
   </div>
   <div class="item-title">
     <i {{action "toggleFavorite" bubbles=false}} class="favoriteIcon fa fa-star{{unless model.favorite "-o"}}"></i>
     <i {{action "toggleRead" bubbles=false}} class="readUnreadIcon fa fa-circle{{if model.read "-o"}}"></i>
     {{#if model.read}}
-      {{{model.title}}}
+      {{model.title}}
     {{else}}
-      <b>{{{model.title}}}</b>
+      <b>{{model.title}}</b>
     {{/if}}
   </div>
 </div>
@@ -27,8 +27,8 @@
     {{#if model.medias}}
       <br>
       {{#each model.medias as |media|}}
-      <a class="btn btn-default" href="{{ media.url }}">
-          <i class="fa fa-download"></i> {{ media.type }}
+      <a class="btn btn-default" href="{{media.url}}">
+          <i class="fa fa-download"></i> {{media.type}}
       </a>
       {{/each}}
     {{/if}}
