@@ -10,7 +10,7 @@ defmodule Exagg.JSONItemImporter do
 
   def import(file, conn) do
     json = File.read!(file.path) |> Poison.decode!
-    user_id = conn.assigns[:user]["id"]
+    user_id = conn.assigns[:current_user].id
 
     Enum.each(json["feeds"], fn(data) ->
       feed_url = data["url"]

@@ -1,13 +1,9 @@
 defmodule Exagg.UserController do
   use Exagg.Web, :controller
 
-  import Comeonin.Bcrypt, only: [hashpwsalt: 1, checkpw: 2]
-
   alias Exagg.User
-  alias Exagg.JWT
 
   plug :scrub_params, "data" when action in [:create, :update]
-  plug Exagg.Plugs.JWTAuth when not action in [:token_auth, :token_refresh]
   plug Exagg.Plugs.AdminOnly when action in [:create, :update, :delete]
   plug Exagg.Plugs.JsonApiToEcto, "data" when action in [:create, :update]
 
@@ -19,7 +15,6 @@ defmodule Exagg.UserController do
   def create(conn, %{"data" => user_params}) do
     changeset =
       User.changeset(%User{}, user_params)
-      |> hash_password
 
     case Repo.insert(changeset) do
       {:ok, user} ->
@@ -43,7 +38,6 @@ defmodule Exagg.UserController do
     user = Repo.get!(User, id)
     changeset =
       User.changeset(user, user_params)
-      |> hash_password
 
     case Repo.update(changeset) do
       {:ok, user} ->
@@ -63,41 +57,5 @@ defmodule Exagg.UserController do
     Repo.delete!(user)
 
     send_resp(conn, :no_content, "")
-  end
-
-  def token_auth(conn, %{"username" => username, "password" => password}) do
-    user = Repo.get_by(User, username: username)
-    if user && checkpw(password, user.hashed_password) do
-      render(conn, "user.json", %{token: JWT.generate_token(user), user: user})
-    else
-      deny(conn)
-    end
-  end
-  def token_auth(conn, _params), do: deny(conn)
-
-  def token_refresh(conn, %{"token" => token}) do
-    case JWT.validate!(token) do
-      {:ok, claims} ->
-        user = Repo.get(User, claims["user"]["id"])
-        if user do
-          render(conn, "user.json", %{token: JWT.generate_token(user), user: user})
-        else
-          deny(conn)
-        end
-      {:error, _} -> deny(conn)
-    end
-  end
-  def token_refresh(conn, _params), do: deny(conn)
-
-  defp deny(conn) do
-    send_resp(conn, 403, ~s({"error":"Access denied"}))
-  end
-
-  defp hash_password(changeset) do
-    case changeset.params["password"] do
-      nil -> changeset
-      "********" -> changeset
-      password -> Ecto.Changeset.put_change(changeset, :hashed_password, hashpwsalt(password))
-    end
   end
 end

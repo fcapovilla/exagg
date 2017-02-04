@@ -6,7 +6,7 @@ defmodule Exagg.Plugs.AdminOnly do
 
   # Deny access if the current user is not an admin.
   def call(conn, _default) do
-    case conn.assigns[:user]["admin"] do
+    case conn.assigns[:current_user].admin do
       true -> conn
       _ -> deny(conn)
     end

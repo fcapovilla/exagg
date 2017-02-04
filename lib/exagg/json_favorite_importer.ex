@@ -11,7 +11,7 @@ defmodule Exagg.JSONFavoriteImporter do
 
   def import(file, conn) do
     json = File.read!(file.path) |> Poison.decode!
-    user_id = conn.assigns[:user]["id"]
+    user_id = conn.assigns[:current_user].id
 
     Enum.each(json["items"], fn(data) ->
       url = cond do

@@ -1,5 +1,6 @@
 defmodule Exagg.Router do
   use Exagg.Web, :router
+  use Coherence.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -7,14 +8,30 @@ defmodule Exagg.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Coherence.Authentication.Session
   end
 
-  pipeline :api do
-    plug :accepts, ["json-api", "json"]
+  pipeline :protected do
+    plug :accepts, ["html", "json-api", "json"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug Coherence.Authentication.Session, protected: true
+  end
+
+  scope "/" do
+    pipe_through :browser
+    coherence_routes
+  end
+
+  scope "/" do
+    pipe_through :protected
+    coherence_routes :protected
   end
 
   scope "/api", Exagg do
-    pipe_through :api
+    pipe_through :protected
 
     post "/opml/upload", SettingsController, :opml_upload
     post "/favorites/upload", SettingsController, :favorites_upload
@@ -30,15 +47,12 @@ defmodule Exagg.Router do
     end
     resources "/items", ItemController
     resources "/users", UserController
-
-    post "/token-auth", UserController, :token_auth
-    post "/token-refresh", UserController, :token_refresh
   end
 
   get "/favicons/:id", Exagg.FaviconController, :show
 
   scope "/", Exagg do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/*path", PageController, :index
   end

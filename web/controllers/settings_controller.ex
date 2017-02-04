@@ -1,8 +1,6 @@
 defmodule Exagg.SettingsController do
   use Exagg.Web, :controller
 
-  plug Exagg.Plugs.JWTAuth
-
   def favorites_upload(conn, %{"file" => file}) do
     case file.content_type do
       "application/json" ->

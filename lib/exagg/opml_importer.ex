@@ -6,7 +6,7 @@ defmodule Exagg.OPMLImporter do
   def import(file, conn) do
     alias XmlNode, as: Xml
 
-    user_id = conn.assigns[:user]["id"]
+    user_id = conn.assigns[:current_user].id
     doc = Xml.from_file file.path
     Enum.each(Xml.all(doc, "body/outline"), fn(node) ->
       case Xml.attr(node, "type") do

@@ -48,3 +48,13 @@ config :quantum, cron: [
     overlap: false
   ],
 ]
+
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: Exagg.User,
+  repo: Exagg.Repo,
+  module: Exagg,
+  logged_out_url: "/",
+  login_field: :username,
+  opts: [:authenticatable]
+# %% End Coherence Configuration %%

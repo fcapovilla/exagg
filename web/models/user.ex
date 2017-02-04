@@ -1,16 +1,16 @@
 defmodule Exagg.User do
   use Exagg.Web, :model
+  use Coherence.Schema
 
   schema "users" do
     field :username, :string
     field :admin, :boolean, default: false
-    field :hashed_password, :string
-    field :password, :string, virtual: true, default: "********"
+    coherence_schema
 
     timestamps
   end
 
-  @required_fields ~w(username password admin)
+  @required_fields ~w(username admin)
   @optional_fields ~w()
 
   @doc """
@@ -21,6 +21,7 @@ defmodule Exagg.User do
   """
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, @required_fields ++ coherence_fields, @optional_fields)
+    |> validate_coherence(params)
   end
 end

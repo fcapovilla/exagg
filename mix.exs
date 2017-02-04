@@ -6,11 +6,11 @@ defmodule Exagg.Mixfile do
      version: "0.0.1",
      elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
-     compilers: [:phoenix] ++ Mix.compilers,
+     compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases,
-     deps: deps]
+     aliases: aliases(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application.
@@ -19,29 +19,7 @@ defmodule Exagg.Mixfile do
   def application do
     [
       mod: {Exagg, []},
-      applications: [
-        :phoenix,
-        :phoenix_pubsub,
-        :phoenix_html,
-        :cowboy,
-        :logger,
-        :gettext,
-        :phoenix_ecto,
-        :postgrex,
-        :tzdata,
-        :pipe,
-        :quantum,
-        :httpotion,
-        :inflex,
-        :paratize,
-        :feeder_ex,
-        :feeder,
-        :comeonin,
-        :joken,
-        :ibrowse,
-        :xmerl,
-        :timex,
-      ]
+      extra_applications: [:logger]
     ]
   end
 
@@ -58,6 +36,7 @@ defmodule Exagg.Mixfile do
       {:phoenix, "~> 1.2"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.0"},
+      {:gettext, "~> 0.9"},
       {:postgrex, ">= 0.0.0"},
       {:feeder_ex, ">= 0.0.0"},
       {:httpotion, "~> 3.0"},
@@ -67,8 +46,7 @@ defmodule Exagg.Mixfile do
       {:quantum, "~> 1.7"},
       {:phoenix_html, "~> 2.6"},
       {:inflex, "~> 1.0"},
-      {:comeonin, "~> 1.0"},
-      {:joken, "~> 1.2"},
+      {:coherence, "~> 0.3"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:credo, "~> 0.4", only: :dev},
       {:cowboy, "~> 1.0"},

@@ -16,9 +16,4 @@ defmodule Exagg.ChangesetView do
     # as a JSON object. So we just pass it forward.
     %{errors: translate_errors(changeset)}
   end
-
-  def translate_error({msg, opts}) do
-    String.replace(msg, "%{count}", to_string(opts[:count]))
-  end
-  def translate_error(msg), do: msg
 end
